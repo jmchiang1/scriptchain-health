@@ -1,0 +1,2806 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      ScriptChain Health — Agentic AI for Food &amp; Exercise as Medicine
+    </title>
+    <meta
+      name="description"
+      content="ScriptChain's agentic AI reads the signal in your EHR, flags patients sliding toward metabolic syndrome, and prescribes personalized food & exercise plans."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* surfaces */
+        --bg: #060d0c;
+        --bg-2: #081311;
+        --panel: #0b1a17;
+        --panel-2: #0f221e;
+        --glass: rgba(13, 30, 27, 0.66);
+        /* signal */
+        --teal: #16c8b4;
+        --teal-br: #34f5dc;
+        --teal-d: #0e8e80;
+        --mint: #9ff0e3;
+        /* risk accents */
+        --amber: #f5b53f;
+        --coral: #ff6f6f;
+        /* text */
+        --text: #eafaf6;
+        --text-2: #a7c6bf;
+        --muted: #6e8e88;
+        --dim: #4d6964;
+        /* lines */
+        --line: rgba(160, 255, 240, 0.09);
+        --line-2: rgba(160, 255, 240, 0.17);
+        --glow: 0 0 0 0.0625rem rgba(52, 245, 220, 0.18),
+          0 1.375rem 3.75rem -1.75rem rgba(8, 150, 128, 0.6);
+        --r: 1rem;
+        --maxw: 75rem;
+        --disp: "Bricolage Grotesque", sans-serif;
+        --sans: "Hanken Grotesk", sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        position: relative;
+      }
+      /* atmosphere: radial signal glows + faint grid */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: radial-gradient(
+            38.75rem 38.75rem at 82% -6%,
+            rgba(22, 200, 180, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            33.75rem 33.75rem at -8% 18%,
+            rgba(15, 142, 128, 0.13),
+            transparent 62%
+          ),
+          radial-gradient(
+            50rem 31.25rem at 50% 108%,
+            rgba(22, 200, 180, 0.1),
+            transparent 60%
+          ),
+          linear-gradient(180deg, #070f0e, #050b0a 60%);
+      }
+      /* grain overlay */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0.05;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+      .wrap {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 3;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      ::selection {
+        background: var(--teal-br);
+        color: #04110f;
+      }
+      .mono {
+        font-family: var(--mono);
+      }
+
+      /* illustrative flag */
+      .ph {
+        position: relative;
+      }
+      .ph-tag {
+        position: absolute;
+        top: 0.625rem;
+        right: 0.625rem;
+        z-index: 6;
+        font-family: var(--mono);
+        font-size: 0.53125rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--teal);
+        background: rgba(22, 200, 180, 0.08);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.28);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.3125rem;
+        pointer-events: none;
+      }
+
+      /* banner */
+      .banner {
+        position: relative;
+        z-index: 40;
+        background: rgba(7, 16, 15, 0.9);
+        border-bottom: 0.0625rem solid var(--line);
+        text-align: center;
+        font-size: 0.78125rem;
+        color: var(--text-2);
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+      }
+      .banner b {
+        color: var(--teal-br);
+        font-weight: 600;
+      }
+      .banner a {
+        color: var(--text);
+        border-bottom: 0.0625rem solid var(--teal-d);
+        padding-bottom: 0.125rem;
+        margin-left: 0.5rem;
+        font-weight: 600;
+      }
+      .banner a:hover {
+        border-color: var(--teal-br);
+        color: var(--teal-br);
+      }
+
+      /* nav */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(6, 13, 12, 0.72);
+        backdrop-filter: blur(1rem) saturate(140%);
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 4.375rem;
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        color: var(--text);
+      }
+      .logo-svg {
+        height: 3rem;
+        width: auto;
+        display: block;
+        color: var(--text);
+      }
+      .logo:hover .logo-svg {
+        color: #fff;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        font-family: var(--mono);
+      }
+      .nav-links a {
+        color: var(--text-2);
+        transition: color 0.2s;
+        letter-spacing: -0.01em;
+      }
+      .nav-links a:hover {
+        color: var(--teal-br);
+      }
+      .nav-cta {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
+      .nav-login {
+        font-size: 0.875rem;
+        color: var(--text-2);
+        font-weight: 600;
+      }
+      .nav-login:hover {
+        color: var(--text);
+      }
+      .btn {
+        font-family: var(--sans);
+        font-weight: 600;
+        font-size: 0.90625rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6.25rem;
+        cursor: pointer;
+        border: none;
+        transition: transform 0.18s, box-shadow 0.22s, background 0.2s,
+          color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .btn-primary {
+        background: var(--teal-br);
+        color: #04110f;
+        box-shadow: 0 0 1.5rem -0.25rem rgba(52, 245, 220, 0.5);
+      }
+      .btn-primary:hover {
+        transform: translateY(-0.125rem);
+        box-shadow: 0 0 2.125rem 0 rgba(52, 245, 220, 0.7);
+      }
+      .btn-ghost {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        border: 0.0625rem solid var(--line-2);
+      }
+      .btn-ghost:hover {
+        background: rgba(52, 245, 220, 0.08);
+        border-color: rgba(52, 245, 220, 0.4);
+        color: var(--teal-br);
+      }
+      .btn-xl {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+      }
+      .hamb {
+        display: none;
+        flex-direction: column;
+        gap: 0.375rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0.375rem;
+      }
+      .hamb span {
+        width: 1.5rem;
+        height: 0.125rem;
+        background: var(--text);
+        display: block;
+        border-radius: 0.125rem;
+      }
+
+      /* hero */
+      .hero {
+        position: relative;
+        padding: 3.5rem 0;
+        /* banner + nav + hero == one full viewport (--chrome-h set in JS) */
+        min-height: calc(100vh - var(--chrome-h, 6.75rem));
+        min-height: calc(100svh - var(--chrome-h, 6.75rem));
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      /* WebGL shader background (assets brand-colored) */
+      .hero-shader {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .hero-shader canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      /* legibility veil over the shader */
+      .hero-shade {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(
+            120% 86% at 50% 48%,
+            rgba(6, 13, 12, 0.55),
+            rgba(6, 13, 12, 0.4) 50%,
+            rgba(6, 13, 12, 0.82) 100%
+          ),
+          linear-gradient(
+            180deg,
+            rgba(6, 13, 12, 0.5),
+            rgba(6, 13, 12, 0) 22%,
+            rgba(6, 13, 12, 0) 76%,
+            rgba(6, 13, 12, 0.96)
+          );
+      }
+      .ecg-band {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 46%;
+        height: 15rem;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.9;
+      }
+      .ecg-band svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .ecg-base {
+        fill: none;
+        stroke: rgba(52, 245, 220, 0.12);
+        stroke-width: 1.5;
+      }
+      .ecg-live {
+        fill: none;
+        stroke: var(--teal-br);
+        stroke-width: 2.4;
+        filter: url(#ecgGlow);
+      }
+      .hero-inner {
+        position: relative;
+        z-index: 2;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-width: 56.25rem;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--teal-br);
+        background: rgba(22, 200, 180, 0.07);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.22);
+        padding: 0.5rem 1rem;
+        border-radius: 6.25rem;
+        margin-bottom: 1.75rem;
+      }
+      h1.hero-title {
+        font-family: var(--disp);
+        font-weight: 600;
+        font-size: clamp(2.625rem, 5.8vw, 4.625rem);
+        line-height: 1.02;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0.125rem 2.125rem rgba(0, 0, 0, 0.55);
+      }
+      h1.hero-title em {
+        font-style: normal;
+        color: var(--teal-br);
+        position: relative;
+        text-shadow: 0 0 2.375rem rgba(52, 245, 220, 0.6);
+      }
+      .hero-sub {
+        font-size: 1.125rem;
+        color: var(--text-2);
+        max-width: 36.25rem;
+        margin: 0 auto 2.25rem;
+        line-height: 1.62;
+        text-shadow: 0 0.0625rem 1.125rem rgba(0, 0, 0, 0.5);
+      }
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .play {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: var(--text);
+      }
+      .play .pc {
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 50%;
+        border: 0.0625rem solid var(--line-2);
+        display: grid;
+        place-items: center;
+        transition: 0.2s;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .play:hover .pc {
+        background: var(--teal-br);
+        border-color: var(--teal-br);
+      }
+      .play:hover .pc svg path {
+        fill: #04110f;
+      }
+      .hero-foot {
+        position: relative;
+        z-index: 2;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 1.75rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .hero-foot .hf {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+      }
+      .hero-foot b {
+        font-family: var(--mono);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 1.3125rem;
+        letter-spacing: -0.02em;
+      }
+      .hero-foot small {
+        font-size: 0.75rem;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      }
+      .hero-foot .sep {
+        width: 0.0625rem;
+        height: 2.25rem;
+        background: var(--line-2);
+      }
+
+      /* hero device panel */
+      .hero-card {
+        position: relative;
+      }
+      .device {
+        position: relative;
+        background: linear-gradient(
+          165deg,
+          rgba(15, 34, 30, 0.92),
+          rgba(9, 21, 18, 0.92)
+        );
+        border-radius: 1.125rem;
+        border: 0.0625rem solid var(--line-2);
+        overflow: hidden;
+        box-shadow: 0 2.5rem 5.625rem -2.5rem rgba(0, 0, 0, 0.8),
+          inset 0 0.0625rem 0 rgba(255, 255, 255, 0.04),
+          0 0 0 0.0625rem rgba(52, 245, 220, 0.06);
+        backdrop-filter: blur(0.5rem);
+      }
+      .device-top {
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      .device-top .dt-l {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        font-family: var(--mono);
+        letter-spacing: -0.01em;
+      }
+      .agent-orb {
+        width: 1.625rem;
+        height: 1.625rem;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 34% 30%,
+          #aef7ec,
+          var(--teal) 70%
+        );
+        position: relative;
+        flex: 0 0 auto;
+        box-shadow: 0 0 1rem -0.125rem var(--teal-br);
+      }
+      .agent-orb::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 0.09375rem solid rgba(52, 245, 220, 0.6);
+        animation: pulse 2.4s ease-out infinite;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scale(1.9);
+          opacity: 0;
+        }
+      }
+      .live-pill {
+        font-family: var(--mono);
+        font-size: 0.65625rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--teal-br);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(52, 245, 220, 0.08);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.25);
+        padding: 0.25rem 0.75rem;
+        border-radius: 6.25rem;
+      }
+      .live-pill i {
+        width: 0.375rem;
+        height: 0.375rem;
+        border-radius: 50%;
+        background: var(--teal-br);
+        box-shadow: 0 0 0.5rem var(--teal-br);
+      }
+      .device-body {
+        padding: 0.5rem 1.25rem 1.25rem;
+      }
+      .pt-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      .pt-name {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .pt-av {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.5625rem;
+        background: rgba(52, 245, 220, 0.1);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 0.78125rem;
+        color: var(--teal-br);
+        font-family: var(--mono);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.18);
+      }
+      .pt-meta b {
+        color: var(--text);
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: block;
+        letter-spacing: -0.01em;
+      }
+      .pt-meta span {
+        font-size: 0.71875rem;
+        color: var(--muted);
+        font-family: var(--mono);
+      }
+      .risk {
+        font-family: var(--mono);
+        font-size: 0.65625rem;
+        font-weight: 600;
+        padding: 0.375rem 0.75rem;
+        border-radius: 6.25rem;
+        letter-spacing: 0.02em;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+      .risk::before {
+        content: "";
+        width: 0.375rem;
+        height: 0.375rem;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .risk.high {
+        background: rgba(255, 111, 111, 0.12);
+        color: var(--coral);
+      }
+      .risk.mod {
+        background: rgba(245, 181, 63, 0.14);
+        color: var(--amber);
+      }
+      .risk.low {
+        background: rgba(52, 245, 220, 0.12);
+        color: var(--teal-br);
+      }
+      .agent-msg {
+        margin-top: 1rem;
+        background: rgba(52, 245, 220, 0.045);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.16);
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+      }
+      .agent-msg .am-orb {
+        width: 1.375rem;
+        height: 1.375rem;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 34% 30%,
+          #aef7ec,
+          var(--teal) 70%
+        );
+        flex: 0 0 auto;
+        margin-top: 0.125rem;
+        box-shadow: 0 0 0.75rem -0.125rem var(--teal-br);
+      }
+      .agent-msg p {
+        font-size: 0.78125rem;
+        color: var(--text-2);
+        line-height: 1.55;
+      }
+      .agent-msg .cur {
+        display: inline-block;
+        width: 0.4375rem;
+        height: 0.875rem;
+        background: var(--teal-br);
+        margin-left: 0.125rem;
+        vertical-align: -0.125rem;
+        animation: blink 1s steps(2) infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .code-chip {
+        font-family: var(--mono);
+        font-size: 0.65625rem;
+        font-weight: 600;
+        color: var(--teal-br);
+        background: rgba(52, 245, 220, 0.1);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.2);
+        padding: 0.125rem 0.5rem;
+        border-radius: 0.3125rem;
+        margin-right: 0.375rem;
+        display: inline-block;
+        margin-top: 0.5rem;
+      }
+      .float-chip {
+        position: absolute;
+        background: var(--glass);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 0.8125rem;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        z-index: 5;
+        backdrop-filter: blur(0.75rem);
+        box-shadow: 0 1.125rem 2.5rem -1.25rem rgba(0, 0, 0, 0.7);
+      }
+      .float-chip .fi {
+        width: 2.125rem;
+        height: 2.125rem;
+        border-radius: 0.5625rem;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+      }
+      .float-chip b {
+        display: block;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: var(--mono);
+        color: var(--text);
+        letter-spacing: -0.02em;
+      }
+      .float-chip small {
+        color: var(--muted);
+        font-size: 0.6875rem;
+        font-family: var(--mono);
+      }
+      .fc1 {
+        top: -1.375rem;
+        left: -1.875rem;
+        animation: float 5.5s ease-in-out infinite;
+      }
+      .fc2 {
+        bottom: -1.5rem;
+        right: -1.375rem;
+        animation: float 5.5s ease-in-out infinite 0.9s;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-0.625rem);
+        }
+      }
+
+      /* trust bar */
+      .trust {
+        padding: 1rem;
+        position: relative;
+        z-index: 3;
+      }
+      .trust p {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 1.75rem;
+        text-align: center;
+      }
+      .logos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3.5rem;
+        flex-wrap: wrap;
+      }
+      .logos .lg {
+        font-weight: 700;
+        font-size: 1.1875rem;
+        color: var(--text);
+        opacity: 0.55;
+        letter-spacing: -0.02em;
+        transition: opacity 0.25s, color 0.25s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--disp);
+      }
+      .logos .lg:hover {
+        opacity: 1;
+        color: var(--teal-br);
+      }
+      .logos .lg small {
+        font-size: 0.65625rem;
+        font-weight: 500;
+        opacity: 0.75;
+        max-width: 7.5rem;
+        line-height: 1.2;
+        text-align: left;
+        font-family: var(--mono);
+      }
+
+      /* sections */
+      .sec {
+        padding: 6.5rem 0;
+        position: relative;
+        z-index: 3;
+      }
+      .sec-head {
+        max-width: 45rem;
+        margin-bottom: 3.5rem;
+      }
+      .sec-head.center {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      }
+      .kicker {
+        font-family: var(--mono);
+        font-size: 0.71875rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--teal-br);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .sec-head.center .kicker {
+        justify-content: center;
+      }
+      .kicker::before {
+        content: "";
+        width: 1.625rem;
+        height: 0.0625rem;
+        background: var(--teal-d);
+      }
+      .sec-head.center .kicker::before {
+        display: none;
+      }
+      h2 {
+        font-family: var(--disp);
+        font-weight: 600;
+        font-size: clamp(1.875rem, 4vw, 3rem);
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      h2 em {
+        font-style: normal;
+        color: var(--teal-br);
+        text-shadow: 0 0 1.75rem rgba(52, 245, 220, 0.4);
+      }
+      .sec-head p {
+        margin-top: 1.25rem;
+        font-size: 1.09375rem;
+        color: var(--text-2);
+        line-height: 1.62;
+      }
+
+      /* problem stats */
+      .prob {
+        border-top: 0.0625rem solid var(--line);
+        border-bottom: 0.0625rem solid var(--line);
+        background: rgba(4, 10, 9, 0.4);
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+      }
+      .stat {
+        padding: 2.25rem 1.75rem;
+        border-right: 0.0625rem solid var(--line);
+      }
+      .stat:last-child {
+        border-right: none;
+      }
+      .stat .num {
+        font-family: var(--disp);
+        font-size: clamp(2.375rem, 4.8vw, 3.625rem);
+        font-weight: 600;
+        line-height: 1;
+        color: var(--text);
+        letter-spacing: -0.03em;
+      }
+      .stat .num em {
+        font-style: normal;
+        color: var(--teal-br);
+      }
+      .stat .num .u {
+        font-size: 0.45em;
+        color: var(--teal-br);
+        font-weight: 600;
+      }
+      .stat .lbl {
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        color: var(--text-2);
+        line-height: 1.5;
+        max-width: 14.375rem;
+      }
+      .stat .src {
+        font-family: var(--mono);
+        font-size: 0.65625rem;
+        color: var(--dim);
+        margin-top: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      /* how it works — agentic loop */
+      .loop-flow {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+        margin-top: 1rem;
+      }
+      .flow-conn {
+        position: absolute;
+        top: 2.375rem;
+        left: 11%;
+        right: 11%;
+        height: 0.125rem;
+        z-index: 0;
+        overflow: hidden;
+        border-radius: 0.125rem;
+        background: rgba(52, 245, 220, 0.1);
+      }
+      .flow-conn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--teal-br),
+          transparent
+        );
+        width: 40%;
+        animation: flow 3.4s linear infinite;
+      }
+      @keyframes flow {
+        0% {
+          transform: translateX(-120%);
+        }
+        100% {
+          transform: translateX(320%);
+        }
+      }
+      .step {
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(
+          165deg,
+          rgba(15, 34, 30, 0.7),
+          rgba(9, 21, 18, 0.7)
+        );
+        border: 0.0625rem solid var(--line);
+        border-radius: var(--r);
+        padding: 1.75rem 1.5rem;
+        transition: transform 0.28s, border-color 0.28s, box-shadow 0.28s;
+      }
+      .step:hover {
+        transform: translateY(-0.4375rem);
+        border-color: rgba(52, 245, 220, 0.35);
+        box-shadow: var(--glow);
+      }
+      .step .sn {
+        width: 2.875rem;
+        height: 2.875rem;
+        border-radius: 0.75rem;
+        background: var(--bg);
+        border: 0.0625rem solid var(--line-2);
+        display: grid;
+        place-items: center;
+        font-family: var(--mono);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--teal-br);
+        margin-bottom: 1.25rem;
+        position: relative;
+      }
+      .step:hover .sn {
+        border-color: rgba(52, 245, 220, 0.5);
+        box-shadow: 0 0 1.125rem -0.25rem var(--teal-br);
+      }
+      .step h3 {
+        font-family: var(--disp);
+        font-size: 1.1875rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.02em;
+      }
+      .step p {
+        font-size: 0.875rem;
+        color: var(--muted);
+        line-height: 1.58;
+      }
+      .loop-note {
+        text-align: center;
+        margin-top: 2rem;
+        font-family: var(--mono);
+        font-size: 0.78125rem;
+        color: var(--teal-br);
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      .loop-note svg {
+        animation: spin 6s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* feature rows */
+      .feat {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        margin-bottom: 6rem;
+      }
+      .feat:last-child {
+        margin-bottom: 0;
+      }
+      .feat.rev .feat-media {
+        order: -1;
+      }
+      .feat-tag {
+        font-family: var(--mono);
+        font-size: 0.71875rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--teal-br);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .feat-tag .ft-dot {
+        width: 0.4375rem;
+        height: 0.4375rem;
+        border-radius: 50%;
+        background: var(--teal-br);
+        box-shadow: 0 0 0.5625rem var(--teal-br);
+      }
+      .feat h3 {
+        font-family: var(--disp);
+        font-weight: 600;
+        font-size: clamp(1.625rem, 3.1vw, 2.1875rem);
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        margin-bottom: 1.25rem;
+      }
+      .feat > div > p {
+        font-size: 1rem;
+        color: var(--text-2);
+        line-height: 1.62;
+        margin-bottom: 1.5rem;
+      }
+      .feat ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .feat li {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+        font-size: 0.9375rem;
+        color: var(--text-2);
+      }
+      .feat li .ck {
+        flex: 0 0 auto;
+        margin-top: 0.125rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 50%;
+        background: rgba(52, 245, 220, 0.12);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.3);
+        display: grid;
+        place-items: center;
+      }
+      .feat-media {
+        position: relative;
+        background: linear-gradient(
+          165deg,
+          rgba(15, 34, 30, 0.85),
+          rgba(9, 21, 18, 0.9)
+        );
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 1.125rem;
+        overflow: hidden;
+        min-height: 20.625rem;
+        box-shadow: 0 2.5rem 5.625rem -3.125rem rgba(0, 0, 0, 0.8);
+      }
+      .media-head {
+        padding: 0.75rem 1rem;
+        border-bottom: 0.0625rem solid var(--line);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .media-head .dots {
+        display: flex;
+        gap: 0.375rem;
+      }
+      .media-head .dots i {
+        width: 0.5625rem;
+        height: 0.5625rem;
+        border-radius: 50%;
+        display: block;
+      }
+      .media-head .mt {
+        font-family: var(--mono);
+        font-size: 0.71875rem;
+        color: var(--muted);
+        margin-left: 0.5rem;
+      }
+      .media-body {
+        padding: 1.5rem;
+      }
+
+      /* bars chart */
+      .barz {
+        display: flex;
+        align-items: flex-end;
+        gap: 1rem;
+        height: 10.75rem;
+        margin-top: 0.375rem;
+      }
+      .barz .bar {
+        flex: 1;
+        border-radius: 0.375rem 0.375rem 0 0;
+        background: linear-gradient(
+          180deg,
+          rgba(110, 142, 136, 0.35),
+          rgba(110, 142, 136, 0.12)
+        );
+        position: relative;
+      }
+      .barz .bar.hi {
+        background: linear-gradient(180deg, var(--teal-br), var(--teal-d));
+        box-shadow: 0 0 1.375rem -0.25rem var(--teal-br);
+      }
+      .leg {
+        display: flex;
+        gap: 1.25rem;
+        margin-top: 1.25rem;
+        font-family: var(--mono);
+        font-size: 0.71875rem;
+        color: var(--muted);
+      }
+      .leg span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .leg i {
+        width: 0.625rem;
+        height: 0.625rem;
+        border-radius: 0.1875rem;
+        display: block;
+      }
+
+      /* donut */
+      .donut-row {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+      .donut {
+        width: 10rem;
+        height: 10rem;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--teal-br) 0 var(--p, 64%),
+          var(--amber) var(--p, 64%) 82%,
+          rgba(255, 255, 255, 0.06) 82% 100%
+        );
+        position: relative;
+        flex: 0 0 auto;
+        filter: drop-shadow(0 0 1.25rem rgba(52, 245, 220, 0.25));
+      }
+      .donut::after {
+        content: "";
+        position: absolute;
+        inset: 0.875rem;
+        border-radius: 50%;
+        background: var(--panel);
+      }
+      .donut .ctr {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        z-index: 2;
+      }
+      .donut .ctr b {
+        font-family: var(--disp);
+        font-size: 2.125rem;
+        display: block;
+        line-height: 1;
+        color: var(--text);
+      }
+      .donut .ctr small {
+        font-family: var(--mono);
+        font-size: 0.65625rem;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+      }
+      .dl {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .dl div {
+        font-size: 0.84375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-2);
+      }
+      .dl i {
+        width: 0.6875rem;
+        height: 0.6875rem;
+        border-radius: 0.1875rem;
+        display: block;
+      }
+
+      /* code list */
+      .code-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .code-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1rem;
+        border: 0.0625rem solid var(--line);
+        border-radius: 0.6875rem;
+        background: rgba(255, 255, 255, 0.015);
+      }
+      .code-item .cl {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .code-item .cc {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 0.8125rem;
+        background: rgba(52, 245, 220, 0.08);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.2);
+        color: var(--teal-br);
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.4375rem;
+      }
+      .code-item .cd {
+        font-size: 0.8125rem;
+        color: var(--text-2);
+      }
+      .code-item .amt {
+        font-family: var(--mono);
+        font-weight: 600;
+        color: var(--teal-br);
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+      }
+      .auto-pill {
+        font-family: var(--mono);
+        font-size: 0.625rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--teal-br);
+        background: rgba(52, 245, 220, 0.1);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.25);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+      }
+
+      /* audience split */
+      .aud {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .aud-card {
+        border-radius: 1.25rem;
+        padding: 2.75rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+        border: 0.0625rem solid var(--line-2);
+      }
+      .aud-patient {
+        background: linear-gradient(
+          165deg,
+          rgba(15, 34, 30, 0.75),
+          rgba(9, 21, 18, 0.85)
+        );
+      }
+      .aud-phys {
+        background: linear-gradient(
+          165deg,
+          rgba(22, 200, 180, 0.16),
+          rgba(14, 90, 84, 0.22)
+        );
+        border-color: rgba(52, 245, 220, 0.3);
+      }
+      .aud-card h3 {
+        font-family: var(--disp);
+        font-weight: 600;
+        font-size: 1.6875rem;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.02em;
+      }
+      .aud-card .as {
+        font-size: 0.90625rem;
+        margin-bottom: 1.75rem;
+        color: var(--muted);
+      }
+      .aud-item {
+        padding: 1.25rem 0;
+        border-top: 0.0625rem solid var(--line);
+      }
+      .aud-phys .aud-item {
+        border-top: 0.0625rem solid rgba(52, 245, 220, 0.16);
+      }
+      .aud-item b {
+        font-size: 0.96875rem;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.375rem;
+        color: var(--text);
+      }
+      .aud-item p {
+        font-size: 0.84375rem;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+      .aud-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.5rem 1rem;
+        border-radius: 6.25rem;
+        margin-bottom: 1.5rem;
+        color: var(--teal-br);
+        background: rgba(52, 245, 220, 0.08);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.25);
+      }
+
+      /* results */
+      .res-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 3.75rem;
+        align-items: center;
+      }
+      .res-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+      }
+      .res-card {
+        background: linear-gradient(
+          165deg,
+          rgba(15, 34, 30, 0.7),
+          rgba(9, 21, 18, 0.75)
+        );
+        border-radius: 0.9375rem;
+        padding: 1.75rem 1.75rem;
+        border: 0.0625rem solid var(--line);
+        transition: border-color 0.25s, transform 0.25s;
+      }
+      .res-card:hover {
+        border-color: rgba(52, 245, 220, 0.35);
+        transform: translateY(-0.3125rem);
+      }
+      .res-card .rn {
+        font-family: var(--disp);
+        font-size: 2.875rem;
+        font-weight: 600;
+        color: var(--teal-br);
+        line-height: 1;
+        letter-spacing: -0.03em;
+        text-shadow: 0 0 1.625rem rgba(52, 245, 220, 0.35);
+      }
+      .res-card .rl {
+        font-size: 0.84375rem;
+        color: var(--text-2);
+        margin-top: 0.75rem;
+        line-height: 1.45;
+      }
+
+      /* science */
+      .sci-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 0.375rem;
+      }
+      .sci {
+        background: linear-gradient(
+          165deg,
+          rgba(15, 34, 30, 0.7),
+          rgba(9, 21, 18, 0.75)
+        );
+        border-radius: var(--r);
+        padding: 2rem;
+        border: 0.0625rem solid var(--line);
+        transition: border-color 0.25s;
+      }
+      .sci:hover {
+        border-color: rgba(52, 245, 220, 0.3);
+      }
+      .sci .big {
+        font-family: var(--disp);
+        font-size: 2.125rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        color: var(--text);
+      }
+      .sci .big em {
+        font-style: normal;
+        color: var(--teal-br);
+      }
+      .sci p {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin-top: 0.75rem;
+        line-height: 1.58;
+      }
+      .cert-row {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 2.25rem;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .cert {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-2);
+        background: rgba(255, 255, 255, 0.02);
+        border: 0.0625rem solid var(--line);
+        padding: 0.75rem 1.25rem;
+        border-radius: 6.25rem;
+      }
+      .cert svg {
+        flex: 0 0 auto;
+      }
+
+      /* big closing stat */
+      .bigstat {
+        text-align: center;
+      }
+      .bigstat h2 {
+        max-width: 51.25rem;
+        margin: 0 auto;
+        font-size: clamp(2rem, 4.6vw, 3.5rem);
+      }
+      .bigstat .bs-sub {
+        margin: 1.25rem auto 2rem;
+        max-width: 36.25rem;
+        font-size: 1.09375rem;
+        color: var(--text-2);
+      }
+
+      /* CTA */
+      .cta-sec {
+        padding: 2.5rem 0 7rem;
+        position: relative;
+        z-index: 3;
+      }
+      .cta {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.625rem;
+        padding: 4.75rem 3.5rem;
+        text-align: center;
+        margin: 0 auto;
+        max-width: var(--maxw);
+        background: linear-gradient(
+          165deg,
+          rgba(22, 200, 180, 0.14),
+          rgba(9, 21, 18, 0.6)
+        );
+        border: 0.0625rem solid rgba(52, 245, 220, 0.3);
+        box-shadow: 0 0 0 0.0625rem rgba(52, 245, 220, 0.08),
+          0 3.125rem 7.5rem -3.125rem rgba(8, 150, 128, 0.6);
+      }
+      .cta h2 {
+        font-size: clamp(1.875rem, 4.2vw, 3.125rem);
+        position: relative;
+        z-index: 2;
+      }
+      .cta p {
+        font-size: 1.125rem;
+        color: var(--text-2);
+        max-width: 35rem;
+        margin: 1.25rem auto 2rem;
+        position: relative;
+        z-index: 2;
+      }
+      .cta-ecg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 7.5rem;
+        z-index: 1;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .cta-ecg svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* footer */
+      footer {
+        background: rgba(4, 10, 9, 0.6);
+        border-top: 0.0625rem solid var(--line);
+        padding: 4rem 0 2rem;
+        position: relative;
+        z-index: 3;
+      }
+      .foot-grid {
+        display: grid;
+        grid-template-columns: 1.7fr 1fr 1fr 1fr;
+        gap: 2.5rem;
+        padding-bottom: 3rem;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      footer .logo {
+        margin-bottom: 1rem;
+      }
+      .foot-about {
+        font-size: 0.875rem;
+        line-height: 1.62;
+        max-width: 18.75rem;
+        color: var(--muted);
+      }
+      .foot-col h4 {
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.71875rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 1.25rem;
+        font-weight: 600;
+      }
+      .foot-col a {
+        display: block;
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+        color: var(--muted);
+        transition: color 0.2s;
+      }
+      .foot-col a:hover {
+        color: var(--teal-br);
+      }
+      .foot-bot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1.5rem;
+        font-size: 0.8125rem;
+        color: var(--dim);
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .foot-badges {
+        display: flex;
+        gap: 0.75rem;
+      }
+      .foot-badges span {
+        font-family: var(--mono);
+        border: 0.0625rem solid var(--line);
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.6875rem;
+        color: var(--muted);
+      }
+
+      /* reveal */
+      .reveal {
+        opacity: 0;
+        transform: translateY(1.625rem);
+        transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+          transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (max-width: 61.25rem) {
+        .nav-links,
+        .nav-login {
+          display: none;
+        }
+        .hamb {
+          display: flex;
+        }
+        .hero {
+          min-height: 78vh;
+          padding: 4.5rem 0 5rem;
+        }
+        .stat-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .stat {
+          border-bottom: 0.0625rem solid var(--line);
+        }
+        .stat:nth-child(2n) {
+          border-right: none;
+        }
+        .loop-flow {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .flow-conn {
+          display: none;
+        }
+        .feat,
+        .feat.rev .feat-media {
+          grid-template-columns: 1fr;
+          order: 0;
+        }
+        .feat-media {
+          order: -1 !important;
+        }
+        .aud,
+        .res-grid,
+        .sci-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+        .foot-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+        }
+        .cta {
+          padding: 3.5rem 1.75rem;
+        }
+      }
+      @media (max-width: 35rem) {
+        .stat-grid,
+        .loop-flow,
+        .res-list {
+          grid-template-columns: 1fr;
+        }
+        .stat {
+          border-right: none;
+        }
+        .foot-grid {
+          grid-template-columns: 1fr;
+        }
+        .wrap {
+          padding: 0 1.5rem;
+        }
+        .logos {
+          gap: 2rem;
+        }
+        .hero-foot {
+          gap: 1.25rem;
+        }
+        .hero-foot .sep {
+          display: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- BRAND LOGO (assets/logo.svg, inlined + recolored for dark theme) -->
+    <svg
+      width="0"
+      height="0"
+      style="position: absolute"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <symbol id="scLogo" viewBox="0 0 165 42">
+        <path
+          d="M138.604 28.7735H137.688V34.5448H141.294V33.6888H138.604V28.7735Z"
+          fill="currentColor"
+        />
+        <path
+          d="M118.361 9.875H115.195V24.5366H118.361V18.0388C118.527 17.1225 119.293 16.3968 120.36 16.456C121.86 16.5394 121.86 17.4835 121.943 18.0388V24.5366H125.192C125.192 21.2877 125.118 22.2066 125.192 17.7889C125.275 12.7907 119.777 13.1239 118.361 15.2898V9.875Z"
+          fill="currentColor"
+        />
+        <path
+          d="M78.375 24.5355V14.0391L81.5406 14.0391V24.5354L78.375 24.5355Z"
+          fill="currentColor"
+        />
+        <path
+          d="M126.023 19.4549C126.023 12.7907 132.437 12.9568 133.938 15.2059V13.9559H137.021L137.104 24.536H133.854V23.453C132.354 25.5355 126.024 25.5356 126.023 19.4549ZM133.936 19.2879C134.102 15.623 129.188 15.4564 129.188 19.2879C129.188 23.0366 133.761 23.1199 133.936 19.2879Z"
+          fill="currentColor"
+        />
+        <path
+          d="M144.188 24.5348V14.0384H147.186L147.27 15.288C151.018 11.7059 154.267 14.9548 154.101 17.4539V24.5348H150.935V18.2036C150.935 17.6205 150.685 16.5376 149.436 16.4542C147.97 16.4542 147.436 17.5094 147.353 18.037V24.5348H144.188Z"
+          fill="currentColor"
+        />
+        <path
+          d="M73.3765 24.5355H70.2109V14.0347L73.2099 14.0391C73.2932 15.6219 73.2099 14.3723 73.2932 15.6219C74.4261 13.4893 76.6531 13.6752 77.625 14.0347C77.0419 16.0384 77.2085 15.4553 76.7087 17.4546C74.1262 16.4549 73.2932 18.3709 73.3765 19.0374V24.5355Z"
+          fill="currentColor"
+        />
+        <path
+          d="M139.039 24.5355V14.0391L142.205 14.0391V24.5354L139.039 24.5355Z"
+          fill="currentColor"
+        />
+        <path
+          d="M79.9606 11.9572C78.2279 11.8905 77.9613 10.8186 78.0446 10.2911C78.0446 9.45804 78.6277 8.625 79.9606 8.625C81.1269 8.625 81.8766 9.37474 81.8766 10.1244C81.8766 10.6243 81.6934 12.0238 79.9606 11.9572Z"
+          fill="currentColor"
+        />
+        <path
+          d="M140.617 11.9572C138.884 11.8905 138.618 10.8186 138.701 10.2911C138.701 9.45804 139.284 8.625 140.617 8.625C141.783 8.625 142.533 9.37474 142.533 10.1244C142.533 10.6243 142.35 12.0238 140.617 11.9572Z"
+          fill="currentColor"
+        />
+        <path
+          d="M58.9622 12.7075L56.8797 14.7068C55.7967 13.5406 54.2973 12.8741 53.0477 13.2907C52.3045 13.3897 50.8818 14.7901 53.2976 15.7065C54.7138 16.0397 54.2139 15.8731 55.9633 16.3729C58.7124 17.3726 59.0178 18.9554 59.1289 19.6218C59.4066 21.1213 58.9123 24.2369 54.7138 24.7034C50.5152 25.1699 48.5492 22.954 47.8828 21.9543C49.4656 20.1216 48.5492 21.1213 49.8821 19.6218C51.4149 21.7544 53.4087 22.0099 54.2139 21.871C54.686 21.871 55.6634 21.6378 55.7967 20.7047C55.9633 19.5385 53.2976 19.0387 52.2979 18.7887C51.2983 18.5388 49.6322 17.9557 48.7158 16.0397C47.9661 13.7072 49.2157 10.375 53.7141 10.375C57.1796 10.375 58.5458 11.9578 58.9622 12.7075Z"
+          fill="currentColor"
+        />
+        <path
+          d="M69.4636 15.7059L67.7142 17.7052C66.7979 16.539 63.2159 15.5393 62.7993 19.1214C62.9659 22.8701 66.6313 22.2037 67.7142 20.8708L69.4636 22.9534C66.7973 25.9524 59.217 25.4525 59.6337 18.7048C60.7159 12.3738 67.3803 13.0402 69.4636 15.7059Z"
+          fill="currentColor"
+        />
+        <path
+          d="M90.2109 13.7891C96.292 14.5388 95.5427 24.7848 90.0449 24.7852C87.9129 24.6519 86.9354 23.841 86.7129 23.4521V28.8672H83.5469L83.5801 14.0391H86.5791V15.1211C87.462 14.3715 88.1287 13.7891 90.2109 13.7891ZM88.96 16.4551C88.2102 16.4828 86.6936 17.0715 86.627 19.2041C86.5605 21.3364 88.1547 21.9806 88.96 22.0361C89.7376 22.0915 91.3082 21.6026 91.375 19.2041C91.4416 16.8053 89.7931 16.3719 88.96 16.4551Z"
+          fill="currentColor"
+        />
+        <path
+          d="M94.6172 16.7065V14.0407H96.4499V11.375H99.6155V14.0407H101.615V16.7065H99.6155V24.5371H96.4499V16.7065H94.6172Z"
+          fill="currentColor"
+        />
+        <path
+          d="M114.36 12.6218L112.36 14.9543C110.861 12.8717 105.296 12.8717 105.446 17.4534C105.615 22.6184 111.027 22.2018 112.61 20.2025L114.276 22.785C110.944 26.4504 101.198 25.2008 101.947 16.9536C102.669 9.00953 111.527 9.20635 114.36 12.6218Z"
+          fill="currentColor"
+        />
+        <path
+          d="M15.8964 14.4547H20.2282V9.7064C20.2282 7.8737 22.2275 4.125 26.5593 4.125C30.9386 4.125 32.5572 8.45683 32.5572 9.7064V14.4547H37.0557C39.1383 14.4547 42.6945 16.2052 42.887 20.536C43.0536 24.2847 39.6381 26.7838 37.0557 26.7838H32.5572V31.1156C32.5572 33.3648 30.6412 37.1135 26.3094 37.1135C22.1442 37.1135 20.2282 33.3648 20.2282 31.1156V26.7838H15.8964C13.4805 26.7838 9.89844 24.8845 9.89844 20.6193C9.89844 16.3541 13.6471 14.4547 15.8964 14.4547Z"
+          fill="#34f5dc"
+        />
+        <path
+          d="M25.5625 30.9492V10.2898C25.5625 9.2067 27.2286 9.2043 27.2286 10.2898V30.9492C27.2286 32.0321 25.5625 32.0321 25.5625 30.9492Z"
+          fill="#ffffff"
+        />
+        <path
+          d="M20.2278 21.4552V19.7891H16.0625C15.0624 19.7891 15.0625 21.4552 16.0625 21.4552H20.2278Z"
+          fill="#ffffff"
+        />
+        <path
+          d="M32.5535 21.4552V19.7891H36.7187C37.7188 19.7891 37.7187 21.4552 36.7187 21.4552H32.5535Z"
+          fill="#ffffff"
+        />
+        <path
+          d="M115.642 34.5548L115.641 28.7761L116.534 28.7761L116.535 31.2445H119.413V28.7734H120.31V34.551H119.413V32.1019H116.535V34.5548H115.642Z"
+          fill="currentColor"
+        />
+        <path
+          d="M150.017 34.5548L150.016 28.7761L150.909 28.7761L150.91 31.2445H153.788V28.7734H154.685V34.551H153.788V32.1019H150.91V34.5548H150.017Z"
+          fill="currentColor"
+        />
+        <path
+          d="M147.252 28.7695H143.078V29.6299H144.693V34.548H145.587V29.6296H147.252V28.7695Z"
+          fill="currentColor"
+        />
+        <path
+          d="M127.201 28.7734V29.6307L124.452 29.6307V31.1555L126.746 31.1555L126.747 32.0146H124.453L124.453 33.6891H127.2L127.2 34.5463H123.562V28.7735L127.201 28.7734Z"
+          fill="currentColor"
+        />
+        <path
+          d="M135.042 34.5498H134.093L133.545 33.1143H131.132L130.588 34.5479H129.68L131.912 28.7773H132.822L135.042 34.5498ZM131.461 32.2549H133.221L132.776 31.0312L132.36 29.7812L131.461 32.2549Z"
+          fill="currentColor"
+        />
+      </symbol>
+    </svg>
+
+    <!-- BANNER -->
+    <div class="banner">
+      <b>Agentic AI</b> for Food &amp; Exercise as Medicine — now integrated
+      with the largest U.S. EHR systems.<a href="#demo"></a>
+    </div>
+
+    <!-- NAV -->
+    <nav>
+      <div class="wrap nav-inner">
+        <a href="#" class="logo" aria-label="ScriptChain Health">
+          <svg class="logo-svg" viewBox="0 0 165 42" role="img">
+            <use href="#scLogo" />
+          </svg>
+        </a>
+        <div class="nav-links">
+          <a href="#platform">Platform</a>
+          <a href="#audience">Solutions</a>
+          <a href="#science">Science</a>
+          <a href="#results">Results</a>
+          <a href="#">Company</a>
+        </div>
+        <div class="nav-cta">
+          <a href="#" class="nav-login">Log in</a>
+          <a href="#demo" class="btn btn-primary">Book a Demo</a>
+          <button class="hamb" aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+      <!-- brand-colored WebGL shader (Three.js, initialized at end of body) -->
+      <div class="hero-shader" id="heroShader" aria-hidden="true"></div>
+      <div class="hero-shade" aria-hidden="true"></div>
+
+      <div class="wrap hero-inner reveal">
+        <h1 class="hero-title">
+          Predict cardiometabolic risk <em>before</em> it escalates.
+        </h1>
+        <p class="hero-sub">
+          Our agentic AI reads the signal your EHR already holds,
+          flags patients sliding toward metabolic syndrome, and prescribes
+          personalized food &amp; exercise plans, reducing readmissions by up to
+          25%.
+        </p>
+        <!-- <div class="hero-actions">
+          <a href="#demo" class="btn btn-primary btn-xl">Book a Demo</a>
+          <a href="#platform" class="play">
+            <span class="pc">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M2 1.5L11 6.5L2 11.5V1.5Z" fill="#eafaf6" />
+              </svg>
+            </span>
+            See how it works
+          </a>
+        </div> -->
+      </div>
+
+      <div class="wrap hero-foot reveal">
+        <div class="hf">
+          <b class="count" data-to="88" data-suffix="M">0</b
+          ><small>U.S. adults at risk</small>
+        </div>
+        <div class="sep"></div>
+        <div class="hf"><b>↓ 25%</b><small>readmission reduction</small></div>
+        <div class="sep"></div>
+        <div class="hf"><b>Auto</b><small>CPT &amp; HCPCS coding</small></div>
+      </div>
+    </header>
+
+    <!-- TRUST BAR -->
+    <section class="trust">
+      <div class="wrap">
+        <p>In partnership with</p>
+        <div class="logos">
+          <span class="lg">NVIDIA</span>
+          <span class="lg">Instacart</span>
+          <span class="lg">Morehouse <small>School of Medicine</small></span>
+          <span class="lg">U.S. Dept of <small>Veterans Affairs</small></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="sec prob">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="kicker">The problem</span>
+          <h2>
+            Stop metabolic syndrome before it becomes
+            <em>heart disease, stroke, or diabetes.</em>
+          </h2>
+          <p>
+            It's the #1 preventable cost in U.S. healthcare — yet the data that
+            could predict it sits unused, and prevention rarely gets reimbursed.
+            ScriptChain closes both gaps.
+          </p>
+        </div>
+      </div>
+      <div class="wrap">
+        <div class="stat-grid">
+          <div class="stat reveal">
+            <div class="num">
+              $<span class="count" data-to="315">0</span
+              ><span class="u">B</span>
+            </div>
+            <div class="lbl">
+              spent annually on cardiovascular-related conditions
+            </div>
+            <div class="src">Source · AHA</div>
+          </div>
+          <div class="stat reveal">
+            <div class="num"><em>1 in 3</em></div>
+            <div class="lbl">U.S. adults live with metabolic syndrome</div>
+            <div class="src">Source · CDC</div>
+          </div>
+          <div class="stat reveal">
+            <div class="num"><em>5×</em></div>
+            <div class="lbl">
+              more likely to develop type 2 diabetes with metabolic syndrome
+            </div>
+            <div class="src">&nbsp;</div>
+          </div>
+          <div class="stat reveal">
+            <div class="num"><em>2×</em></div>
+            <div class="lbl">
+              higher risk of heart disease caused by metabolic syndrome
+            </div>
+            <div class="src">&nbsp;</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="sec" id="platform">
+      <div class="wrap">
+        <div class="sec-head center reveal">
+          <span class="kicker">How the platform works</span>
+          <h2>One agentic loop, from <em>signal</em> to <em>script</em></h2>
+          <p>
+            ScriptChain's AI works continuously inside your existing EHR and
+            clinical workflows — no rip-and-replace, no extra clicks for
+            clinicians.
+          </p>
+        </div>
+        <div class="loop-flow">
+          <div class="flow-conn"></div>
+          <div class="step reveal">
+            <div class="sn">01</div>
+            <h3>Ingest</h3>
+            <p>
+              Securely connects to your EHR and reads the full record — labs,
+              vitals, meds, history.
+            </p>
+          </div>
+          <div class="step reveal">
+            <div class="sn">02</div>
+            <h3>Screen</h3>
+            <p>
+              Identifies early signs of metabolic syndrome and scores each
+              patient's cardiovascular risk.
+            </p>
+          </div>
+          <div class="step reveal">
+            <div class="sn">03</div>
+            <h3>Prescribe</h3>
+            <p>
+              Generates personalized food &amp; exercise plans from trusted
+              evidence — and can order ingredients via Instacart.
+            </p>
+          </div>
+          <div class="step reveal">
+            <div class="sn">04</div>
+            <h3>Reimburse</h3>
+            <p>
+              Auto-generates the right CPT &amp; HCPCS codes so prevention
+              becomes a billable, revenue-positive service.
+            </p>
+          </div>
+        </div>
+        <div class="loop-note reveal">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M21 12a9 9 0 11-3-6.7M21 4v4h-4"
+              stroke="#34f5dc"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Continuous loop — every new data point re-scores the panel
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section
+      class="sec"
+      id="features"
+      style="border-top: 0.0625rem solid var(--line)"
+    >
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="kicker">Smarter tools for better care</span>
+          <h2>
+            Personalized, data-driven care that saves <em>time</em> and
+            <em>cost</em>
+          </h2>
+        </div>
+
+        <div class="feat">
+          <div class="reveal">
+            <div class="feat-tag">
+              <span class="ft-dot"></span>Metabolic risk screening
+            </div>
+            <h3>
+              See who's heading for a readmission — weeks before it happens
+            </h3>
+            <p>
+              Our agents continuously stratify your panel, surfacing patients
+              who need intervention now and the silent risks hiding in unused
+              health data.
+            </p>
+            <ul>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Early metabolic-syndrome detection inside your EHR
+              </li>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Real-time patient progress at a glance
+              </li>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Explainable signals tied to source evidence
+              </li>
+            </ul>
+          </div>
+          <div class="feat-media ph reveal">
+            <span class="ph-tag">Illustrative</span>
+            <div class="media-head">
+              <div class="dots">
+                <i style="background: #ff6f6f"></i
+                ><i style="background: #f5b53f"></i
+                ><i style="background: #34f5dc"></i>
+              </div>
+              <span class="mt">population_risk · last 90 days</span>
+            </div>
+            <div class="media-body">
+              <div class="barz">
+                <div class="bar" style="height: 38%"></div>
+                <div class="bar" style="height: 55%"></div>
+                <div class="bar" style="height: 47%"></div>
+                <div class="bar hi" style="height: 82%"></div>
+                <div class="bar" style="height: 60%"></div>
+                <div class="bar hi" style="height: 92%"></div>
+                <div class="bar" style="height: 50%"></div>
+              </div>
+              <div class="leg">
+                <span
+                  ><i style="background: rgba(110, 142, 136, 0.4)"></i>Stable
+                  cohort</span
+                ><span
+                  ><i style="background: #34f5dc"></i>Rising risk ·
+                  flagged</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feat rev">
+          <div class="reveal">
+            <div class="feat-tag">
+              <span class="ft-dot"></span>Food &amp; Exercise as Medicine
+            </div>
+            <h3>Personalized, evidence-based plans — generated in seconds</h3>
+            <p>
+              An LLM trained on medical journals, clinical studies and nutrition
+              science drafts dietary and fitness protocols tailored to each
+              patient's conditions, ready for clinician sign-off.
+            </p>
+            <ul>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Condition-aware meal &amp; activity plans, not templates
+              </li>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Instacart delivers ingredients to the patient's door
+              </li>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Adherence tracking that feeds back into risk scoring
+              </li>
+            </ul>
+          </div>
+          <div class="feat-media ph reveal">
+            <span class="ph-tag">Illustrative</span>
+            <div class="media-head">
+              <div class="dots">
+                <i style="background: #ff6f6f"></i
+                ><i style="background: #f5b53f"></i
+                ><i style="background: #34f5dc"></i>
+              </div>
+              <span class="mt">plan_adherence · Rosa M.</span>
+            </div>
+            <div class="media-body">
+              <div class="donut-row">
+                <div class="donut" style="--p: 64%">
+                  <div class="ctr">
+                    <div><b>91%</b><small>adherence</small></div>
+                  </div>
+                </div>
+                <div class="dl">
+                  <div>
+                    <i style="background: #34f5dc"></i>Nutrition plan · on track
+                  </div>
+                  <div>
+                    <i style="background: #f5b53f"></i>Activity · 5/7 days
+                  </div>
+                  <div>
+                    <i style="background: rgba(255, 255, 255, 0.1)"></i
+                    >Remaining this week
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feat">
+          <div class="reveal">
+            <div class="feat-tag">
+              <span class="ft-dot"></span>Automated reimbursement
+            </div>
+            <h3>Prevention that pays for itself</h3>
+            <p>
+              ScriptChain auto-generates the CPT and HCPCS codes behind every
+              preventive action — turning food and exercise interventions into
+              documented, billable, revenue-positive care while lowering
+              operational costs.
+            </p>
+            <ul>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Codes mapped automatically to documented interventions
+              </li>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >New revenue aligned with Food-as-Medicine policy
+              </li>
+              <li>
+                <span class="ck"
+                  ><svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="#34f5dc"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg></span
+                >Fewer non-reimbursed readmissions
+              </li>
+            </ul>
+          </div>
+          <div class="feat-media ph reveal">
+            <span class="ph-tag">Illustrative</span>
+            <div class="media-head">
+              <div class="dots">
+                <i style="background: #ff6f6f"></i
+                ><i style="background: #f5b53f"></i
+                ><i style="background: #34f5dc"></i>
+              </div>
+              <span class="mt">auto_generated_claim.json</span>
+            </div>
+            <div class="media-body">
+              <div class="code-list">
+                <div class="code-item">
+                  <div class="cl">
+                    <span class="cc">99490</span
+                    ><span class="cd">Chronic care management</span>
+                  </div>
+                  <span class="amt">+ BILLABLE</span>
+                </div>
+                <div class="code-item">
+                  <div class="cl">
+                    <span class="cc">G0447</span
+                    ><span class="cd">Behavioral counseling, obesity</span>
+                  </div>
+                  <span class="amt">+ BILLABLE</span>
+                </div>
+                <div class="code-item">
+                  <div class="cl">
+                    <span class="cc">G0270</span
+                    ><span class="cd">Medical nutrition therapy</span>
+                  </div>
+                  <span class="amt">+ BILLABLE</span>
+                </div>
+                <div
+                  class="code-item"
+                  style="
+                    border-style: dashed;
+                    border-color: rgba(52, 245, 220, 0.3);
+                  "
+                >
+                  <div class="cl">
+                    <span class="auto-pill">Auto-coded by agent</span>
+                  </div>
+                  <span class="amt">3 codes captured</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUDIENCE -->
+    <section
+      class="sec"
+      id="audience"
+      style="border-top: 0.0625rem solid var(--line)"
+    >
+      <div class="wrap">
+        <div class="sec-head center reveal">
+          <span class="kicker">Built for both sides of care</span>
+          <h2>One platform. The <em>whole</em> care relationship.</h2>
+        </div>
+        <div class="aud">
+          <div class="aud-card aud-patient reveal">
+            <span class="aud-badge">For Patients</span>
+            <h3>Simple steps that actually fit your life</h3>
+            <p class="as">
+              For people managing high blood pressure, diabetes, or weight.
+            </p>
+            <div class="aud-item">
+              <b>Personalized health plan</b>
+              <p>
+                A custom plan built from your body, lifestyle, and needs — no
+                guesswork, just steps that work.
+              </p>
+            </div>
+            <div class="aud-item">
+              <b>Easy, healthy recipes</b>
+              <p>
+                Simple, tasty meal ideas that help lower blood pressure and
+                blood sugar, without the stress of planning.
+              </p>
+            </div>
+            <div class="aud-item">
+              <b>Exercise that fits you</b>
+              <p>
+                No gym? No problem. A movement plan built around your space,
+                time, and what your body needs.
+              </p>
+            </div>
+            <div class="aud-item">
+              <b>See your progress</b>
+              <p>
+                Track weight, meals, and movement — and celebrate the small wins
+                that keep you motivated.
+              </p>
+            </div>
+          </div>
+          <div class="aud-card aud-phys reveal">
+            <span class="aud-badge">For Physicians</span>
+            <h3>Deliver personalized care at scale</h3>
+            <p class="as">
+              For practitioners and health systems delivering value-based care.
+            </p>
+            <div class="aud-item">
+              <b>Metabolic risk screening</b>
+              <p>
+                Identify early signs of metabolic syndrome with AI screening
+                that integrates into your existing EHR and workflows.
+              </p>
+            </div>
+            <div class="aud-item">
+              <b>Patient progress at a glance</b>
+              <p>
+                Track each patient's data and trends in real time, making it
+                easier to adjust plans and act quickly.
+              </p>
+            </div>
+            <div class="aud-item">
+              <b>Reduce readmissions</b>
+              <p>
+                Deliver proactive, personalized care that helps reduce
+                preventable readmissions by up to 25%.
+              </p>
+            </div>
+            <div class="aud-item">
+              <b>Lower operational costs</b>
+              <p>
+                Offer nutrition and exercise support without hiring more staff —
+                ScriptChain automates expert-backed plans.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="sec" id="results" style="border-top: 0.0625rem solid var(--line)">
+      <div class="wrap res-grid">
+        <div class="reveal">
+          <span class="kicker">Proven results that matter</span>
+          <h2>Measurable improvements in outcomes <em>and</em> efficiency</h2>
+          <p
+            style="
+              margin-top: 1rem;
+              font-size: 1.03125rem;
+              color: var(--text-2);
+              line-height: 1.62;
+            "
+          >
+            Our platform delivers improvements in patient outcomes while
+            reducing healthcare costs and increasing provider efficiency.
+          </p>
+        </div>
+        <div class="res-list ph reveal">
+          <div class="res-card">
+            <div class="rn"><span class="count" data-to="88">0</span>%</div>
+            <div class="rl">improvement in patient adherence rates</div>
+          </div>
+          <div class="res-card">
+            <div class="rn"><span class="count" data-to="65">0</span>%</div>
+            <div class="rl">reduction in metabolic syndrome markers</div>
+          </div>
+          <div class="res-card">
+            <div class="rn"><span class="count" data-to="40">0</span>%</div>
+            <div class="rl">decrease in healthcare costs</div>
+          </div>
+          <div class="res-card">
+            <div class="rn"><span class="count" data-to="95">0</span>%</div>
+            <div class="rl">provider satisfaction score</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCIENCE -->
+    <section class="sec" id="science" style="border-top: 0.0625rem solid var(--line)">
+      <div class="wrap">
+        <div class="sec-head center reveal">
+          <span class="kicker">Science &amp; trust</span>
+          <h2>AI you can take to the <em>clinic</em></h2>
+          <p>
+            Built on patented models, trained on trusted medical evidence, and
+            engineered for the security standards healthcare demands.
+          </p>
+        </div>
+        <div class="sci-grid ph">
+          <div class="sci reveal">
+            <div class="big"><em>Patented</em> AI</div>
+            <p>
+              Proprietary models for risk prediction across cardiac &amp;
+              metabolic disease.
+            </p>
+          </div>
+          <div class="sci reveal">
+            <div class="big">4 largest EHRs</div>
+            <p>
+              Integrated with the four largest electronic health record systems
+              in the U.S.
+            </p>
+          </div>
+          <div class="sci reveal">
+            <div class="big">FDA pathway</div>
+            <p>
+              Pre-submission filed; preparing a De Novo request for regulatory
+              clearance.
+            </p>
+          </div>
+        </div>
+        <div class="cert-row ph reveal">
+          <span class="cert"
+            ><svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"
+                stroke="#34f5dc"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              /></svg
+            >HIPAA Compliant</span
+          >
+          <span class="cert"
+            ><svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"
+                stroke="#34f5dc"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              /></svg
+            >SOC 2 Type II</span
+          >
+          <span class="cert"
+            ><svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"
+                stroke="#34f5dc"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              /></svg
+            >Federated learning</span
+          >
+          <span class="cert"
+            ><svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"
+                stroke="#34f5dc"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              /></svg
+            >FHIR-native integration</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- BIG CLOSING STAT -->
+    <section class="sec bigstat" style="border-top: 0.0625rem solid var(--line)">
+      <div class="wrap reveal">
+        <h2>
+          Serving the <em>88 million</em> U.S. adults at risk of metabolic
+          syndrome.
+        </h2>
+        <p class="bs-sub">
+          Predict cardiovascular risk before it escalates — and reduce
+          readmission rates by up to 25% with AI-powered care plans.
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-sec" id="demo">
+      <div class="cta">
+        <div class="cta-ecg" aria-hidden="true">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <defs>
+              <filter id="ecgGlow" x="-5%" y="-50%" width="110%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <path id="ctaBase" class="ecg-base"></path>
+            <path id="ctaLive" class="ecg-live" style="stroke-width: 2"></path>
+          </svg>
+        </div>
+        <h2>Make prevention your most <em>valuable</em> service.</h2>
+        <p>
+          See how ScriptChain's agentic AI fits into your EHR and starts
+          flagging at-risk patients in weeks, not quarters.
+        </p>
+        <a
+          href="#"
+          class="btn btn-primary btn-xl"
+          style="position: relative; z-index: 2"
+          >Book a Demo →</a
+        >
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="wrap">
+        <div class="foot-grid">
+          <div>
+            <a href="#" class="logo" aria-label="ScriptChain Health"
+              ><svg class="logo-svg" viewBox="0 0 165 42" role="img">
+                <use href="#scLogo" /></svg
+            ></a>
+            <p class="foot-about">
+              ScriptChain Health is an Agentic AI–powered food and exercise as
+              medicine platform to help you treat metabolic syndrome.
+            </p>
+          </div>
+          <div class="foot-col">
+            <h4>Platform</h4>
+            <a href="#platform">How it works</a
+            ><a href="#features">Risk screening</a
+            ><a href="#features">Food &amp; Exercise</a
+            ><a href="#features">Reimbursement</a>
+          </div>
+          <div class="foot-col">
+            <h4>Resources</h4>
+            <a href="#">Blog</a><a href="#">Case studies</a><a href="#">FAQ</a
+            ><a href="#science">Science</a>
+          </div>
+          <div class="foot-col">
+            <h4>Get started</h4>
+            <a href="#demo">Book a demo</a><a href="#">Contact</a
+            ><a href="#">Log in</a>
+          </div>
+        </div>
+        <div class="foot-bot">
+          <span
+            >© 2026 ScriptChain, Inc. Making a positive impact in the world,
+            starting with your heart.</span
+          >
+          <div class="foot-badges">
+            <span>HIPAA</span><span>SOC 2</span><span>FHIR</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /* ---- size hero so banner + nav + hero fill the viewport ---- */
+      function fitHeroToViewport() {
+        const banner = document.querySelector(".banner");
+        const nav = document.querySelector("nav");
+        const h =
+          (banner ? banner.offsetHeight : 0) + (nav ? nav.offsetHeight : 0);
+        document.documentElement.style.setProperty("--chrome-h", h + "px");
+      }
+      fitHeroToViewport();
+      window.addEventListener("resize", fitHeroToViewport);
+      window.addEventListener("load", fitHeroToViewport);
+
+      /* ---- build ECG paths ---- */
+      function buildECG(width, baseY, beat) {
+        let d = "M0 " + baseY;
+        for (let x = 0; x < width; x += beat) {
+          d +=
+            " L" +
+            (x + beat * 0.3) +
+            " " +
+            baseY +
+            " L" +
+            (x + beat * 0.34) +
+            " " +
+            (baseY - 8) /* P wave */ +
+            " L" +
+            (x + beat * 0.38) +
+            " " +
+            baseY +
+            " L" +
+            (x + beat * 0.44) +
+            " " +
+            baseY +
+            " L" +
+            (x + beat * 0.46) +
+            " " +
+            (baseY + 7) /* Q */ +
+            " L" +
+            (x + beat * 0.49) +
+            " " +
+            (baseY - baseY * 0.62) /* R spike */ +
+            " L" +
+            (x + beat * 0.52) +
+            " " +
+            (baseY + baseY * 0.3) /* S */ +
+            " L" +
+            (x + beat * 0.55) +
+            " " +
+            baseY +
+            " L" +
+            (x + beat * 0.66) +
+            " " +
+            baseY +
+            " L" +
+            (x + beat * 0.72) +
+            " " +
+            (baseY - 13) /* T wave */ +
+            " L" +
+            (x + beat * 0.78) +
+            " " +
+            baseY +
+            " L" +
+            (x + beat) +
+            " " +
+            baseY;
+        }
+        return d;
+      }
+      function setupTrace(baseId, liveId, w, h, beat, dur) {
+        const d = buildECG(w, h, beat);
+        const base = document.getElementById(baseId);
+        const live = document.getElementById(liveId);
+        if (!base || !live) return;
+        base.setAttribute("d", d);
+        live.setAttribute("d", d);
+        const len = live.getTotalLength();
+        const seg = len * 0.09;
+        live.style.strokeDasharray = seg + " " + len;
+        live.style.strokeLinecap = "round";
+        live.style.setProperty("--period", seg + len);
+        live.animate(
+          [{ strokeDashoffset: seg + len }, { strokeDashoffset: 0 }],
+          { duration: dur, iterations: Infinity, easing: "linear" }
+        );
+      }
+      setupTrace("ctaBase", "ctaLive", 1200, 60, 260, 5200);
+
+      /* ---- scroll reveals ---- */
+      const io = new IntersectionObserver(
+        (es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.14 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => {
+        const sibs = [...el.parentElement.children].filter((c) =>
+          c.classList.contains("reveal")
+        );
+        el.style.transitionDelay = (sibs.indexOf(el) % 4) * 70 + "ms";
+        io.observe(el);
+      });
+
+      /* ---- count-up ---- */
+      function countUp(el) {
+        const to = +el.dataset.to,
+          suf = el.dataset.suffix || "",
+          dur = 1500,
+          start = performance.now();
+        function tick(now) {
+          let p = Math.min(1, (now - start) / dur);
+          p = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(to * p) + suf;
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = to + suf;
+        }
+        requestAnimationFrame(tick);
+      }
+      const co = new IntersectionObserver(
+        (es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting) {
+              countUp(e.target);
+              co.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      document.querySelectorAll(".count").forEach((el) => co.observe(el));
+    </script>
+
+    <!-- HERO SHADER (Three.js via CDN ESM) — ported from shader-animation.tsx, recolored to ScriptChain brand -->
+    <script type="module">
+      import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+
+      const container = document.getElementById("heroShader");
+      if (container) {
+        const vertexShader = `
+          void main() {
+            gl_Position = vec4( position, 1.0 );
+          }
+        `;
+
+        const fragmentShader = `
+          #define TWO_PI 6.2831853072
+          #define PI 3.14159265359
+
+          precision highp float;
+          uniform vec2 resolution;
+          uniform float time;
+
+          void main(void) {
+            vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+            float t = time * 0.05;
+            float lineWidth = 0.002;
+
+            // three time-offset line layers (kept from the original shader)
+            vec3 acc = vec3(0.0);
+            for (int j = 0; j < 3; j++) {
+              for (int i = 0; i < 5; i++) {
+                acc[j] += lineWidth * float(i * i) / abs(fract(t - 0.01 * float(j) + float(i) * 0.01) * 5.0 - length(uv) + mod(uv.x + uv.y, 0.2));
+              }
+            }
+
+            // ScriptChain brand palette
+            vec3 base  = vec3(0.024, 0.051, 0.047); // #060d0c hero background
+            vec3 cDeep = vec3(0.055, 0.392, 0.353); // #0e8e80 teal-d
+            vec3 cTeal = vec3(0.086, 0.784, 0.706); // #16c8b4 teal
+            vec3 cMint = vec3(0.204, 0.961, 0.863); // #34f5dc bright signal
+
+            vec3 color = base + (acc.x * cDeep + acc.y * cTeal + acc.z * cMint) * 0.85;
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `;
+
+        const camera = new THREE.Camera();
+        camera.position.z = 1;
+
+        const scene = new THREE.Scene();
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const uniforms = {
+          time: { value: 1.0 },
+          resolution: { value: new THREE.Vector2() },
+        };
+        const material = new THREE.ShaderMaterial({
+          uniforms,
+          vertexShader,
+          fragmentShader,
+        });
+        scene.add(new THREE.Mesh(geometry, material));
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const resize = () => {
+          const w = container.clientWidth;
+          const h = container.clientHeight;
+          renderer.setSize(w, h);
+          uniforms.resolution.value.set(
+            renderer.domElement.width,
+            renderer.domElement.height
+          );
+        };
+        resize();
+        window.addEventListener("resize", resize);
+        // keep the canvas matched to the hero box (handles height set in JS + reflows)
+        if (window.ResizeObserver) new ResizeObserver(resize).observe(container);
+
+        // Respect reduced-motion: render a single static frame instead of animating
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduce) {
+          uniforms.time.value = 16.0;
+          renderer.render(scene, camera);
+        } else {
+          const animate = () => {
+            requestAnimationFrame(animate);
+            uniforms.time.value += 0.05;
+            renderer.render(scene, camera);
+          };
+          animate();
+        }
+      }
+    </script>
+  </body>
+</html>
