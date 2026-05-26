@@ -12,137 +12,3124 @@
     />
     <style>
       :root {
+        /* dark brand chrome (the rail) */
         --bg: #060d0c;
-        --teal: #16c8b4;
+        --rail: #0a1413;
+        --rail-2: #0c1917;
+        --rail-line: rgba(160, 255, 240, 0.1);
         --teal-br: #34f5dc;
-        --text: #eafaf6;
-        --text-2: #a7c6bf;
-        --muted: #6e8e88;
+        /* light clinical workspace */
+        --app-bg: #eef5f2;
+        --card: #ffffff;
+        --ink: #0f2e2b;
+        --ink-2: #3a514e;
+        --muted: #6b827e;
+        --faint: #9bb0ac;
+        --line: rgba(15, 46, 43, 0.09);
+        --line-2: rgba(15, 46, 43, 0.14);
+        --teal: #0e8e80;
+        --teal-2: #12b3a3;
+        --teal-deep: #0c5a54;
+        --mint: #e7f4f1;
+        --mint-2: #d7ece7;
+        --amber: #c9871a;
+        --amber-bg: #fbf0d8;
+        --coral: #d9554d;
+        --coral-bg: #fbe4e2;
+        --violet: #6a59c9;
+        --violet-bg: #ece9fb;
         --disp: "Bricolage Grotesque", sans-serif;
         --sans: "Hanken Grotesk", sans-serif;
         --mono: "JetBrains Mono", monospace;
       }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
       body {
         font-family: var(--sans);
         background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
+        color: var(--ink);
         -webkit-font-smoothing: antialiased;
+        overflow: hidden;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        background: none;
+        color: inherit;
+      }
+      ::selection {
+        background: rgba(18, 179, 163, 0.22);
+      }
+
+      /* ===================== CONSOLE SHELL ===================== */
+      .console {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem 1.5rem 7rem;
+        height: 100vh;
+        height: 100svh;
+      }
+
+      /* ----- left rail ----- */
+      .rail {
+        flex: 0 0 16.5rem;
+        background: linear-gradient(180deg, var(--rail), var(--rail-2));
+        border-right: 0.0625rem solid var(--rail-line);
+        display: flex;
+        flex-direction: column;
+        padding: 1.35rem 1rem 1rem;
         position: relative;
         overflow: hidden;
       }
-      body::before {
+      .rail::before {
         content: "";
         position: absolute;
         inset: 0;
         z-index: 0;
-        background: radial-gradient(40rem 40rem at 80% -10%, rgba(22,200,180,0.16), transparent 60%),
-          radial-gradient(34rem 34rem at 8% 20%, rgba(15,142,128,0.14), transparent 62%),
-          linear-gradient(180deg, #070f0e, #050b0a);
+        background: radial-gradient(
+          18rem 18rem at 120% -5%,
+          rgba(22, 200, 180, 0.13),
+          transparent 60%
+        );
+        pointer-events: none;
       }
-      .stub {
+      .rail > * {
         position: relative;
         z-index: 1;
-        max-width: 34rem;
-        text-align: center;
       }
-      .badge {
-        display: inline-flex;
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0 0.5rem 0.3rem;
+        color: #eafaf6;
+      }
+      .brand .logo-svg {
+        width: 8.7rem;
+        height: auto;
+      }
+      .rail-label {
+        font-family: var(--mono);
+        font-size: 0.58rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #5e7d78;
+        padding: 0 0.6rem;
+        margin: 1.4rem 0 0.55rem;
+      }
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        width: 100%;
+        text-align: left;
+        padding: 0.62rem 0.7rem;
+        border-radius: 0.72rem;
+        color: #a7c6bf;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: background 0.18s, color 0.18s;
+      }
+      .nav-item svg {
+        width: 1.15rem;
+        height: 1.15rem;
+        flex: 0 0 auto;
+        opacity: 0.85;
+      }
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.04);
+        color: #eafaf6;
+      }
+      .nav-item.active {
+        background: rgba(52, 245, 220, 0.12);
+        color: #d7fbf4;
+        box-shadow: inset 0 0 0 0.0625rem rgba(52, 245, 220, 0.18);
+      }
+      .nav-item.active svg {
+        opacity: 1;
+        color: var(--teal-br);
+      }
+      .nav-item .badge {
+        margin-left: auto;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        background: var(--teal-br);
+        color: #04110f;
+        border-radius: 6.25rem;
+        padding: 0.08rem 0.42rem;
+        line-height: 1.4;
+      }
+      .nav-item .badge.amber {
+        background: #f5c66b;
+      }
+
+      /* agent monitor block */
+      .agent-block {
+        margin-top: auto;
+        background: rgba(255, 255, 255, 0.035);
+        border: 0.0625rem solid var(--rail-line);
+        border-radius: 0.95rem;
+        padding: 0.85rem 0.9rem;
+      }
+      .agent-block .ab-head {
+        display: flex;
         align-items: center;
         gap: 0.5rem;
         font-family: var(--mono);
-        font-size: 0.7rem;
-        letter-spacing: 0.18em;
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
+        color: #bfeee6;
+        margin-bottom: 0.5rem;
+      }
+      .orb {
+        width: 1.15rem;
+        height: 1.15rem;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #d7fbf4, #34f5dc 70%);
+        flex: 0 0 auto;
+        box-shadow: 0 0 0.6rem -0.05rem #34f5dc;
+        animation: pulse 2.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0.5rem -0.05rem #34f5dc;
+        }
+        50% {
+          box-shadow: 0 0 1rem 0.05rem #34f5dc;
+        }
+      }
+      .agent-block p {
+        font-size: 0.78rem;
+        color: #a7c6bf;
+        line-height: 1.45;
+      }
+      .agent-block .ab-stat {
+        display: flex;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        color: #8fb3ac;
+        margin-top: 0.6rem;
+        padding-top: 0.6rem;
+        border-top: 0.0625rem solid var(--rail-line);
+      }
+      .agent-block .ab-stat b {
         color: var(--teal-br);
-        background: rgba(52, 245, 220, 0.07);
-        border: 0.0625rem solid rgba(52, 245, 220, 0.22);
-        padding: 0.5rem 0.9rem;
-        border-radius: 6.25rem;
-        margin-bottom: 1.75rem;
       }
-      .badge i {
-        width: 0.4rem; height: 0.4rem; border-radius: 50%;
-        background: var(--teal-br); box-shadow: 0 0 0.5rem var(--teal-br);
+
+      /* clinician card */
+      .clin {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-top: 0.8rem;
+        padding: 0.4rem 0.5rem;
       }
-      h1 {
-        font-family: var(--disp);
+      .clin .av {
+        width: 2.3rem;
+        height: 2.3rem;
+        border-radius: 50%;
+        background: linear-gradient(150deg, #12b3a3, #0c5a54);
+        color: #eafaf6;
+        display: grid;
+        place-items: center;
+        font-family: var(--mono);
+        font-weight: 700;
+        font-size: 0.78rem;
+        flex: 0 0 auto;
+      }
+      .clin .ct {
+        min-width: 0;
+      }
+      .clin .ct b {
+        display: block;
+        font-size: 0.85rem;
+        color: #eafaf6;
         font-weight: 600;
-        font-size: clamp(2rem, 5vw, 3rem);
+      }
+      .clin .ct span {
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        color: #6e8e88;
+      }
+
+      /* ----- main workspace ----- */
+      .work {
+        flex: 1 1 auto;
+        min-width: 0;
+        background: var(--app-bg);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .topbar {
+        flex: 0 0 auto;
+        height: 4rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0 1.6rem;
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(0.7rem);
+        -webkit-backdrop-filter: blur(0.7rem);
+        border-bottom: 0.0625rem solid var(--line);
+        position: sticky;
+        top: 0;
+        z-index: 20;
+      }
+      .search {
+        flex: 1 1 auto;
+        max-width: 26rem;
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        background: var(--app-bg);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 0.7rem;
+        padding: 0.5rem 0.85rem;
+        color: var(--muted);
+      }
+      .search svg {
+        width: 1rem;
+        height: 1rem;
+        flex: 0 0 auto;
+      }
+      .search input {
+        flex: 1;
+        border: none;
+        background: none;
+        outline: none;
+        font-family: inherit;
+        font-size: 0.85rem;
+        color: var(--ink);
+      }
+      .search kbd {
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        color: var(--faint);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 0.35rem;
+        padding: 0.05rem 0.3rem;
+      }
+      .top-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .top-date {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .iconbtn {
+        position: relative;
+        width: 2.3rem;
+        height: 2.3rem;
+        border-radius: 0.65rem;
+        display: grid;
+        place-items: center;
+        color: var(--ink-2);
+        border: 0.0625rem solid var(--line);
+        background: var(--card);
+        transition: background 0.15s, border 0.15s;
+      }
+      .iconbtn:hover {
+        border-color: var(--line-2);
+      }
+      .iconbtn svg {
+        width: 1.15rem;
+        height: 1.15rem;
+      }
+      .iconbtn .dot {
+        position: absolute;
+        top: 0.45rem;
+        right: 0.5rem;
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 50%;
+        background: var(--coral);
+        border: 0.0938rem solid var(--card);
+      }
+
+      /* scroll + views */
+      .scroll {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: var(--mint-2) transparent;
+      }
+      .scroll::-webkit-scrollbar {
+        width: 0.55rem;
+      }
+      .scroll::-webkit-scrollbar-thumb {
+        background: var(--mint-2);
+        border-radius: 6.25rem;
+        border: 0.15rem solid var(--app-bg);
+      }
+      .view {
+        display: none;
+        padding: 1.7rem 1.9rem 4rem;
+        max-width: 84rem;
+        margin: 0 auto;
+      }
+      .view.active {
+        display: block;
+      }
+      .stagger > * {
+        animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+      }
+      .stagger > *:nth-child(1) {
+        animation-delay: 0.02s;
+      }
+      .stagger > *:nth-child(2) {
+        animation-delay: 0.07s;
+      }
+      .stagger > *:nth-child(3) {
+        animation-delay: 0.12s;
+      }
+      .stagger > *:nth-child(4) {
+        animation-delay: 0.17s;
+      }
+      .stagger > *:nth-child(5) {
+        animation-delay: 0.22s;
+      }
+      .stagger > *:nth-child(6) {
+        animation-delay: 0.27s;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(0.7rem);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ----- shared workspace bits ----- */
+      .view-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .view-head .ey {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--teal);
+        font-weight: 600;
+      }
+      .view-head h1 {
+        font-family: var(--disp);
+        font-size: 2rem;
+        font-weight: 600;
         letter-spacing: -0.03em;
         line-height: 1.05;
+        margin-top: 0.25rem;
       }
-      h1 em { font-style: normal; color: var(--teal-br); }
-      p {
-        margin-top: 1.1rem;
-        font-size: 1.05rem;
-        color: var(--text-2);
-        line-height: 1.6;
+      .view-head p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-top: 0.35rem;
       }
-      .planned {
-        margin-top: 2rem;
+      .sec-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--ink-2);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin: 1.9rem 0 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .sec-title a {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: var(--teal);
+        text-transform: none;
+        letter-spacing: 0;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .card {
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-radius: 1.1rem;
+        padding: 1.2rem 1.25rem;
+        box-shadow: 0 1.5rem 2.5rem -2rem rgba(12, 90, 84, 0.22);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        padding: 0.28rem 0.62rem;
+        border-radius: 6.25rem;
+        white-space: nowrap;
+      }
+      .pill.teal {
+        background: var(--mint);
+        color: var(--teal-deep);
+      }
+      .pill.amber {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .pill.coral {
+        background: var(--coral-bg);
+        color: var(--coral);
+      }
+      .pill.violet {
+        background: var(--violet-bg);
+        color: var(--violet);
+      }
+      .pill.ghost {
+        background: transparent;
+        color: var(--muted);
+        box-shadow: inset 0 0 0 0.0625rem var(--line-2);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 0.7rem 1.15rem;
+        border-radius: 0.78rem;
+        transition: transform 0.14s, background 0.2s, box-shadow 0.2s,
+          border-color 0.2s;
+      }
+      .btn:active {
+        transform: scale(0.98);
+      }
+      .btn-primary {
+        background: var(--teal);
+        color: #fff;
+        box-shadow: 0 0.75rem 1.25rem -0.6rem rgba(14, 142, 128, 0.7);
+      }
+      .btn-primary:hover {
+        background: var(--teal-deep);
+      }
+      .btn-ghost {
+        background: var(--card);
+        color: var(--ink-2);
+        border: 0.0625rem solid var(--line-2);
+      }
+      .btn-ghost:hover {
+        border-color: var(--teal);
+        color: var(--teal-deep);
+      }
+      .trend {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+      }
+      .trend.down {
+        color: var(--teal);
+      }
+      .trend.up {
+        color: var(--coral);
+      }
+      .trend.flat {
+        color: var(--muted);
+      }
+
+      /* KPI grid */
+      .kpis {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.6rem;
-        text-align: left;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.9rem;
       }
-      .planned div {
+      .kpi {
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-radius: 1.1rem;
+        padding: 1.1rem 1.15rem;
+        box-shadow: 0 1.5rem 2.5rem -2rem rgba(12, 90, 84, 0.22);
+        position: relative;
+        overflow: hidden;
+      }
+      .kpi .kl {
+        font-family: var(--mono);
+        font-size: 0.64rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .kpi .kl .ki {
+        width: 1.55rem;
+        height: 1.55rem;
+        border-radius: 0.5rem;
+        display: grid;
+        place-items: center;
+        background: var(--mint);
+        color: var(--teal-deep);
+      }
+      .kpi .kl .ki svg {
+        width: 0.9rem;
+        height: 0.9rem;
+      }
+      .kpi .kv {
+        font-family: var(--disp);
+        font-size: 2.1rem;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        margin: 0.65rem 0 0.35rem;
+      }
+      .kpi .kv small {
+        font-size: 0.95rem;
+        color: var(--muted);
+        font-family: var(--mono);
+      }
+      .kpi .kfoot {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        color: var(--muted);
+      }
+
+      /* agent insight banner */
+      .insight {
+        position: relative;
+        background: linear-gradient(135deg, #0e8e80, #0c5a54);
+        color: #eafaf6;
+        border-radius: 1.2rem;
+        padding: 1.2rem 1.35rem;
+        overflow: hidden;
+        box-shadow: 0 1.5rem 2.5rem -1.4rem rgba(12, 90, 84, 0.55);
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+      }
+      .insight::after {
+        content: "";
+        position: absolute;
+        width: 14rem;
+        height: 14rem;
+        right: -4rem;
+        top: -6rem;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(127, 222, 210, 0.4),
+          transparent 70%
+        );
+      }
+      .insight .it {
+        flex: 1;
+        position: relative;
+        z-index: 1;
+      }
+      .insight .ih {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #bfeee6;
+        margin-bottom: 0.4rem;
+      }
+      .insight p {
+        font-size: 0.98rem;
+        line-height: 1.45;
+      }
+      .insight p b {
+        color: #fff;
+        font-weight: 600;
+      }
+      .insight .ibtn {
+        position: relative;
+        z-index: 1;
+        flex: 0 0 auto;
+        background: rgba(255, 255, 255, 0.16);
+        color: #fff;
+        font-family: var(--mono);
+        font-size: 0.74rem;
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+        border-radius: 6.25rem;
+        transition: background 0.2s;
+      }
+      .insight .ibtn:hover {
+        background: rgba(255, 255, 255, 0.26);
+      }
+
+      /* stacked risk bar */
+      .riskbar {
+        display: flex;
+        height: 1.4rem;
+        border-radius: 0.6rem;
+        overflow: hidden;
+        gap: 0.15rem;
+        margin-bottom: 1rem;
+      }
+      .riskbar span {
+        display: block;
+        transition: flex 0.4s;
+      }
+      .rs-crit {
+        background: var(--coral);
+      }
+      .rs-high {
+        background: #e0a23c;
+      }
+      .rs-mod {
+        background: var(--teal-2);
+      }
+      .rs-low {
+        background: #9fd9cf;
+      }
+      .risk-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.2rem;
+      }
+      .risk-legend .rl {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.82rem;
+      }
+      .risk-legend .rl i {
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 0.2rem;
+        flex: 0 0 auto;
+      }
+      .risk-legend .rl b {
+        font-family: var(--disp);
+        font-weight: 600;
+      }
+      .risk-legend .rl span {
+        color: var(--muted);
+        font-size: 0.74rem;
+      }
+
+      /* table */
+      .table-wrap {
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-radius: 1.1rem;
+        overflow: hidden;
+        box-shadow: 0 1.5rem 2.5rem -2rem rgba(12, 90, 84, 0.22);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      thead th {
+        text-align: left;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+        padding: 0.85rem 1.1rem;
+        border-bottom: 0.0625rem solid var(--line);
+        background: #fbfdfc;
+      }
+      tbody td {
+        padding: 0.85rem 1.1rem;
+        border-bottom: 0.0625rem solid var(--line);
+        vertical-align: middle;
+      }
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      tbody tr {
+        transition: background 0.14s;
+      }
+      tbody tr.clickable {
+        cursor: pointer;
+      }
+      tbody tr.clickable:hover {
+        background: var(--mint);
+      }
+      tbody tr.flagged td:first-child {
+        box-shadow: inset 0.2rem 0 0 var(--teal);
+      }
+      .pt {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .pt .pav {
+        width: 2.1rem;
+        height: 2.1rem;
+        border-radius: 50%;
+        background: var(--mint);
+        color: var(--teal-deep);
+        display: grid;
+        place-items: center;
+        font-family: var(--mono);
+        font-weight: 700;
+        font-size: 0.68rem;
+        flex: 0 0 auto;
+        border: 0.0625rem solid var(--line-2);
+      }
+      .pt b {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .pt span {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        color: var(--muted);
+      }
+      .cond {
+        color: var(--ink-2);
+        font-size: 0.82rem;
+      }
+      .riskscore {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--disp);
+        font-weight: 600;
+        font-size: 1.05rem;
+      }
+      .riskscore i {
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        flex: 0 0 auto;
+      }
+      .spark {
+        width: 5.5rem;
+        height: 1.8rem;
+        display: block;
+      }
+      .td-act {
+        text-align: right;
+        white-space: nowrap;
+      }
+      .linkbtn {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--teal);
+      }
+      .linkbtn:hover {
+        color: var(--teal-deep);
+        text-decoration: underline;
+      }
+      .agent-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        color: var(--teal);
+        font-weight: 600;
+        margin-top: 0.15rem;
+      }
+      .agent-tag i {
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 50%;
+        background: var(--teal-br);
+        box-shadow: 0 0 0.35rem var(--teal-br);
+      }
+
+      /* layout helpers */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 1.1rem;
+        align-items: start;
+        margin-top: 1.6rem;
+      }
+      .grid-2c {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.1rem;
+        align-items: start;
+      }
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        color: var(--teal);
+        font-weight: 600;
+        margin-bottom: 0.9rem;
+      }
+      .back:hover {
+        color: var(--teal-deep);
+      }
+
+      /* patient header */
+      .phead {
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+        flex-wrap: wrap;
+      }
+      .phead .pbig {
+        width: 3.6rem;
+        height: 3.6rem;
+        border-radius: 1rem;
+        background: linear-gradient(150deg, #12b3a3, #0c5a54);
+        color: #eafaf6;
+        display: grid;
+        place-items: center;
+        font-family: var(--mono);
+        font-weight: 700;
+        font-size: 1.1rem;
+        flex: 0 0 auto;
+      }
+      .phead h2 {
+        font-family: var(--disp);
+        font-size: 1.55rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .phead .pmeta {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 0.2rem;
+      }
+      .phead .pacts {
+        margin-left: auto;
+        display: flex;
+        gap: 0.55rem;
+      }
+
+      /* vitals tiles */
+      .vit-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.9rem;
+      }
+      .vit {
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-radius: 1rem;
+        padding: 0.95rem 1rem;
+        box-shadow: 0 1.5rem 2.5rem -2rem rgba(12, 90, 84, 0.2);
+      }
+      .vit .vl {
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .vit .vv {
+        font-family: var(--disp);
+        font-size: 1.55rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin: 0.3rem 0 0.25rem;
+        line-height: 1;
+      }
+      .vit .vv small {
+        font-size: 0.72rem;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-weight: 500;
+      }
+      .vit .vfoot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.55rem;
+      }
+
+      /* segmented */
+      .seg {
+        display: flex;
+        gap: 0.3rem;
+        background: var(--mint);
+        padding: 0.25rem;
+        border-radius: 0.7rem;
+      }
+      .seg button {
+        padding: 0.4rem 0.9rem;
+        border-radius: 0.5rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--teal-deep);
+      }
+      .seg button.on {
+        background: var(--card);
+        box-shadow: 0 0.4rem 0.8rem -0.4rem rgba(12, 90, 84, 0.3);
+      }
+      .chart {
+        height: 11rem;
+        margin-top: 1rem;
+      }
+      .chart svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .chart .gl {
+        stroke: var(--line);
+        stroke-width: 1;
+      }
+      .chart .axl {
+        font-family: var(--mono);
+        font-size: 7px;
+        fill: var(--faint);
+      }
+
+      /* ring */
+      .ring-wrap {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+      }
+      .ring {
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        flex: 0 0 auto;
+        background: conic-gradient(
+          var(--teal) 0 var(--p, 88%),
+          var(--mint-2) var(--p, 88%) 100%
+        );
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .ring::after {
+        content: "";
+        position: absolute;
+        inset: 0.65rem;
+        background: var(--card);
+        border-radius: 50%;
+      }
+      .ring b {
+        position: relative;
+        z-index: 1;
+        font-family: var(--disp);
+        font-size: 1.4rem;
+        font-weight: 600;
+      }
+      .adh-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        padding: 0.45rem 0;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      .adh-row:last-child {
+        border-bottom: none;
+      }
+      .adh-row span:last-child {
+        font-family: var(--mono);
+        font-weight: 600;
+        color: var(--teal-deep);
+      }
+
+      /* timeline */
+      .tl {
+        position: relative;
+        padding-left: 1.4rem;
+      }
+      .tl::before {
+        content: "";
+        position: absolute;
+        left: 0.32rem;
+        top: 0.4rem;
+        bottom: 0.4rem;
+        width: 0.0938rem;
+        background: var(--line-2);
+      }
+      .tl-item {
+        position: relative;
+        padding: 0 0 1.05rem;
+      }
+      .tl-item:last-child {
+        padding-bottom: 0;
+      }
+      .tl-item::before {
+        content: "";
+        position: absolute;
+        left: -1.4rem;
+        top: 0.25rem;
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        background: var(--card);
+        border: 0.125rem solid var(--teal);
+      }
+      .tl-item.agent::before {
+        background: var(--teal-br);
+        border-color: var(--teal);
+        box-shadow: 0 0 0.4rem var(--teal-br);
+      }
+      .tl-item .tt {
+        font-size: 0.88rem;
+        font-weight: 600;
+      }
+      .tl-item .tt .by {
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: var(--teal);
+        margin-left: 0.4rem;
+      }
+      .tl-item p {
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-top: 0.1rem;
+        line-height: 1.45;
+      }
+      .tl-item time {
+        font-family: var(--mono);
+        font-size: 0.64rem;
+        color: var(--faint);
+      }
+
+      /* plan review */
+      .rationale {
+        background: linear-gradient(135deg, #0f2e2b, #0c1f1d);
+        color: #eafaf6;
+        border-radius: 1.2rem;
+        padding: 1.35rem 1.45rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .rationale::after {
+        content: "";
+        position: absolute;
+        width: 16rem;
+        height: 16rem;
+        right: -5rem;
+        top: -7rem;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(52, 245, 220, 0.16),
+          transparent 70%
+        );
+      }
+      .rationale .rh {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #9ff0e3;
+        margin-bottom: 0.7rem;
+      }
+      .rationale h3 {
+        font-family: var(--disp);
+        font-size: 1.2rem;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+      }
+      .rationale p {
+        font-size: 0.92rem;
+        line-height: 1.55;
+        color: #cfe9e3;
+        margin-top: 0.55rem;
+        position: relative;
+        z-index: 1;
+      }
+      .rationale .ev {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-top: 1rem;
+        position: relative;
+        z-index: 1;
+      }
+      .rationale .ev .pill {
+        background: rgba(52, 245, 220, 0.14);
+        color: #9ff0e3;
+      }
+      .plan-card .pc-head {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-bottom: 0.9rem;
+      }
+      .plan-card .pc-head .pi {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+        background: var(--mint);
+      }
+      .plan-card .pc-head b {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .plan-card .pc-head span {
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        color: var(--muted);
+        display: block;
+      }
+      .change {
+        display: flex;
+        gap: 0.6rem;
+        padding: 0.6rem 0;
+        border-bottom: 0.0625rem solid var(--line);
+        font-size: 0.86rem;
+        line-height: 1.4;
+      }
+      .change:last-child {
+        border-bottom: none;
+      }
+      .change .mk {
+        flex: 0 0 auto;
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 0.35rem;
+        display: grid;
+        place-items: center;
+        font-family: var(--mono);
+        font-weight: 700;
+        font-size: 0.8rem;
+        margin-top: 0.05rem;
+      }
+      .change.add .mk {
+        background: var(--mint);
+        color: var(--teal);
+      }
+      .change.keep .mk {
+        background: var(--app-bg);
+        color: var(--muted);
+      }
+      .change.adj .mk {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .change .ct b {
+        font-weight: 600;
+      }
+      .change .ct span {
+        color: var(--muted);
+      }
+
+      /* approval bar */
+      .approve-bar {
+        position: sticky;
+        bottom: 0;
+        margin: 1.4rem -1.9rem -4rem;
+        padding: 1.05rem 1.9rem;
+        background: rgba(255, 255, 255, 0.86);
+        backdrop-filter: blur(0.7rem);
+        -webkit-backdrop-filter: blur(0.7rem);
+        border-top: 0.0625rem solid var(--line);
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .approve-bar .ab-note {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .approve-bar .ab-note b {
+        color: var(--teal-deep);
+      }
+      .approve-bar .ab-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 0.6rem;
+      }
+      .approved-state {
+        display: none;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--teal-deep);
+        font-weight: 600;
+      }
+      .approved-state svg {
+        width: 1.3rem;
+        height: 1.3rem;
+      }
+      .approve-bar.done .ab-actions,
+      .approve-bar.done .ab-note {
+        display: none;
+      }
+      .approve-bar.done .approved-state {
+        display: flex;
+      }
+
+      /* billing */
+      .bill-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        font-weight: 600;
+      }
+      .bill-status.ready {
+        color: var(--teal);
+      }
+      .bill-status.submitted {
+        color: var(--muted);
+      }
+      .bill-status i {
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .code {
         font-family: var(--mono);
         font-size: 0.8rem;
-        color: var(--text-2);
-        background: rgba(255, 255, 255, 0.03);
-        border: 0.0625rem solid rgba(160, 255, 240, 0.1);
-        border-radius: 0.75rem;
-        padding: 0.8rem 0.9rem;
+        font-weight: 600;
+        color: var(--violet);
+        background: var(--violet-bg);
+        padding: 0.15rem 0.45rem;
+        border-radius: 0.4rem;
       }
-      .planned div b { color: var(--teal-br); font-weight: 600; }
+      .amt {
+        font-family: var(--mono);
+        font-weight: 600;
+        text-align: right;
+      }
+      .bill-foot {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.1rem 1.25rem;
+        background: #fbfdfc;
+        border-top: 0.0625rem solid var(--line);
+      }
+      .bill-foot .bf-total {
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .bill-foot .bf-total b {
+        font-family: var(--disp);
+        font-size: 1.5rem;
+        color: var(--ink);
+        display: block;
+        margin-top: 0.1rem;
+      }
+      .toast {
+        position: fixed;
+        bottom: 5.5rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(1rem);
+        background: var(--ink);
+        color: #eafaf6;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.8rem 1.2rem;
+        border-radius: 0.8rem;
+        box-shadow: 0 1.5rem 2.5rem -1rem rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+        z-index: 300;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .toast svg {
+        width: 1.1rem;
+        height: 1.1rem;
+        color: var(--teal-br);
+      }
 
       /* ===== Floating site switcher ===== */
       .site-switch {
-        position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%);
-        z-index: 200; display: flex; gap: 0.25rem; padding: 0.3125rem;
-        border-radius: 6.25rem; background: rgba(8, 19, 17, 0.82);
+        position: fixed;
+        left: 50%;
+        bottom: 1.5rem;
+        transform: translateX(-50%);
+        z-index: 200;
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.3125rem;
+        border-radius: 6.25rem;
+        background: rgba(8, 19, 17, 0.82);
         backdrop-filter: blur(0.875rem) saturate(140%);
         -webkit-backdrop-filter: blur(0.875rem) saturate(140%);
         border: 0.0625rem solid rgba(160, 255, 240, 0.16);
         box-shadow: 0 1.25rem 2.5rem -1rem rgba(0, 0, 0, 0.6);
       }
       .ss-tab {
-        display: inline-flex; align-items: center; gap: 0.4rem;
-        font-family: var(--mono); font-size: 0.8125rem; font-weight: 600;
-        letter-spacing: 0.01em; color: #a7c6bf; padding: 0.5rem 0.95rem;
-        border-radius: 6.25rem; transition: color 0.2s, background 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: #a7c6bf;
+        padding: 0.5rem 0.95rem;
+        border-radius: 6.25rem;
+        transition: color 0.2s, background 0.2s;
       }
-      .ss-tab svg { width: 1rem; height: 1rem; }
-      .ss-tab:hover { color: #fff; }
-      .ss-tab.is-active { background: #34f5dc; color: #04110f; }
-      @media (max-width: 560px) {
-        .ss-tab span { display: none; }
-        .ss-tab { padding: 0.5rem 0.7rem; }
-        .planned { grid-template-columns: 1fr; }
+      .ss-tab svg {
+        width: 1rem;
+        height: 1rem;
+      }
+      .ss-tab:hover {
+        color: #fff;
+      }
+      .ss-tab.is-active {
+        background: #34f5dc;
+        color: #04110f;
+      }
+
+      /* ===== contextual toolbar (Mobbin: filters/time-range on top) ===== */
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.4rem;
+      }
+      .chip {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--ink-2);
+        background: var(--card);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 6.25rem;
+        padding: 0.45rem 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+      }
+      .chip svg {
+        width: 0.85rem;
+        height: 0.85rem;
+      }
+      .chip:hover {
+        border-color: var(--teal);
+        color: var(--teal-deep);
+      }
+      .chip.on {
+        background: var(--teal);
+        color: #fff;
+        border-color: var(--teal);
+      }
+      .chip .ct-count {
+        font-size: 0.62rem;
+        opacity: 0.7;
+      }
+      .toolbar .tb-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+
+      /* ===== KPI grid + agent insight (stacked) ===== */
+      .bento {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+      .bento .insight {
+        margin: 0;
+      }
+      .bento .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.9rem;
+      }
+      .bento .kpi-grid .kpi {
+        margin: 0;
+      }
+
+      /* ===== charts section ===== */
+      .charts-row {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 1.1rem;
+        align-items: stretch;
+      }
+      .charts-row .card {
+        display: flex;
+        flex-direction: column;
+      }
+      .card-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.9rem;
+      }
+      .card-head .ch-s {
+        font-family: var(--mono);
+        font-size: 0.64rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .card-head .ch-t {
+        font-family: var(--disp);
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin-top: 0.2rem;
+      }
+
+      /* ===== chart.js canvas wrappers ===== */
+      .canvas-box {
+        position: relative;
+        width: 100%;
+      }
+      .canvas-box.h-bar {
+        height: 2.7rem;
+      }
+      .canvas-box.h-line {
+        flex: 1 1 auto;
+        min-height: 11rem;
+      }
+      .canvas-box.h-trend {
+        height: 13rem;
+        margin-top: 1rem;
+      }
+      .canvas-box.h-ring {
+        width: 6rem;
+        height: 6rem;
+        flex: 0 0 auto;
+      }
+      .canvas-box.h-adh {
+        height: 7rem;
+        margin-top: 0.4rem;
+      }
+      /* sparkline cells/tiles */
+      .spark {
+        width: 5.5rem;
+        height: 1.8rem;
+        display: block;
+        position: relative;
+      }
+      .spark canvas,
+      .canvas-box canvas {
+        display: block;
+      }
+
+      /* ===== responsive ===== */
+      @media (max-width: 1080px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .bento {
+          grid-template-columns: 1fr;
+        }
+        .charts-row {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 900px) {
+        .rail {
+          flex-basis: 4.6rem;
+          padding: 1.2rem 0.55rem 1rem;
+        }
+        .brand .logo-svg,
+        .rail-label,
+        .nav-item span,
+        .nav-item .badge,
+        .agent-block p,
+        .agent-block .ab-stat,
+        .clin .ct {
+          display: none;
+        }
+        .brand {
+          justify-content: center;
+          padding: 0;
+        }
+        .nav-item {
+          justify-content: center;
+          padding: 0.62rem;
+        }
+        .agent-block {
+          padding: 0.6rem;
+          text-align: center;
+        }
+        .agent-block .ab-head {
+          justify-content: center;
+          margin: 0;
+        }
+        .clin {
+          justify-content: center;
+        }
+        .kpis,
+        .kpi-grid,
+        .vit-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-2c {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .view {
+          padding: 1.2rem 1rem 5rem;
+        }
+        .topbar {
+          padding: 0 1rem;
+        }
+        .top-date {
+          display: none;
+        }
+        .kpis,
+        .kpi-grid,
+        .vit-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .spark,
+        .cond {
+          display: none;
+        }
+        .ss-tab span {
+          display: none;
+        }
+        .ss-tab {
+          padding: 0.5rem 0.7rem;
+        }
+        .approve-bar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .approve-bar .ab-actions {
+          margin-left: 0;
+        }
+        .approve-bar .ab-actions .btn {
+          flex: 1;
+        }
+      }
+
+      /* ===================== EMBEDDED-IN-EPIC SHELL ===================== */
+      .epic {
+        display: none;
+        flex-direction: column;
+        height: 100vh;
+        height: 100svh;
+        --ep-navy: #0a3a66;
+        --ep-navy-2: #11538c;
+        --ep-blue: #1f6cb0;
+        --ep-tool-1: #f6f8fb;
+        --ep-tool-2: #d9e2ee;
+        --ep-bg: #d3dae3;
+        --ep-line: #bfcad7;
+        --ep-line-2: #dde3ea;
+        --ep-ink: #1b2733;
+        --ep-muted: #5c6b7a;
+        --ep-faint: #8694a3;
+        --ep-story: #eef3f8;
+        --ep-gold: #f4b323;
+        font-family: "Segoe UI", -apple-system, "Hanken Grotesk", sans-serif;
+        color: var(--ep-ink);
+        background: var(--ep-bg);
+        -webkit-font-smoothing: antialiased;
+      }
+      body.epic-mode { overflow: hidden; }
+      body.epic-mode .console { display: none; }
+      body.epic-mode .epic { display: flex; }
+
+      /* --- Epic top menu toolbar --- */
+      .ep-toolbar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.1rem;
+        height: 3.1rem;
+        padding: 0.25rem 0.55rem;
+        background: linear-gradient(180deg, var(--ep-tool-1), var(--ep-tool-2));
+        border-bottom: 0.0625rem solid #aab7c6;
+        overflow: hidden;
+      }
+      .ep-epic-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.3rem 0.55rem;
+        border-radius: 0.4rem;
+        color: var(--ep-navy);
+      }
+      .ep-epic-btn:hover { background: rgba(31, 108, 176, 0.12); }
+      .ep-hex { width: 1.7rem; height: 1.7rem; flex: 0 0 auto; }
+      .ep-epic-btn b { font-size: 1.08rem; letter-spacing: -0.01em; font-weight: 700; }
+      .ep-epic-btn .caret { color: var(--ep-muted); font-size: 0.7rem; }
+      .ep-tsep { width: 0.0625rem; height: 2rem; background: #aebccb; margin: 0 0.3rem; }
+      .ep-act {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.1rem;
+        min-width: 3.5rem;
+        padding: 0.2rem 0.45rem;
+        border-radius: 0.4rem;
+        color: #2f4456;
+        font-size: 0.64rem;
+        font-weight: 600;
+      }
+      .ep-act svg { width: 1.2rem; height: 1.2rem; color: var(--ep-blue); }
+      .ep-act:hover { background: rgba(31, 108, 176, 0.14); }
+      .ep-act .ep-badge {
+        position: absolute;
+        top: -0.05rem;
+        right: 0.3rem;
+        min-width: 0.95rem;
+        height: 0.95rem;
+        padding: 0 0.18rem;
+        border-radius: 0.5rem;
+        background: #d4362b;
+        color: #fff;
+        font-size: 0.54rem;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+      }
+      .ep-tool-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding-right: 0.25rem;
+        flex: 0 0 auto;
+      }
+      .ep-user { text-align: right; line-height: 1.2; }
+      .ep-user b { display: block; font-size: 0.74rem; color: var(--ep-ink); font-weight: 700; }
+      .ep-user span { font-size: 0.64rem; color: var(--ep-muted); }
+      .ep-clock { font-size: 0.78rem; color: var(--ep-ink); font-variant-numeric: tabular-nums; }
+      .ep-logout { font-size: 0.7rem; font-weight: 600; color: var(--ep-navy-2); }
+      .ep-secure {
+        font-size: 0.66rem;
+        font-weight: 700;
+        color: #fff;
+        background: var(--ep-navy-2);
+        padding: 0.32rem 0.65rem;
+        border-radius: 0.35rem;
+      }
+      .ep-secure:hover { background: var(--ep-navy); }
+
+      /* --- body: storyboard + workspace --- */
+      .ep-body { flex: 1 1 auto; display: flex; min-height: 0; }
+      .ep-storyboard {
+        flex: 0 0 14.5rem;
+        background: var(--ep-story);
+        border-right: 0.0625rem solid var(--ep-line);
+        overflow-y: auto;
+        padding: 0.85rem 0.8rem 2.5rem;
+      }
+      .ep-sb-photo {
+        width: 100%;
+        height: 8rem;
+        border-radius: 0.4rem;
+        background: linear-gradient(150deg, #4170a0, #21496f);
+        color: #dbe8f5;
+        display: grid;
+        place-items: center;
+        font-size: 2.1rem;
+        font-weight: 700;
+        border: 0.0625rem solid var(--ep-line);
+      }
+      .ep-sb-name { font-size: 1.04rem; font-weight: 700; margin-top: 0.55rem; line-height: 1.2; }
+      .ep-sb-demo { font-size: 0.74rem; color: var(--ep-muted); margin-top: 0.1rem; }
+      .ep-sb-mrn {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.64rem;
+        color: var(--ep-faint);
+        margin-top: 0.15rem;
+      }
+      .ep-sb-tags { display: flex; gap: 0.3rem; margin-top: 0.55rem; flex-wrap: wrap; }
+      .ep-tag { font-size: 0.58rem; font-weight: 700; padding: 0.16rem 0.4rem; border-radius: 0.25rem; }
+      .ep-tag.est { background: #d7e8c5; color: #436016; }
+      .ep-tag.cov { background: #d4e4f3; color: #1c5689; }
+      .ep-sb-row {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-start;
+        padding: 0.55rem 0.1rem;
+        border-top: 0.0625rem solid var(--ep-line-2);
+      }
+      .ep-sb-row .ic { width: 1rem; height: 1rem; flex: 0 0 auto; color: var(--ep-blue); margin-top: 0.15rem; }
+      .ep-sb-row .bd { min-width: 0; }
+      .ep-sb-row .lab {
+        font-size: 0.58rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        color: var(--ep-muted);
+      }
+      .ep-sb-row .val { font-size: 0.78rem; color: var(--ep-ink); line-height: 1.35; }
+      .ep-sb-row .val.alert { color: #b23b30; font-weight: 600; }
+      .ep-sb-sec {
+        font-size: 0.58rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ep-navy-2);
+        margin: 0.9rem 0 0.15rem;
+      }
+      .ep-sb-vit { display: flex; justify-content: space-between; font-size: 0.76rem; padding: 0.22rem 0; }
+      .ep-sb-vit span { color: var(--ep-muted); }
+      .ep-sb-vit b { font-variant-numeric: tabular-nums; }
+
+      /* --- right column: tabs + workspace --- */
+      .ep-right { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
+      .ep-tabs {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: stretch;
+        background: #e7edf4;
+        border-bottom: 0.0625rem solid var(--ep-line);
+        padding: 0 0.35rem;
+        overflow-x: auto;
+      }
+      .ep-tab {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #3a4b5c;
+        border-bottom: 0.18rem solid transparent;
+        white-space: nowrap;
+      }
+      .ep-tab:hover { background: rgba(255, 255, 255, 0.55); }
+      .ep-tab.on { background: #fff; color: var(--ep-navy-2); border-bottom-color: var(--ep-gold); }
+      .ep-tab.sc { color: var(--teal-deep); }
+      .ep-tab .mini-orb {
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #d7fbf4, #12b3a3 70%);
+        box-shadow: 0 0 0.35rem -0.05rem #12b3a3;
+      }
+      .ep-workspace {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 1rem 1.15rem 5.5rem;
+        background: var(--ep-bg);
+      }
+
+      /* --- BestPractice Advisory (CDS card fired by ScriptChain) --- */
+      .ep-bpa {
+        display: flex;
+        gap: 0.85rem;
+        align-items: flex-start;
+        background: #fff8e3;
+        border: 0.0625rem solid #ecd58a;
+        border-left: 0.3rem solid var(--ep-gold);
+        border-radius: 0.45rem;
+        padding: 0.9rem 1rem;
+        margin-bottom: 1rem;
+      }
+      .ep-bpa .bpa-ic {
+        width: 1.7rem;
+        height: 1.7rem;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: var(--ep-gold);
+        color: #5a4205;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        margin-top: 0.05rem;
+      }
+      .ep-bpa h4 {
+        font-size: 0.82rem;
+        color: #6b4e07;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+      }
+      .ep-bpa .src {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.56rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #97770f;
+        border: 0.0625rem solid #e0c97a;
+        padding: 0.1rem 0.35rem;
+        border-radius: 0.25rem;
+      }
+      .ep-bpa p { font-size: 0.8rem; color: #5b481f; margin-top: 0.25rem; line-height: 1.5; }
+      .ep-bpa p b { color: #43340f; }
+      .ep-bpa-acts { margin-top: 0.65rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+      .ep-bpa-btn {
+        font-size: 0.74rem;
+        font-weight: 700;
+        padding: 0.42rem 0.85rem;
+        border-radius: 0.35rem;
+        border: 0.0625rem solid transparent;
+      }
+      .ep-bpa-btn.go { background: var(--teal); color: #fff; }
+      .ep-bpa-btn.go:hover { background: var(--teal-deep); }
+      .ep-bpa-btn.sec { background: #fff; border-color: #d8be73; color: #6b4e07; }
+
+      /* --- embedded SMART on FHIR app (Epic-native, dense, low-chrome) --- */
+      .ep-embed {
+        background: #fff;
+        border: 0.0625rem solid var(--ep-line);
+        border-top: 0.1875rem solid var(--teal);
+        border-radius: 0.25rem;
+        overflow: hidden;
+      }
+      /* flat app identity strip (replaces the dark gradient header) */
+      .ep-app-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.5rem 0.85rem;
+        background: #fff;
+        border-bottom: 0.0625rem solid var(--ep-line);
+      }
+      .ep-app-bar .logo { height: 0.95rem; display: block; }
+      .ep-app-bar .seg-name {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--ep-ink);
+        padding-left: 0.55rem;
+        margin-left: 0.1rem;
+        border-left: 0.0625rem solid var(--ep-line);
+      }
+      .ep-app-bar .live {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.32rem;
+        margin-left: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.56rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--teal-deep);
+      }
+      .ep-app-bar .live i {
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background: var(--teal);
+        flex: 0 0 auto;
+        box-shadow: 0 0 0.3rem var(--teal);
+      }
+      .ep-app-bar .scope {
+        margin-left: auto;
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        color: var(--ep-faint);
+        white-space: nowrap;
+        letter-spacing: 0.02em;
+      }
+      .ep-embed-body { padding: 0.85rem 0.95rem 0.95rem; background: #fff; }
+
+      /* flatten action buttons to Epic style inside the embed */
+      .ep-embed .btn { border-radius: 0.3rem; padding: 0.55rem 1rem; font-size: 0.82rem; }
+      .ep-embed .btn-primary { box-shadow: none; }
+
+      /* Epic-style tinted section header bars */
+      .ep-sec {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ep-navy-2);
+        background: var(--ep-story);
+        border: 0.0625rem solid var(--ep-line);
+        padding: 0.34rem 0.6rem;
+        border-radius: 0.2rem;
+        margin: 0.95rem 0 0.5rem;
+      }
+      .ep-sec .meta { color: var(--ep-faint); font-weight: 600; letter-spacing: 0.04em; }
+
+      /* agent rationale — the single brand accent in an otherwise neutral panel */
+      .ep-rationale {
+        border: 0.0625rem solid var(--ep-line);
+        border-left: 0.1875rem solid var(--teal);
+        background: #f1faf8;
+        border-radius: 0.2rem;
+        padding: 0.7rem 0.85rem;
+      }
+      .ep-rationale .ey {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: var(--mono);
+        font-size: 0.58rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--teal-deep);
+      }
+      .ep-rationale .ey i {
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background: var(--teal);
+        box-shadow: 0 0 0.3rem var(--teal);
+      }
+      .ep-rationale h4 {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--ep-ink);
+        margin: 0.3rem 0 0.25rem;
+        line-height: 1.3;
+      }
+      .ep-rationale p { font-size: 0.78rem; color: var(--ep-muted); line-height: 1.5; }
+      .ep-evidence { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+      .ep-ev {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.66rem;
+        font-weight: 600;
+        color: var(--ep-muted);
+        background: #fff;
+        border: 0.0625rem solid var(--ep-line);
+        padding: 0.2rem 0.45rem;
+        border-radius: 0.2rem;
+      }
+      .ep-ev svg { width: 0.72rem; height: 0.72rem; color: var(--teal); flex: 0 0 auto; }
+
+      /* dense plan-change table */
+      .ep-ptable { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+      .ep-ptable th {
+        text-align: left;
+        font-family: var(--mono);
+        font-size: 0.56rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ep-muted);
+        font-weight: 700;
+        padding: 0.32rem 0.55rem;
+        border-bottom: 0.0625rem solid var(--ep-line);
+        background: #fbfcfe;
+      }
+      .ep-ptable td {
+        padding: 0.42rem 0.55rem;
+        border-bottom: 0.0625rem solid var(--ep-line-2);
+        vertical-align: top;
+        color: var(--ep-ink);
+      }
+      .ep-ptable tr:last-child td { border-bottom: none; }
+      .ep-ptable .dom { font-weight: 700; white-space: nowrap; }
+      .ep-ptable .det { color: var(--ep-muted); }
+      .ep-ptable .det b { color: var(--ep-ink); font-weight: 600; }
+      .ep-st {
+        display: inline-block;
+        font-family: var(--mono);
+        font-size: 0.54rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.14rem 0.4rem;
+        border-radius: 0.2rem;
+        white-space: nowrap;
+      }
+      .ep-st.add { background: var(--mint); color: var(--teal-deep); }
+      .ep-st.adj { background: #fbf0d8; color: #9a6912; }
+      .ep-st.keep { background: #eef1f4; color: var(--ep-muted); }
+
+      /* compact projected-impact metrics — flowsheet-style, no hero numbers */
+      .ep-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border: 0.0625rem solid var(--ep-line);
+        border-radius: 0.2rem;
+        overflow: hidden;
+      }
+      .ep-metrics .m { padding: 0.5rem 0.7rem; border-left: 0.0625rem solid var(--ep-line-2); }
+      .ep-metrics .m:first-child { border-left: none; }
+      .ep-metrics .ml {
+        font-family: var(--mono);
+        font-size: 0.54rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--ep-muted);
+      }
+      .ep-metrics .mv {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--ep-ink);
+        font-variant-numeric: tabular-nums;
+        margin: 0.12rem 0 0.08rem;
+      }
+      .ep-metrics .md { font-size: 0.66rem; font-weight: 600; color: var(--teal-deep); }
+
+      /* order write-back list */
+      .ep-orderlist {
+        border: 0.0625rem solid var(--ep-line);
+        border-radius: 0.2rem;
+        overflow: hidden;
+      }
+      .ep-orow {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.42rem 0.6rem;
+        border-bottom: 0.0625rem solid var(--ep-line-2);
+        font-size: 0.78rem;
+      }
+      .ep-orow:last-child { border-bottom: none; }
+      .ep-orow .ck {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.2rem;
+        flex: 0 0 auto;
+        background: var(--teal);
+        display: grid;
+        place-items: center;
+      }
+      .ep-orow .ck svg { width: 0.7rem; height: 0.7rem; color: #fff; }
+      .ep-orow .ot { color: var(--ep-ink); }
+      .ep-orow .ot b { font-weight: 700; }
+      .ep-orow .code {
+        margin-left: auto;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        color: var(--ep-faint);
+        white-space: nowrap;
+      }
+
+      .ep-sign {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1.15rem;
+        padding-top: 1rem;
+        border-top: 0.0625rem solid var(--line);
+      }
+      .ep-sign .note { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); max-width: 24rem; }
+      .ep-sign .note b { color: var(--teal-deep); }
+      .ep-sign .acts { margin-left: auto; display: flex; gap: 0.6rem; }
+      .ep-signed { display: none; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--teal-deep); }
+      .ep-sign.done .acts, .ep-sign.done .note { display: none; }
+      .ep-sign.done .ep-signed { display: flex; }
+
+      /* --- request-changes composer (shared: plan approve-bar + embedded sign) --- */
+      .rc-panel {
+        display: none;
+        width: 100%;
+        margin-top: 0.3rem;
+        padding: 1rem 1.1rem;
+        background: var(--card);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 0.9rem;
+        text-align: left;
+      }
+      .rc-panel.open { display: block; }
+      .rc-panel h5 {
+        font-family: var(--sans);
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 0.6rem;
+      }
+      .rc-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
+      .rc-chip {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--ink-2);
+        background: var(--app-bg);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 6.25rem;
+        padding: 0.35rem 0.7rem;
+        transition: border-color 0.15s, color 0.15s;
+      }
+      .rc-chip:hover { border-color: var(--teal); color: var(--teal-deep); }
+      .rc-panel textarea {
+        width: 100%;
+        min-height: 4.5rem;
+        resize: vertical;
+        font-family: var(--sans);
+        font-size: 0.86rem;
+        color: var(--ink);
+        background: var(--app-bg);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 0.6rem;
+        padding: 0.65rem 0.8rem;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .rc-panel textarea:focus { border-color: var(--teal); }
+      .rc-acts { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.75rem; }
+      .requested-state {
+        display: none;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--amber);
+        font-weight: 600;
+      }
+      .requested-state svg { width: 1.3rem; height: 1.3rem; flex: 0 0 auto; }
+      .approve-bar.requested .ab-actions,
+      .approve-bar.requested .ab-note,
+      .approve-bar.requested .rc-panel { display: none; }
+      .approve-bar.requested .requested-state { display: flex; }
+      .ep-sign.requested .acts,
+      .ep-sign.requested .note,
+      .ep-sign.requested .rc-panel { display: none; }
+      .ep-sign.requested .requested-state { display: flex; }
+
+      /* --- standalone / embedded mode switch --- */
+      .mode-switch {
+        position: fixed;
+        left: 50%;
+        bottom: 4.55rem;
+        transform: translateX(-50%);
+        z-index: 250;
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.3rem;
+        border-radius: 6.25rem;
+        background: rgba(8, 19, 17, 0.85);
+        backdrop-filter: blur(0.875rem) saturate(140%);
+        -webkit-backdrop-filter: blur(0.875rem) saturate(140%);
+        border: 0.0625rem solid rgba(160, 255, 240, 0.16);
+        box-shadow: 0 1.25rem 2.5rem -1rem rgba(0, 0, 0, 0.6);
+      }
+      .ms-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.74rem;
+        font-weight: 600;
+        color: #a7c6bf;
+        padding: 0.45rem 0.9rem;
+        border-radius: 6.25rem;
+        transition: color 0.2s, background 0.2s;
+      }
+      .ms-tab svg { width: 0.95rem; height: 0.95rem; }
+      .ms-tab:hover { color: #fff; }
+      .ms-tab.is-active { background: #34f5dc; color: #04110f; }
+
+      @media (max-width: 900px) {
+        .ep-storyboard { flex-basis: 11rem; }
+      }
+      @media (max-width: 640px) {
+        .ms-tab span { display: none; }
       }
     </style>
   </head>
   <body>
-    <div class="stub">
-      <span class="badge"><i></i> Doctor console</span>
-      <h1>The <em>clinician</em> dashboard is up next.</h1>
-      <p>
-        A desktop console for physicians: cohort risk stratification, the
-        patient panel, plan review &amp; approval, and auto-generated CPT/HCPCS
-        billing — the other half of the ScriptChain loop.
-      </p>
-      <div class="planned">
-        <div><b>Cohort overview</b> — population risk &amp; flagged patients</div>
-        <div><b>Patient panel</b> — vitals, trends, adherence</div>
-        <div><b>Plan review</b> — approve AI food &amp; exercise scripts</div>
-        <div><b>Reimbursement</b> — auto-coded, billable actions</div>
+    <!-- BRAND LOGO (inlined from assets/logo.svg, recolored for dark rail) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="scLogo" viewBox="0 0 165 42">
+        <path d="M138.604 28.7735H137.688V34.5448H141.294V33.6888H138.604V28.7735Z" fill="currentColor"/>
+        <path d="M118.361 9.875H115.195V24.5366H118.361V18.0388C118.527 17.1225 119.293 16.3968 120.36 16.456C121.86 16.5394 121.86 17.4835 121.943 18.0388V24.5366H125.192C125.192 21.2877 125.118 22.2066 125.192 17.7889C125.275 12.7907 119.777 13.1239 118.361 15.2898V9.875Z" fill="currentColor"/>
+        <path d="M78.375 24.5355V14.0391L81.5406 14.0391V24.5354L78.375 24.5355Z" fill="currentColor"/>
+        <path d="M126.023 19.4549C126.023 12.7907 132.437 12.9568 133.938 15.2059V13.9559H137.021L137.104 24.536H133.854V23.453C132.354 25.5355 126.024 25.5356 126.023 19.4549ZM133.936 19.2879C134.102 15.623 129.188 15.4564 129.188 19.2879C129.188 23.0366 133.761 23.1199 133.936 19.2879Z" fill="currentColor"/>
+        <path d="M144.188 24.5348V14.0384H147.186L147.27 15.288C151.018 11.7059 154.267 14.9548 154.101 17.4539V24.5348H150.935V18.2036C150.935 17.6205 150.685 16.5376 149.436 16.4542C147.97 16.4542 147.436 17.5094 147.353 18.037V24.5348H144.188Z" fill="currentColor"/>
+        <path d="M73.3765 24.5355H70.2109V14.0347L73.2099 14.0391C73.2932 15.6219 73.2099 14.3723 73.2932 15.6219C74.4261 13.4893 76.6531 13.6752 77.625 14.0347C77.0419 16.0384 77.2085 15.4553 76.7087 17.4546C74.1262 16.4549 73.2932 18.3709 73.3765 19.0374V24.5355Z" fill="currentColor"/>
+        <path d="M139.039 24.5355V14.0391L142.205 14.0391V24.5354L139.039 24.5355Z" fill="currentColor"/>
+        <path d="M79.9606 11.9572C78.2279 11.8905 77.9613 10.8186 78.0446 10.2911C78.0446 9.45804 78.6277 8.625 79.9606 8.625C81.1269 8.625 81.8766 9.37474 81.8766 10.1244C81.8766 10.6243 81.6934 12.0238 79.9606 11.9572Z" fill="currentColor"/>
+        <path d="M140.617 11.9572C138.884 11.8905 138.618 10.8186 138.701 10.2911C138.701 9.45804 139.284 8.625 140.617 8.625C141.783 8.625 142.533 9.37474 142.533 10.1244C142.533 10.6243 142.35 12.0238 140.617 11.9572Z" fill="currentColor"/>
+        <path d="M58.9622 12.7075L56.8797 14.7068C55.7967 13.5406 54.2973 12.8741 53.0477 13.2907C52.3045 13.3897 50.8818 14.7901 53.2976 15.7065C54.7138 16.0397 54.2139 15.8731 55.9633 16.3729C58.7124 17.3726 59.0178 18.9554 59.1289 19.6218C59.4066 21.1213 58.9123 24.2369 54.7138 24.7034C50.5152 25.1699 48.5492 22.954 47.8828 21.9543C49.4656 20.1216 48.5492 21.1213 49.8821 19.6218C51.4149 21.7544 53.4087 22.0099 54.2139 21.871C54.686 21.871 55.6634 21.6378 55.7967 20.7047C55.9633 19.5385 53.2976 19.0387 52.2979 18.7887C51.2983 18.5388 49.6322 17.9557 48.7158 16.0397C47.9661 13.7072 49.2157 10.375 53.7141 10.375C57.1796 10.375 58.5458 11.9578 58.9622 12.7075Z" fill="currentColor"/>
+        <path d="M69.4636 15.7059L67.7142 17.7052C66.7979 16.539 63.2159 15.5393 62.7993 19.1214C62.9659 22.8701 66.6313 22.2037 67.7142 20.8708L69.4636 22.9534C66.7973 25.9524 59.217 25.4525 59.6337 18.7048C60.7159 12.3738 67.3803 13.0402 69.4636 15.7059Z" fill="currentColor"/>
+        <path d="M90.2109 13.7891C96.292 14.5388 95.5427 24.7848 90.0449 24.7852C87.9129 24.6519 86.9354 23.841 86.7129 23.4521V28.8672H83.5469L83.5801 14.0391H86.5791V15.1211C87.462 14.3715 88.1287 13.7891 90.2109 13.7891ZM88.96 16.4551C88.2102 16.4828 86.6936 17.0715 86.627 19.2041C86.5605 21.3364 88.1547 21.9806 88.96 22.0361C89.7376 22.0915 91.3082 21.6026 91.375 19.2041C91.4416 16.8053 89.7931 16.3719 88.96 16.4551Z" fill="currentColor"/>
+        <path d="M94.6172 16.7065V14.0407H96.4499V11.375H99.6155V14.0407H101.615V16.7065H99.6155V24.5371H96.4499V16.7065H94.6172Z" fill="currentColor"/>
+        <path d="M114.36 12.6218L112.36 14.9543C110.861 12.8717 105.296 12.8717 105.446 17.4534C105.615 22.6184 111.027 22.2018 112.61 20.2025L114.276 22.785C110.944 26.4504 101.198 25.2008 101.947 16.9536C102.669 9.00953 111.527 9.20635 114.36 12.6218Z" fill="currentColor"/>
+        <path d="M15.8964 14.4547H20.2282V9.7064C20.2282 7.8737 22.2275 4.125 26.5593 4.125C30.9386 4.125 32.5572 8.45683 32.5572 9.7064V14.4547H37.0557C39.1383 14.4547 42.6945 16.2052 42.887 20.536C43.0536 24.2847 39.6381 26.7838 37.0557 26.7838H32.5572V31.1156C32.5572 33.3648 30.6412 37.1135 26.3094 37.1135C22.1442 37.1135 20.2282 33.3648 20.2282 31.1156V26.7838H15.8964C13.4805 26.7838 9.89844 24.8845 9.89844 20.6193C9.89844 16.3541 13.6471 14.4547 15.8964 14.4547Z" fill="#34f5dc"/>
+        <path d="M25.5625 30.9492V10.2898C25.5625 9.2067 27.2286 9.2043 27.2286 10.2898V30.9492C27.2286 32.0321 25.5625 32.0321 25.5625 30.9492Z" fill="#ffffff"/>
+        <path d="M20.2278 21.4552V19.7891H16.0625C15.0624 19.7891 15.0625 21.4552 16.0625 21.4552H20.2278Z" fill="#ffffff"/>
+        <path d="M32.5535 21.4552V19.7891H36.7187C37.7188 19.7891 37.7187 21.4552 36.7187 21.4552H32.5535Z" fill="#ffffff"/>
+        <path d="M115.642 34.5548L115.641 28.7761L116.534 28.7761L116.535 31.2445H119.413V28.7734H120.31V34.551H119.413V32.1019H116.535V34.5548H115.642Z" fill="currentColor"/>
+        <path d="M150.017 34.5548L150.016 28.7761L150.909 28.7761L150.91 31.2445H153.788V28.7734H154.685V34.551H153.788V32.1019H150.91V34.5548H150.017Z" fill="currentColor"/>
+        <path d="M147.252 28.7695H143.078V29.6299H144.693V34.548H145.587V29.6296H147.252V28.7695Z" fill="currentColor"/>
+        <path d="M127.201 28.7734V29.6307L124.452 29.6307V31.1555L126.746 31.1555L126.747 32.0146H124.453L124.453 33.6891H127.2L127.2 34.5463H123.562V28.7735L127.201 28.7734Z" fill="currentColor"/>
+        <path d="M135.042 34.5498H134.093L133.545 33.1143H131.132L130.588 34.5479H129.68L131.912 28.7773H132.822L135.042 34.5498ZM131.461 32.2549H133.221L132.776 31.0312L132.36 29.7812L131.461 32.2549Z" fill="currentColor"/>
+      </symbol>
+    </svg>
+
+    <div class="console">
+      <!-- ===================== LEFT RAIL ===================== -->
+      <aside class="rail">
+        <div class="brand">
+          <svg class="logo-svg" viewBox="0 0 165 42" role="img" aria-label="ScriptChain Health">
+            <use href="#scLogo" />
+          </svg>
+        </div>
+
+        <div class="rail-label">Clinician console</div>
+        <nav class="nav">
+          <button class="nav-item active" data-view="cohort" onclick="showView('cohort')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Cohort overview</span>
+          </button>
+          <button class="nav-item" data-view="patient" onclick="showView('patient')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M17 7.5a3 3 0 0 1 0 6M16.5 20a5.2 5.2 0 0 0-3-4.7"/></svg>
+            <span>Patient panel</span>
+          </button>
+          <button class="nav-item" data-view="plan" onclick="showView('plan')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="m9 13 2 2 4-4"/></svg>
+            <span>Plan review</span>
+            <span class="badge">7</span>
+          </button>
+          <button class="nav-item" data-view="billing" onclick="showView('billing')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-1.6L12 21l-3-1.6L6 21z"/><path d="M9.5 8h5M9.5 12h5"/></svg>
+            <span>Reimbursement</span>
+          </button>
+
+          <div class="rail-label" style="margin-top: 1rem">Workspace</div>
+          <button class="nav-item" onclick="toast('Messaging is part of the full console')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/></svg>
+            <span>Messages</span>
+            <span class="badge amber">3</span>
+          </button>
+          <button class="nav-item" onclick="toast('Settings is part of the full console')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.8 7.8 0 0 0 0-2l2-1.5-2-3.4-2.3 1a7.6 7.6 0 0 0-1.7-1l-.3-2.6h-3.8l-.3 2.6a7.6 7.6 0 0 0-1.7 1l-2.3-1-2 3.4L4.6 11a7.8 7.8 0 0 0 0 2l-2 1.5 2 3.4 2.3-1a7.6 7.6 0 0 0 1.7 1l.3 2.6h3.8l.3-2.6a7.6 7.6 0 0 0 1.7-1l2.3 1 2-3.4z"/></svg>
+            <span>Settings</span>
+          </button>
+        </nav>
+
+        <div class="agent-block">
+          <div class="ab-head"><span class="orb"></span> Agent · monitoring</div>
+          <p>Watching 218 charts in real time across your EHR feeds.</p>
+          <div class="ab-stat"><span>Flags today</span><b>4 new</b></div>
+        </div>
+
+        <div class="clin">
+          <div class="av">EA</div>
+          <div class="ct">
+            <b>Dr. Elena Alvarez</b>
+            <span>Internal Medicine</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===================== WORKSPACE ===================== -->
+      <main class="work">
+        <header class="topbar">
+          <label class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+            <input placeholder="Search patients, conditions, CPT codes…" />
+            <kbd>⌘K</kbd>
+          </label>
+          <div class="top-right">
+            <span class="top-date">Tuesday · May 26, 2026</span>
+            <button class="iconbtn" onclick="toast('4 patients flagged by the agent today')" aria-label="Alerts">
+              <span class="dot"></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="scroll">
+          <!-- ============ COHORT OVERVIEW ============ -->
+          <section class="view active" id="view-cohort">
+            <div class="stagger">
+              <div class="view-head">
+                <div>
+                  <div class="ey">Cardiometabolic panel · 218 patients</div>
+                  <h1>Cohort overview</h1>
+                </div>
+                <span class="pill teal">● Synced with Epic · 6 min ago</span>
+              </div>
+
+              <div class="toolbar">
+                <div class="seg" id="rangeSeg">
+                  <button data-range="today">Today</button>
+                  <button class="on" data-range="week">7 days</button>
+                  <button data-range="month">30 days</button>
+                </div>
+                <div class="tb-right">
+                  <button class="chip" onclick="toast('Cohort exported to CSV')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                    Export
+                  </button>
+                </div>
+              </div>
+
+              <div class="bento">
+                <div class="kpi-grid">
+                <div class="kpi">
+                  <div class="kl"><span class="ki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6.5a3 3 0 0 1 0 5"/></svg></span> Panel size</div>
+                  <div class="kv">218</div>
+                  <div class="kfoot" id="kf-panel">+6 enrolled this week</div>
+                </div>
+                <div class="kpi">
+                  <div class="kl"><span class="ki" style="background:var(--coral-bg);color:var(--coral)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span> Rising risk</div>
+                  <div class="kv" id="kv-rising">29</div>
+                  <div class="kfoot" id="kf-rising"><span class="trend up">↑ 4</span> vs last week</div>
+                </div>
+                <div class="kpi">
+                  <div class="kl"><span class="ki" style="background:var(--amber-bg);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="m9 13 2 2 4-4"/></svg></span> Plans to review</div>
+                  <div class="kv" id="kv-plans">7</div>
+                  <div class="kfoot" id="kf-plans">2 flagged urgent</div>
+                </div>
+                <div class="kpi">
+                  <div class="kl"><span class="ki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 6.5c-1-1.5-3-2-5-2s-4 .8-4 3 2.5 2.6 4 3 4 1 4 3-2 2.8-4 2.8-4-.5-5-2"/></svg></span> Captured</div>
+                  <div class="kv" id="kv-captured">$14,280</div>
+                  <div class="kfoot" id="kf-captured"><span class="trend down">↑ 18%</span> vs last week</div>
+                </div>
+              </div>
+
+              <div class="insight">
+                <span class="orb" style="width: 2.4rem; height: 2.4rem"></span>
+                <div class="it">
+                  <div class="ih">ScriptChain Agent · this morning</div>
+                  <p>
+                    <b>4 patients</b> crossed your alert threshold overnight.
+                    Darnell Brooks' A1c rose to 9.1 with no active plan — I've
+                    drafted one. <b>3 plans</b> are ready for your sign-off,
+                    including an update for Rosa Martinez whose BP keeps improving.
+                  </p>
+                </div>
+                <button class="ibtn" onclick="showView('plan')">Review queue →</button>
+              </div>
+              </div>
+              <!-- /.bento -->
+
+              <div class="sec-title">Risk &amp; trend</div>
+              <div class="charts-row">
+                <div class="card">
+                  <div class="card-head">
+                    <div>
+                      <div class="ch-s">Risk stratification · live</div>
+                      <div class="ch-t">218 patients by tier</div>
+                    </div>
+                  </div>
+                  <div class="canvas-box h-bar"><canvas id="riskBar"></canvas></div>
+                  <div class="risk-legend" style="margin-top: 1rem">
+                    <div class="rl"><i style="background: var(--coral)"></i><div><b id="lg-crit">6</b> <span>Critical</span></div></div>
+                    <div class="rl"><i style="background: #e0a23c"></i><div><b id="lg-high">23</b> <span>High risk</span></div></div>
+                    <div class="rl"><i style="background: var(--teal-2)"></i><div><b id="lg-mod">71</b> <span>Moderate</span></div></div>
+                    <div class="rl"><i style="background: #9fd9cf"></i><div><b id="lg-low">118</b> <span>Low / on-track</span></div></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-head">
+                    <div>
+                      <div class="ch-s" id="ct-sub">Rising-risk patients · 12 weeks</div>
+                      <div class="ch-t"><span id="ct-count">29</span> <span style="font-size: 0.9rem; color: var(--muted); font-family: var(--mono)">flagged now</span></div>
+                    </div>
+                    <span class="trend up" id="ct-delta">↑ 4 wk/wk</span>
+                  </div>
+                  <div class="canvas-box h-line"><canvas id="cohortTrend"></canvas></div>
+                </div>
+              </div>
+
+              <div class="sec-title">
+                <span id="attn-label">Patients needing attention</span>
+                <a onclick="toast('Showing the highest-priority patients')">View all <span id="attn-total">218</span> →</a>
+              </div>
+              <div class="chip-row" style="display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.95rem">
+                <button class="chip on" data-filter="all">All <span class="ct-count" id="chip-all">218</span></button>
+                <button class="chip" data-filter="agent">Agent-flagged <span class="ct-count" id="chip-agent">4</span></button>
+                <button class="chip" data-filter="rising">Rising risk <span class="ct-count" id="chip-rising">29</span></button>
+                <button class="chip" data-filter="plans">Plans pending <span class="ct-count" id="chip-plans">7</span></button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Patient</th>
+                      <th>Conditions</th>
+                      <th>Risk</th>
+                      <th>30-day signal</th>
+                      <th>Latest</th>
+                      <th class="td-act">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="showView('patient')">
+                      <td>
+                        <div class="pt"><div class="pav">DB</div><div><b>Darnell Brooks</b><span>61 · M · MRN 0039-204</span><div class="agent-tag"><i></i> Agent flagged</div></div></div>
+                      </td>
+                      <td class="cond">Pre-diabetes · HTN · Obesity</td>
+                      <td><span class="riskscore"><i style="background: var(--coral)"></i>88</span></td>
+                      <td><div class="spark"><canvas data-spark="6,8,12,14,21,26" data-color="#d9554d"></canvas></div></td>
+                      <td class="cond">A1c 9.1 <span class="trend up">↑</span></td>
+                      <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Generate plan</button></td>
+                    </tr>
+                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="showView('patient')">
+                      <td>
+                        <div class="pt"><div class="pav">YT</div><div><b>Yuki Tanaka</b><span>54 · F · MRN 0041-882</span><div class="agent-tag"><i></i> Plan drafted</div></div></div>
+                      </td>
+                      <td class="cond">Metabolic syndrome</td>
+                      <td><span class="riskscore"><i style="background: #e0a23c"></i>81</span></td>
+                      <td><div class="spark"><canvas data-spark="8,10,9,15,18,22" data-color="#e0a23c"></canvas></div></td>
+                      <td class="cond">BP 151/96 <span class="trend up">↑</span></td>
+                      <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Review plan</button></td>
+                    </tr>
+                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="showView('patient')">
+                      <td>
+                        <div class="pt"><div class="pav">MW</div><div><b>Marcus Webb</b><span>47 · M · MRN 0038-117</span><div class="agent-tag"><i></i> Plan drafted</div></div></div>
+                      </td>
+                      <td class="cond">Type 2 diabetes · NAFLD</td>
+                      <td><span class="riskscore"><i style="background: #e0a23c"></i>76</span></td>
+                      <td><div class="spark"><canvas data-spark="12,10,14,13,17,19" data-color="#e0a23c"></canvas></div></td>
+                      <td class="cond">A1c 8.7 <span class="trend up">↑</span></td>
+                      <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Review plan</button></td>
+                    </tr>
+                    <tr class="clickable" onclick="showView('patient')">
+                      <td>
+                        <div class="pt"><div class="pav">PN</div><div><b>Priya Nair</b><span>63 · F · MRN 0040-553</span></div></div>
+                      </td>
+                      <td class="cond">Type 2 diabetes · CKD stage 2</td>
+                      <td><span class="riskscore"><i style="background: var(--teal-2)"></i>69</span></td>
+                      <td><div class="spark"><canvas data-spark="14,13,15,14,15,14" data-color="#12b3a3"></canvas></div></td>
+                      <td class="cond">eGFR 62 <span class="trend flat">→</span></td>
+                      <td class="td-act"><span class="pill teal">On plan</span></td>
+                    </tr>
+                    <tr class="clickable flagged" data-cat="agent plans" onclick="showView('patient')">
+                      <td>
+                        <div class="pt"><div class="pav">RM</div><div><b>Rosa Martinez</b><span>58 · F · MRN 0042-117</span><div class="agent-tag"><i></i> Update drafted</div></div></div>
+                      </td>
+                      <td class="cond">Type 2 risk · Hypertension</td>
+                      <td><span class="riskscore"><i style="background: var(--teal)"></i>41</span></td>
+                      <td><div class="spark"><canvas data-spark="22,19,16,14,10,6" data-color="#0e8e80"></canvas></div></td>
+                      <td class="cond">BP 132/86 <span class="trend down">↓</span></td>
+                      <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Review update</button></td>
+                    </tr>
+                    <tr class="clickable" onclick="showView('patient')">
+                      <td>
+                        <div class="pt"><div class="pav">JO</div><div><b>James Okafor</b><span>52 · M · MRN 0037-901</span></div></div>
+                      </td>
+                      <td class="cond">Hypertension</td>
+                      <td><span class="riskscore"><i style="background: var(--teal)"></i>38</span></td>
+                      <td><div class="spark"><canvas data-spark="20,18,15,13,11,8" data-color="#0e8e80"></canvas></div></td>
+                      <td class="cond">BP 128/82 <span class="trend down">↓</span></td>
+                      <td class="td-act"><span class="pill teal">On plan</span></td>
+                    </tr>
+                    <tr class="clickable" onclick="showView('patient')">
+                      <td>
+                        <div class="pt"><div class="pav">HC</div><div><b>Helen Cho</b><span>67 · F · MRN 0036-440</span></div></div>
+                      </td>
+                      <td class="cond">Pre-diabetes</td>
+                      <td><span class="riskscore"><i style="background: #9fd9cf"></i>33</span></td>
+                      <td><div class="spark"><canvas data-spark="15,14,15,15,14,15" data-color="#9fd9cf"></canvas></div></td>
+                      <td class="cond">A1c 5.9 <span class="trend flat">→</span></td>
+                      <td class="td-act"><span class="pill ghost">Stable</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ PATIENT PANEL ============ -->
+          <section class="view" id="view-patient">
+            <div class="stagger">
+              <button class="back" onclick="showView('cohort')">‹ Back to cohort</button>
+
+              <div class="card phead">
+                <div class="pbig">RM</div>
+                <div>
+                  <h2>Rosa Martinez</h2>
+                  <div class="pmeta">58 · Female · MRN 0042-117 · Last visit May 12 · Next May 30</div>
+                  <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem">
+                    <span class="pill coral">Type 2 risk</span>
+                    <span class="pill amber">Hypertension</span>
+                    <span class="pill teal">Weight mgmt</span>
+                    <span class="pill ghost">Risk 41 ↓ improving</span>
+                  </div>
+                </div>
+                <div class="pacts">
+                  <button class="btn btn-ghost" onclick="toast('Secure message drafted to Rosa')">Message</button>
+                  <button class="btn btn-primary" onclick="showView('plan')">Open plan review</button>
+                </div>
+              </div>
+
+              <div class="sec-title">Vitals · synced from devices &amp; patient app</div>
+              <div class="vit-row">
+                <div class="vit">
+                  <div class="vl">Blood pressure</div>
+                  <div class="vv">132/86</div>
+                  <div class="vfoot">
+                    <span class="trend down">↓ 5-day</span>
+                    <div class="spark"><canvas data-spark="22,19,17,13,10,6" data-color="#0e8e80"></canvas></div>
+                  </div>
+                </div>
+                <div class="vit">
+                  <div class="vl">Glucose</div>
+                  <div class="vv">118<small> mg/dL</small></div>
+                  <div class="vfoot">
+                    <span class="trend down">↓ in range</span>
+                    <div class="spark"><canvas data-spark="21,17,19,13,12,8" data-color="#0e8e80"></canvas></div>
+                  </div>
+                </div>
+                <div class="vit">
+                  <div class="vl">Weight</div>
+                  <div class="vv">198<small> lb</small></div>
+                  <div class="vfoot">
+                    <span class="trend down">↓ 3.1 / 90d</span>
+                    <div class="spark"><canvas data-spark="22,19,16,15,10,7" data-color="#0e8e80"></canvas></div>
+                  </div>
+                </div>
+                <div class="vit">
+                  <div class="vl">A1c</div>
+                  <div class="vv">8.4<small> %</small></div>
+                  <div class="vfoot">
+                    <span class="trend down">↓ from 8.9</span>
+                    <div class="spark"><canvas data-spark="21,20,16,14,11,8" data-color="#0e8e80"></canvas></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="card">
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem">
+                    <div>
+                      <div style="font-family: var(--mono); font-size: 0.66rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em">90-day trend</div>
+                      <div id="trendTitle" style="font-family: var(--disp); font-size: 1.7rem; font-weight: 600; margin-top: 0.2rem">Weight · 198 lb</div>
+                    </div>
+                    <div class="seg" id="trendSeg">
+                      <button class="on" data-series="weight">Weight</button>
+                      <button data-series="bp">BP</button>
+                      <button data-series="a1c">A1c</button>
+                    </div>
+                  </div>
+                  <div class="canvas-box h-trend"><canvas id="patientTrend"></canvas></div>
+                </div>
+
+                <div class="card">
+                  <div style="font-family: var(--mono); font-size: 0.66rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.9rem">Plan adherence · 90 days</div>
+                  <div class="ring-wrap" style="margin-bottom: 1rem">
+                    <div class="canvas-box h-ring"><canvas id="adhRing"></canvas></div>
+                    <div style="flex: 1">
+                      <div class="canvas-box h-adh"><canvas id="adhBars"></canvas></div>
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--ink-2)">
+                    <span style="display: inline-flex; align-items: center; color: var(--teal)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:1.15rem;height:1.15rem"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+                    <b>12-day streak</b> · most consistent in your panel
+                  </div>
+                </div>
+              </div>
+
+              <div class="sec-title">Agent activity</div>
+              <div class="card">
+                <div class="tl">
+                  <div class="tl-item agent">
+                    <div class="tt">Proposed plan update <span class="by">AGENT</span></div>
+                    <p>Recommends adding a 20-min daily low-impact walk and maintaining the Mediterranean lower-sodium nutrition pattern. Awaiting your approval.</p>
+                    <time>Today · 7:48 AM</time>
+                  </div>
+                  <div class="tl-item agent">
+                    <div class="tt">Flagged sustained improvement <span class="by">AGENT</span></div>
+                    <p>Blood pressure trending down 5 days running toward the &lt;130/80 goal. No intervention needed.</p>
+                    <time>Today · 7:42 AM</time>
+                  </div>
+                  <div class="tl-item">
+                    <div class="tt">Instacart order placed</div>
+                    <p>Patient ordered this week's plan ingredients ($54.60, 14 items, low-sodium).</p>
+                    <time>Yesterday · 6:10 PM</time>
+                  </div>
+                  <div class="tl-item">
+                    <div class="tt">Care plan approved <span class="by" style="color: var(--muted)">YOU</span></div>
+                    <p>Initial Mediterranean nutrition + 150 min/week movement plan signed off.</p>
+                    <time>May 12</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ PLAN REVIEW ============ -->
+          <section class="view" id="view-plan">
+            <div class="stagger">
+              <button class="back" onclick="showView('cohort')">‹ Back to cohort</button>
+
+              <div class="view-head">
+                <div>
+                  <div class="ey">Awaiting your approval · 1 of 7</div>
+                  <h1>Proposed plan update</h1>
+                  <p>Rosa Martinez · 58F · generated by ScriptChain Agent today at 7:48 AM</p>
+                </div>
+                <span class="pill amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:0.85rem;height:0.85rem"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg> Pending sign-off</span>
+              </div>
+
+              <div class="rationale">
+                <div class="rh"><span class="orb"></span> Why the agent proposes this</div>
+                <h3>Rosa's BP is improving — time to add gentle movement.</h3>
+                <p>
+                  Blood pressure has trended down for 5 consecutive days (132/86,
+                  approaching the &lt;130/80 goal) and A1c fell from 8.9 to 8.4.
+                  Adherence is strong at 88%. Adding low-impact activity now
+                  compounds the cardiometabolic gains while staying within her
+                  knee and schedule constraints. Nutrition is working, so it's
+                  kept unchanged.
+                </p>
+                <div class="ev">
+                  <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:0.8rem;height:0.8rem"><path d="M20 6 9 17l-5-5"/></svg> Within ADA &amp; AHA guidance</span>
+                  <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:0.8rem;height:0.8rem"><path d="M20 6 9 17l-5-5"/></svg> No medication interactions</span>
+                  <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:0.8rem;height:0.8rem"><path d="M20 6 9 17l-5-5"/></svg> Knee-safe / low-impact</span>
+                </div>
+              </div>
+
+              <div class="grid-2c" style="margin-top: 1.1rem">
+                <div class="card plan-card">
+                  <div class="pc-head">
+                    <div class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:1.4rem;height:1.4rem;color:var(--teal-deep)"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></div>
+                    <div><b>Nutrition</b><span>Food as medicine · unchanged</span></div>
+                  </div>
+                  <div class="change keep"><div class="mk">=</div><div class="ct"><b>Mediterranean, lower-sodium pattern</b> <span>· 1,900 kcal · &lt;1.5g sodium · 130g carbs</span></div></div>
+                  <div class="change keep"><div class="mk">=</div><div class="ct"><b>3 planned meals / day</b> <span>· auto-synced to Instacart</span></div></div>
+                  <div class="change adj"><div class="mk">~</div><div class="ct"><b>Swap 2 dinners → omega-3 rich</b> <span>· salmon &amp; sardines for lipid support</span></div></div>
+                </div>
+
+                <div class="card plan-card">
+                  <div class="pc-head">
+                    <div class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:1.4rem;height:1.4rem;color:var(--teal-deep)"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                    <div><b>Movement</b><span>Exercise as medicine · expanded</span></div>
+                  </div>
+                  <div class="change add"><div class="mk">+</div><div class="ct"><b>20-min daily low-impact walk</b> <span>· warm-up, brisk, cool-down</span></div></div>
+                  <div class="change add"><div class="mk">+</div><div class="ct"><b>Weekly target → 150 min</b> <span>· up from 95 min/week</span></div></div>
+                  <div class="change keep"><div class="mk">=</div><div class="ct"><b>Seated &amp; mobility alternatives</b> <span>· available on low-energy days</span></div></div>
+                </div>
+              </div>
+
+              <div class="sec-title">Projected impact · next 30 days</div>
+              <div class="vit-row" style="grid-template-columns: repeat(3, 1fr)">
+                <div class="vit"><div class="vl">Est. BP</div><div class="vv">128/82 <small>↓</small></div><div class="trend down">reaches goal range</div></div>
+                <div class="vit"><div class="vl">Est. weight</div><div class="vv">194 <small>lb</small></div><div class="trend down">↓ ~4 lb</div></div>
+                <div class="vit"><div class="vl">Readmission risk</div><div class="vv">41 → 36</div><div class="trend down">↓ 5 pts</div></div>
+              </div>
+
+              <div class="approve-bar" id="approveBar">
+                <div class="ab-note">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1rem;height:1rem;color:var(--teal)"><path d="M12 2v20M17 6.5c-1-1.5-3-2-5-2s-4 .8-4 3 2.5 2.6 4 3 4 1 4 3-2 2.8-4 2.8-4-.5-5-2" stroke-linecap="round"/></svg>
+                  On approval, auto-bills <b>99490</b> + <b>99457</b> · est. <b>$110.27</b>
+                </div>
+                <div class="ab-actions">
+                  <button class="btn btn-ghost" onclick="openRC('plan')">Request changes</button>
+                  <button class="btn btn-primary" onclick="approvePlan()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:1.05rem;height:1.05rem"><path d="M20 6 9 17l-5-5"/></svg> Approve &amp; send to patient</button>
+                </div>
+                <div class="rc-panel" id="rc-plan">
+                  <h5>What should the agent revise?</h5>
+                  <div class="rc-chips">
+                    <button class="rc-chip" type="button" onclick="rcChip('plan','Lower the weekly movement target.')">Adjust targets</button>
+                    <button class="rc-chip" type="button" onclick="rcChip('plan','Push the start date out 2 weeks.')">Different timeline</button>
+                    <button class="rc-chip" type="button" onclick="rcChip('plan','Keep it seated — accommodate her knee.')">Patient constraint</button>
+                    <button class="rc-chip" type="button" onclick="rcChip('plan','Swap the omega-3 dinners for something else.')">Change a swap</button>
+                  </div>
+                  <textarea id="rc-plan-note" placeholder="Add a note for the agent…"></textarea>
+                  <div class="rc-acts">
+                    <button class="btn btn-ghost" type="button" onclick="cancelRC('plan')">Cancel</button>
+                    <button class="btn btn-primary" type="button" onclick="sendRC('plan','approveBar')">Send to agent</button>
+                  </div>
+                </div>
+                <div class="approved-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+                  Approved — sent to Rosa &amp; logged to billing. 6 plans left in your queue.
+                </div>
+                <div class="requested-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>
+                  Changes requested — the agent will revise &amp; resubmit for your approval.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ REIMBURSEMENT ============ -->
+          <section class="view" id="view-billing">
+            <div class="stagger">
+              <div class="view-head">
+                <div>
+                  <div class="ey">Automated reimbursement · May 2026</div>
+                  <h1>Reimbursement</h1>
+                  <p>Every billable action your panel generates, auto-coded — no manual entry.</p>
+                </div>
+                <span class="pill teal">● Coding engine active</span>
+              </div>
+
+              <div class="kpis">
+                <div class="kpi">
+                  <div class="kl"><span class="ki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 6.5c-1-1.5-3-2-5-2s-4 .8-4 3 2.5 2.6 4 3 4 1 4 3-2 2.8-4 2.8-4-.5-5-2"/></svg></span> Captured (May)</div>
+                  <div class="kv">$14,280</div>
+                  <div class="kfoot"><span class="trend down">↑ 18%</span> vs April</div>
+                </div>
+                <div class="kpi">
+                  <div class="kl"><span class="ki" style="background:var(--amber-bg);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14M5 12h14M5 16h9"/></svg></span> Ready to submit</div>
+                  <div class="kv">7</div>
+                  <div class="kfoot">$682.41 queued</div>
+                </div>
+                <div class="kpi">
+                  <div class="kl"><span class="ki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span> Clean-claim rate</div>
+                  <div class="kv">99<small>%</small></div>
+                  <div class="kfoot">0 denials this month</div>
+                </div>
+                <div class="kpi">
+                  <div class="kl"><span class="ki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v4h-4"/></svg></span> Annual run-rate</div>
+                  <div class="kv">$171K</div>
+                  <div class="kfoot">across 218 patients</div>
+                </div>
+              </div>
+
+              <div class="insight" style="margin-top: 1.3rem; background: linear-gradient(135deg, #0f2e2b, #0c1f1d)">
+                <span class="orb" style="width: 2.2rem; height: 2.2rem"></span>
+                <div class="it">
+                  <div class="ih" style="color: #9ff0e3">Auto-coding</div>
+                  <p>Each plan approval, RPM reading, and counseling session is matched to the correct <b>CPT &amp; HCPCS</b> code with documentation attached — ready for a one-click submit.</p>
+                </div>
+                <button class="ibtn" onclick="submitClaims()">Submit 7 claims →</button>
+              </div>
+
+              <div class="sec-title">Billable activity</div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Patient</th>
+                      <th>Billable action</th>
+                      <th>Code</th>
+                      <th>Status</th>
+                      <th class="amt" style="text-align: right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="cond">May 26</td>
+                      <td><div class="pt"><div class="pav">RM</div><b>Rosa Martinez</b></div></td>
+                      <td class="cond">Chronic care management · 20 min</td>
+                      <td><span class="code">99490</span></td>
+                      <td><span class="bill-status ready"><i></i> Ready</span></td>
+                      <td class="amt">$62.16</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 26</td>
+                      <td><div class="pt"><div class="pav">RM</div><b>Rosa Martinez</b></div></td>
+                      <td class="cond">Remote physiologic monitoring · treatment mgmt</td>
+                      <td><span class="code">99457</span></td>
+                      <td><span class="bill-status ready"><i></i> Ready</span></td>
+                      <td class="amt">$48.11</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 25</td>
+                      <td><div class="pt"><div class="pav">DB</div><b>Darnell Brooks</b></div></td>
+                      <td class="cond">Behavioral counseling for obesity · 15 min</td>
+                      <td><span class="code">G0447</span></td>
+                      <td><span class="bill-status ready"><i></i> Ready</span></td>
+                      <td class="amt">$26.30</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 24</td>
+                      <td><div class="pt"><div class="pav">YT</div><b>Yuki Tanaka</b></div></td>
+                      <td class="cond">RPM device supply · 30-day data</td>
+                      <td><span class="code">99454</span></td>
+                      <td><span class="bill-status ready"><i></i> Ready</span></td>
+                      <td class="amt">$43.02</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 22</td>
+                      <td><div class="pt"><div class="pav">MW</div><b>Marcus Webb</b></div></td>
+                      <td class="cond">Medical nutrition therapy · initial</td>
+                      <td><span class="code">97802</span></td>
+                      <td><span class="bill-status ready"><i></i> Ready</span></td>
+                      <td class="amt">$38.74</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 20</td>
+                      <td><div class="pt"><div class="pav">PN</div><b>Priya Nair</b></div></td>
+                      <td class="cond">Diabetes self-management training · individual</td>
+                      <td><span class="code">G0108</span></td>
+                      <td><span class="bill-status ready"><i></i> Ready</span></td>
+                      <td class="amt">$54.71</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 18</td>
+                      <td><div class="pt"><div class="pav">JO</div><b>James Okafor</b></div></td>
+                      <td class="cond">RPM setup &amp; patient education</td>
+                      <td><span class="code">99453</span></td>
+                      <td><span class="bill-status ready"><i></i> Ready</span></td>
+                      <td class="amt">$19.32</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 14</td>
+                      <td><div class="pt"><div class="pav">RM</div><b>Rosa Martinez</b></div></td>
+                      <td class="cond">Chronic care management · 20 min</td>
+                      <td><span class="code">99490</span></td>
+                      <td><span class="bill-status submitted"><i></i> Submitted</span></td>
+                      <td class="amt">$62.16</td>
+                    </tr>
+                    <tr>
+                      <td class="cond">May 9</td>
+                      <td><div class="pt"><div class="pav">HC</div><b>Helen Cho</b></div></td>
+                      <td class="cond">Preventive medicine counseling · 15 min</td>
+                      <td><span class="code">99401</span></td>
+                      <td><span class="bill-status submitted"><i></i> Submitted</span></td>
+                      <td class="amt">$38.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="bill-foot">
+                  <div class="bf-total">7 claims ready · 2 submitted<b>$682.41 queued</b></div>
+                  <button class="btn btn-primary" style="margin-left: auto" onclick="submitClaims()">Submit ready claims</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- ===================== EMBEDDED-IN-EPIC SHELL (mockup) ===================== -->
+    <div class="epic" aria-label="ScriptChain embedded inside Epic Hyperspace (mockup)">
+      <!-- top menu toolbar -->
+      <div class="ep-toolbar">
+        <button class="ep-epic-btn">
+          <svg class="ep-hex" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 1.6 21.5 7v10L12 22.4 2.5 17V7z" fill="#1f6cb0" stroke="#0a3a66" stroke-width="1.1" />
+            <path d="M12 6.2 16.8 9v6L12 17.8 7.2 15V9z" fill="#eaf3fb" />
+            <path d="M12 9.3 13.9 10.4v2.2L12 13.7 10.1 12.6v-2.2z" fill="#1f6cb0" />
+          </svg>
+          <b>Epic</b><span class="caret">▾</span>
+        </button>
+        <span class="ep-tsep"></span>
+        <button class="ep-act">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="9" r="3.2" /><path d="M4 19a6 6 0 0 1 12 0" /><circle cx="18" cy="17" r="3.5" /><path d="m21 20-1.6-1.6" /></svg>
+          Patient Lookup
+        </button>
+        <button class="ep-act">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2" /><path d="M3 9h18M8 2.5v4M16 2.5v4" /></svg>
+          Schedule
+        </button>
+        <button class="ep-act" onclick="toast('In Basket: 7 ScriptChain plans awaiting sign-off')">
+          <span class="ep-badge">12</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h18v11H3z" /><path d="m3 7 9 6 9-6" /></svg>
+          In Basket
+        </button>
+        <button class="ep-act">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2" /><path d="M9 3.5V2.5h6v1" /><path d="M9 9h6M9 13h6M9 17h3" /></svg>
+          Encounter
+        </button>
+        <button class="ep-act">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
+          Chart Review
+        </button>
+        <div class="ep-tool-right">
+          <div class="ep-clock">10:42 AM · 05/26/2026</div>
+          <span class="ep-tsep"></span>
+          <div class="ep-user"><b>Alvarez, Elena, MD</b><span>PRD · Internal Medicine</span></div>
+          <button class="ep-logout" onclick="setMode('console')">Log Out</button>
+          <button class="ep-secure">Secure</button>
+        </div>
       </div>
+
+      <div class="ep-body">
+        <!-- ===== Storyboard (Epic patient sidebar) ===== -->
+        <aside class="ep-storyboard">
+          <div class="ep-sb-photo">RM</div>
+          <div class="ep-sb-name">Martinez, Rosa</div>
+          <div class="ep-sb-demo">58 y.o. · Female · DOB 03/14/1968</div>
+          <div class="ep-sb-mrn">MRN 0042117 · CSN 4821</div>
+          <div class="ep-sb-tags">
+            <span class="ep-tag est">Established</span>
+            <span class="ep-tag cov">Medicare</span>
+          </div>
+
+          <div class="ep-sb-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 16H3z" /><path d="M12 9v4M12 16h.01" /></svg>
+            <div class="bd"><div class="lab">Allergies</div><div class="val alert">Penicillin (hives)</div></div>
+          </div>
+          <div class="ep-sb-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 7a3.5 3.5 0 0 1 7 3.5C19 15.5 12 20 12 20z" /></svg>
+            <div class="bd"><div class="lab">Code status</div><div class="val">Full Code</div></div>
+          </div>
+          <div class="ep-sb-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" /></svg>
+            <div class="bd"><div class="lab">Problem list</div><div class="val">Type 2 DM risk · Essential HTN · Obesity (BMI 31)</div></div>
+          </div>
+          <div class="ep-sb-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2" /><path d="M5 20a7 7 0 0 1 14 0" /></svg>
+            <div class="bd"><div class="lab">PCP</div><div class="val">Alvarez, Elena, MD</div></div>
+          </div>
+          <div class="ep-sb-row">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 10h18" /></svg>
+            <div class="bd"><div class="lab">Coverage</div><div class="val">Medicare Part B</div></div>
+          </div>
+
+          <div class="ep-sb-sec">Recent vitals · device + app</div>
+          <div class="ep-sb-vit"><span>Blood pressure</span><b>132/86</b></div>
+          <div class="ep-sb-vit"><span>A1c</span><b>8.4 %</b></div>
+          <div class="ep-sb-vit"><span>Weight / BMI</span><b>198 lb · 31.0</b></div>
+          <div class="ep-sb-vit"><span>Glucose</span><b>118 mg/dL</b></div>
+          <div class="spark" style="width: 100%; margin-top: 0.45rem">
+            <canvas data-spark="22,19,17,14,12,9,6" data-color="#0e8e80"></canvas>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; color: var(--ep-faint); margin-top: 0.2rem">BP · 14-day trend ↓</div>
+        </aside>
+
+        <!-- ===== right column: activity tabs + workspace ===== -->
+        <div class="ep-right">
+          <div class="ep-tabs">
+            <div class="ep-tab">SnapShot</div>
+            <div class="ep-tab">Chart Review</div>
+            <div class="ep-tab">Synopsis</div>
+            <div class="ep-tab">Results</div>
+            <div class="ep-tab">Flowsheets</div>
+            <div class="ep-tab">Notes</div>
+            <div class="ep-tab on sc"><img src="assets/logo.svg" alt="ScriptChain" style="height: 1.1rem; display: block" /></div>
+            <div class="ep-tab">More ▾</div>
+          </div>
+
+          <div class="ep-workspace">
+            <!-- BestPractice Advisory fired by ScriptChain CDS -->
+            <div class="ep-bpa">
+              <div class="bpa-ic">!</div>
+              <div style="flex: 1">
+                <h4>BestPractice Advisory <span class="src">ScriptChain CDS</span></h4>
+                <p><b>Rosa Martinez</b> is trending toward her metabolic-syndrome control goals. A personalized food &amp; exercise plan update has been drafted and is ready for review — no chart digging required.</p>
+                <div class="ep-bpa-acts">
+                  <button class="ep-bpa-btn go" onclick="document.getElementById('epEmbed').scrollIntoView({ behavior: 'smooth', block: 'start' })">Open ScriptChain plan</button>
+                  <button class="ep-bpa-btn sec" onclick="toast('Advisory acknowledged')">Acknowledge</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- embedded SMART on FHIR app: ScriptChain, scoped to this patient -->
+            <div class="ep-embed" id="epEmbed">
+              <div class="ep-app-bar">
+                <img class="logo" src="assets/logo.svg" alt="ScriptChain" />
+                <span class="seg-name">Care Plan Agent</span>
+                <span class="live"><i></i>Active</span>
+                <span class="scope">SMART on FHIR · scoped to Martinez, Rosa · read: labs · meds · vitals</span>
+              </div>
+              <div class="ep-embed-body">
+                <div class="ep-rationale">
+                  <span class="ey"><i></i>Agent rationale</span>
+                  <h4>BP is improving — add gentle movement; hold nutrition.</h4>
+                  <p>
+                    BP down 5 consecutive days (132/86, nearing &lt;130/80 goal); A1c 8.9 → 8.4.
+                    Adherence 88%. Low-impact activity now compounds cardiometabolic gains within
+                    her knee and schedule constraints. Nutrition is working, so it is unchanged.
+                  </p>
+                  <div class="ep-evidence">
+                    <span class="ep-ev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Within ADA &amp; AHA guidance</span>
+                    <span class="ep-ev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>No medication interactions</span>
+                    <span class="ep-ev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sourced from Epic: labs · meds · vitals</span>
+                  </div>
+                </div>
+
+                <div class="ep-sec">Proposed plan update <span class="meta">4 items · 2 added · 1 adjusted</span></div>
+                <table class="ep-ptable">
+                  <thead>
+                    <tr><th style="width: 7.5rem">Domain</th><th>Change</th><th style="width: 6rem">Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td class="dom">Nutrition</td><td class="det"><b>Mediterranean, lower-sodium pattern</b> · 1,900 kcal · &lt;1.5g sodium</td><td><span class="ep-st keep">Unchanged</span></td></tr>
+                    <tr><td class="dom">Nutrition</td><td class="det"><b>Swap 2 dinners → omega-3 rich</b> · salmon &amp; sardines for lipid support</td><td><span class="ep-st adj">Adjusted</span></td></tr>
+                    <tr><td class="dom">Movement</td><td class="det"><b>20-min daily low-impact walk</b> · warm-up, brisk, cool-down</td><td><span class="ep-st add">Added</span></td></tr>
+                    <tr><td class="dom">Movement</td><td class="det"><b>Weekly target → 150 min</b> · up from 95 min/week</td><td><span class="ep-st add">Added</span></td></tr>
+                  </tbody>
+                </table>
+
+                <div class="ep-sec">Projected impact <span class="meta">next 30 days</span></div>
+                <div class="ep-metrics">
+                  <div class="m"><div class="ml">Est. BP</div><div class="mv">128/82</div><div class="md">reaches goal range</div></div>
+                  <div class="m"><div class="ml">Est. weight</div><div class="mv">194 lb</div><div class="md">↓ ~4 lb</div></div>
+                  <div class="m"><div class="ml">Readmit risk</div><div class="mv">41 → 36</div><div class="md">↓ 5 pts</div></div>
+                </div>
+
+                <div class="ep-sec">Writes back to Epic on sign <span class="meta">no double entry</span></div>
+                <div class="ep-orderlist">
+                  <div class="ep-orow"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ot"><b>Referral</b> · Registered Dietitian</span><span class="code">ORD · Nutrition</span></div>
+                  <div class="ep-orow"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ot"><b>Enrollment</b> · RPM (BP cuff + scale)</span><span class="code">RPM</span></div>
+                  <div class="ep-orow"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ot"><b>Chronic Care Mgmt</b> · 20 min logged</span><span class="code">CCM</span></div>
+                  <div class="ep-orow"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ot"><b>Documentation</b> · Plan note → encounter</span><span class="code">NOTE</span></div>
+                  <div class="ep-orow"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="ot"><b>Charges</b> · Care management</span><span class="code">99490 · 99457</span></div>
+                </div>
+
+                <div class="ep-sign" id="epSign">
+                  <div class="note">On <b>Sign</b>, ScriptChain files the orders, plan note &amp; charges straight into Rosa's Epic chart — no double entry.</div>
+                  <div class="acts">
+                    <button class="btn btn-ghost" onclick="openRC('ep')">Request changes</button>
+                    <button class="btn btn-primary" onclick="epicSign()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:1.05rem;height:1.05rem"><path d="M20 6 9 17l-5-5"/></svg> Sign &amp; file to chart</button>
+                  </div>
+                  <div class="rc-panel" id="rc-ep">
+                    <h5>What should ScriptChain revise before you sign?</h5>
+                    <div class="rc-chips">
+                      <button class="rc-chip" type="button" onclick="rcChip('ep','Lower the weekly movement target.')">Adjust targets</button>
+                      <button class="rc-chip" type="button" onclick="rcChip('ep','Push the start date out 2 weeks.')">Different timeline</button>
+                      <button class="rc-chip" type="button" onclick="rcChip('ep','Keep it seated — accommodate her knee.')">Patient constraint</button>
+                      <button class="rc-chip" type="button" onclick="rcChip('ep','Hold the dietitian referral for now.')">Drop an order</button>
+                    </div>
+                    <textarea id="rc-ep-note" placeholder="Add a note for the agent…"></textarea>
+                    <div class="rc-acts">
+                      <button class="btn btn-ghost" type="button" onclick="cancelRC('ep')">Cancel</button>
+                      <button class="btn btn-primary" type="button" onclick="sendRC('ep','epSign')">Send to ScriptChain</button>
+                    </div>
+                  </div>
+                  <div class="ep-signed">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.3rem; height: 1.3rem"><circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" /></svg>
+                    Signed — plan, orders &amp; charges filed to Rosa's Epic chart.
+                  </div>
+                  <div class="requested-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5" /><path d="M4 9h11a5 5 0 0 1 0 10h-3" /></svg>
+                    Changes requested — ScriptChain will revise &amp; resubmit for your sign-off.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- toast -->
+    <div class="toast" id="toast">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+      <span id="toastMsg"></span>
     </div>
 
     <!-- FLOATING SITE SWITCHER -->
@@ -155,10 +3142,599 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5" /><path d="M11 18h2" /></svg>
         <span>Patient</span>
       </a>
-      <a href="doctor.html" class="ss-tab is-active" aria-current="page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v6a4 4 0 0 0 8 0V3" /><path d="M9 13v2a5 5 0 0 0 10 0v-2" /><circle cx="19" cy="11" r="2" /></svg>
-        <span>Doctor</span>
-      </a>
+      <button class="ss-tab is-active" data-mode="console" onclick="setMode('console')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18" /></svg>
+        <span>Standalone</span>
+      </button>
+      <button class="ss-tab" data-mode="epic" onclick="setMode('epic')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7z" /></svg>
+        <span>Embedded</span>
+      </button>
     </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script>
+      const VIEWS = ["cohort", "patient", "plan", "billing"];
+      function showView(id) {
+        document.querySelectorAll(".view").forEach((v) => {
+          const on = v.id === "view-" + id;
+          v.classList.toggle("active", on);
+          if (on) {
+            // restart stagger animation
+            const s = v.querySelector(".stagger");
+            if (s) {
+              s.style.animation = "none";
+              void s.offsetWidth;
+              s.style.animation = "";
+            }
+          }
+        });
+        document.querySelectorAll(".nav-item").forEach((n) =>
+          n.classList.toggle("active", n.dataset.view === id)
+        );
+        document.querySelector(".scroll").scrollTop = 0;
+        if (VIEWS.includes(id)) history.replaceState(null, "", "#" + id);
+        requestAnimationFrame(() => ensureView(id));
+      }
+
+      /* standalone console <-> embedded-in-Epic shell (driven from the site tabbar) */
+      function setMode(m) {
+        const epic = m === "epic";
+        document.body.classList.toggle("epic-mode", epic);
+        document
+          .querySelectorAll(".ss-tab[data-mode]")
+          .forEach((b) => b.classList.toggle("is-active", b.dataset.mode === m));
+        if (epic && window.Chart)
+          requestAnimationFrame(() =>
+            initSparklines(document.querySelector(".epic"))
+          );
+      }
+
+      /* request-changes composer (plan approve-bar + embedded sign-off) */
+      function openRC(key) {
+        const p = document.getElementById("rc-" + key);
+        if (p) {
+          p.classList.add("open");
+          const ta = p.querySelector("textarea");
+          if (ta) ta.focus();
+        }
+      }
+      function cancelRC(key) {
+        const p = document.getElementById("rc-" + key);
+        if (p) p.classList.remove("open");
+      }
+      function rcChip(key, text) {
+        const ta = document.getElementById("rc-" + key + "-note");
+        if (!ta) return;
+        ta.value = ta.value.trim() ? ta.value.trim() + " " + text : text;
+        ta.focus();
+      }
+      function sendRC(key, barId) {
+        const p = document.getElementById("rc-" + key);
+        if (p) p.classList.remove("open");
+        const bar = document.getElementById(barId);
+        if (bar) bar.classList.add("requested");
+        toast("Sent back to ScriptChain with your notes · the agent will revise");
+      }
+
+      /* sign the embedded plan -> writes back to the Epic chart */
+      function epicSign() {
+        const s = document.getElementById("epSign");
+        if (s) s.classList.add("done");
+        toast("Signed in Epic · orders filed · charges dropped to encounter");
+      }
+
+      /* plan approval */
+      function approvePlan() {
+        document.getElementById("approveBar").classList.add("done");
+        toast("Plan approved & sent to Rosa · billing logged");
+      }
+
+      /* submit claims */
+      function submitClaims() {
+        document
+          .querySelectorAll("#view-billing .bill-status.ready")
+          .forEach((s) => {
+            s.className = "bill-status submitted";
+            s.innerHTML = '<i></i> Submitted';
+          });
+        const foot = document.querySelector("#view-billing .bf-total");
+        if (foot) foot.innerHTML = "0 ready · 9 submitted<b>$0.00 queued</b>";
+        toast("7 claims submitted · $682.41 en route");
+      }
+
+      /* segmented control on patient trend */
+      document.querySelectorAll(".seg").forEach((g) =>
+        g.addEventListener("click", (e) => {
+          const b = e.target.closest("button");
+          if (!b) return;
+          g.querySelectorAll("button").forEach((x) => x.classList.remove("on"));
+          b.classList.add("on");
+          if (g.id === "trendSeg" && b.dataset.series) setTrend(b.dataset.series);
+          if (g.id === "rangeSeg" && b.dataset.range) applyRange(b.dataset.range);
+        })
+      );
+
+      /* cohort filter chips */
+      document.querySelectorAll(".chip-row").forEach((row) =>
+        row.addEventListener("click", (e) => {
+          const b = e.target.closest(".chip");
+          if (!b) return;
+          row.querySelectorAll(".chip").forEach((c) => c.classList.remove("on"));
+          b.classList.add("on");
+          if (b.dataset.filter) applyFilter(b.dataset.filter);
+        })
+      );
+
+      /* toast helper */
+      let toastTimer;
+      function toast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toastMsg").textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
+      }
+
+      /* ⌘K focuses search */
+      document.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          document.querySelector(".search input").focus();
+        }
+      });
+
+      /* ===================== CHART.JS ===================== */
+      const REDUCED_MOTION = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      const ANIM = REDUCED_MOTION ? false : { duration: 650, easing: "easeOutQuart" };
+      if (window.Chart) {
+        Chart.defaults.font.family = "'Hanken Grotesk', sans-serif";
+        Chart.defaults.font.size = 11;
+        Chart.defaults.color = "#6b827e";
+      }
+      const hexA = (h, a) => {
+        const n = h.replace("#", "");
+        const r = parseInt(n.slice(0, 2), 16);
+        const g = parseInt(n.slice(2, 4), 16);
+        const b = parseInt(n.slice(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+      };
+
+      /* center value for the adherence gauge */
+      const centerText = {
+        id: "centerText",
+        afterDraw(chart, _args, opts) {
+          if (!opts || !opts.text) return;
+          const {
+            ctx,
+            chartArea: { left, right, top, bottom },
+          } = chart;
+          ctx.save();
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = opts.color || "#0f2e2b";
+          ctx.font = "600 1.35rem 'Bricolage Grotesque', sans-serif";
+          ctx.fillText(opts.text, (left + right) / 2, (top + bottom) / 2);
+          ctx.restore();
+        },
+      };
+      /* % labels at the end of horizontal progress bars */
+      const barEndLabel = {
+        id: "barEndLabel",
+        afterDatasetsDraw(chart) {
+          const { ctx } = chart;
+          const meta = chart.getDatasetMeta(0);
+          ctx.save();
+          ctx.font = "600 0.72rem 'JetBrains Mono', monospace";
+          ctx.fillStyle = "#0c5a54";
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "left";
+          meta.data.forEach((bar, i) => {
+            ctx.fillText(chart.data.datasets[0].data[i] + "%", bar.x + 8, bar.y);
+          });
+          ctx.restore();
+        },
+      };
+
+      function initSparklines(root) {
+        root.querySelectorAll("canvas[data-spark]").forEach((cv) => {
+          if (Chart.getChart(cv)) return;
+          const vals = cv.dataset.spark.split(",").map(Number);
+          const color = cv.dataset.color || "#0e8e80";
+          new Chart(cv, {
+            type: "line",
+            data: {
+              labels: vals.map((_, i) => i),
+              datasets: [
+                {
+                  data: vals,
+                  borderColor: color,
+                  borderWidth: 2,
+                  fill: true,
+                  backgroundColor: hexA(color, 0.14),
+                  tension: 0.4,
+                  pointRadius: 0,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              animation: ANIM,
+              plugins: { legend: { display: false }, tooltip: { enabled: false } },
+              scales: {
+                x: { display: false },
+                y: {
+                  display: false,
+                  min: Math.min(...vals) - 3,
+                  max: Math.max(...vals) + 3,
+                },
+              },
+            },
+          });
+        });
+      }
+
+      function buildRiskBar() {
+        const cv = document.getElementById("riskBar");
+        if (!cv || Chart.getChart(cv)) return;
+        const mk = (label, value, color) => ({
+          label,
+          data: [value],
+          backgroundColor: color,
+          borderRadius: 4,
+          barThickness: 26,
+        });
+        new Chart(cv, {
+          type: "bar",
+          data: {
+            labels: ["Panel"],
+            datasets: [
+              mk("Critical", 6, "#d9554d"),
+              mk("High risk", 23, "#e0a23c"),
+              mk("Moderate", 71, "#12b3a3"),
+              mk("Low / on-track", 118, "#9fd9cf"),
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: ANIM,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                displayColors: false,
+                callbacks: { label: (c) => `${c.dataset.label}: ${c.parsed.x} patients` },
+              },
+            },
+            scales: {
+              x: { stacked: true, display: false, max: 218 },
+              y: { stacked: true, display: false },
+            },
+          },
+        });
+      }
+
+      function buildCohortTrend() {
+        const cv = document.getElementById("cohortTrend");
+        if (!cv || Chart.getChart(cv)) return;
+        const data = [21, 22, 20, 23, 24, 23, 25, 26, 25, 27, 28, 29];
+        const grad = cv.getContext("2d").createLinearGradient(0, 0, 0, 180);
+        grad.addColorStop(0, hexA("#e0a23c", 0.3));
+        grad.addColorStop(1, hexA("#e0a23c", 0));
+        new Chart(cv, {
+          type: "line",
+          data: {
+            labels: data.map((_, i) => `W${i + 1}`),
+            datasets: [
+              {
+                data,
+                borderColor: "#e0a23c",
+                borderWidth: 2.5,
+                fill: true,
+                backgroundColor: grad,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#e0a23c",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: ANIM,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                displayColors: false,
+                callbacks: {
+                  title: (i) => `Week ${i[0].dataIndex + 1}`,
+                  label: (c) => `${c.parsed.y} rising-risk patients`,
+                },
+              },
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 6 },
+              },
+              y: { grid: { color: "rgba(15, 46, 43, 0.07)" }, ticks: { stepSize: 5 } },
+            },
+          },
+        });
+      }
+
+      const TREND = {
+        weight: { title: "Weight · 198 lb", color: "#0e8e80", data: [212, 209, 207, 206, 203, 201, 198] },
+        bp: { title: "Systolic BP · 132 mmHg", color: "#6a59c9", data: [148, 146, 143, 141, 138, 135, 132] },
+        a1c: { title: "A1c · 8.4 %", color: "#c9871a", data: [8.9, 8.8, 8.7, 8.6, 8.5, 8.4, 8.4] },
+      };
+      let patientTrendChart = null;
+      function buildPatientTrend() {
+        const cv = document.getElementById("patientTrend");
+        if (!cv || Chart.getChart(cv)) return;
+        const s = TREND.weight;
+        patientTrendChart = new Chart(cv, {
+          type: "line",
+          data: {
+            labels: ["90d", "75d", "60d", "45d", "30d", "15d", "Now"],
+            datasets: [
+              {
+                data: s.data,
+                borderColor: s.color,
+                borderWidth: 2.5,
+                fill: true,
+                backgroundColor: hexA(s.color, 0.12),
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: ANIM,
+            plugins: { legend: { display: false }, tooltip: { displayColors: false } },
+            scales: {
+              x: { grid: { display: false } },
+              y: { grid: { color: "rgba(15, 46, 43, 0.07)" } },
+            },
+          },
+        });
+      }
+      function setTrend(key) {
+        const s = TREND[key];
+        if (!s || !patientTrendChart) return;
+        const ds = patientTrendChart.data.datasets[0];
+        ds.data = s.data;
+        ds.borderColor = s.color;
+        ds.backgroundColor = hexA(s.color, 0.12);
+        patientTrendChart.update();
+        const t = document.getElementById("trendTitle");
+        if (t) t.textContent = s.title;
+      }
+
+      function buildAdherenceRing() {
+        const cv = document.getElementById("adhRing");
+        if (!cv || Chart.getChart(cv)) return;
+        new Chart(cv, {
+          type: "doughnut",
+          data: {
+            datasets: [
+              { data: [88, 12], backgroundColor: ["#0e8e80", "#d7ece7"], borderWidth: 0 },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: ANIM,
+            cutout: "74%",
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false },
+              centerText: { text: "88%", color: "#0f2e2b" },
+            },
+          },
+          plugins: [centerText],
+        });
+      }
+      function buildAdherenceBars() {
+        const cv = document.getElementById("adhBars");
+        if (!cv || Chart.getChart(cv)) return;
+        new Chart(cv, {
+          type: "bar",
+          data: {
+            labels: ["Meals logged", "Movement", "Vitals logging"],
+            datasets: [
+              {
+                data: [92, 81, 90],
+                backgroundColor: ["#12b3a3", "#9fd9cf", "#0e8e80"],
+                borderRadius: 5,
+                barThickness: 12,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: ANIM,
+            layout: { padding: { right: 36 } },
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false },
+              barEndLabel: {},
+            },
+            scales: {
+              x: { display: false, max: 100 },
+              y: { grid: { display: false }, border: { display: false } },
+            },
+          },
+          plugins: [barEndLabel],
+        });
+      }
+
+      /* lazy-init each view's charts so canvases size correctly when visible */
+      const viewBuilt = {};
+      function ensureView(id) {
+        if (!window.Chart) return;
+        const root = document.getElementById("view-" + id);
+        if (!root) return;
+        if (viewBuilt[id]) {
+          root.querySelectorAll("canvas").forEach((cv) => {
+            const c = Chart.getChart(cv);
+            if (c) c.resize();
+          });
+          return;
+        }
+        viewBuilt[id] = true;
+        initSparklines(root);
+        if (id === "cohort") {
+          buildRiskBar();
+          buildCohortTrend();
+        }
+        if (id === "patient") {
+          buildPatientTrend();
+          buildAdherenceRing();
+          buildAdherenceBars();
+        }
+      }
+
+      /* ===================== COHORT TIME-RANGE + FILTER VARIATIONS ===================== */
+      const RANGE = {
+        today: {
+          panelFoot: "+1 enrolled today",
+          rising: "6",
+          risingFoot: '<span class="trend up">↑ 2</span> since 8:00 AM',
+          plans: "4",
+          plansFoot: "2 flagged urgent",
+          captured: "$1,120",
+          capturedFoot: '<span class="trend down">↑ 6%</span> vs yesterday',
+          risk: [3, 9, 18, 188],
+          trendSub: "Rising-risk patients · 24 hours",
+          trendCount: "6",
+          trendDelta: "↑ 2 today",
+          trendLabels: ["12a", "3a", "6a", "9a", "12p", "3p", "6p", "Now"],
+          trendData: [4, 4, 5, 5, 6, 6, 5, 6],
+          chips: { all: "218", agent: "4", rising: "6", plans: "4" },
+        },
+        week: {
+          panelFoot: "+6 enrolled this week",
+          rising: "29",
+          risingFoot: '<span class="trend up">↑ 4</span> vs last week',
+          plans: "7",
+          plansFoot: "2 flagged urgent",
+          captured: "$14,280",
+          capturedFoot: '<span class="trend down">↑ 18%</span> vs last week',
+          risk: [6, 23, 71, 118],
+          trendSub: "Rising-risk patients · 12 weeks",
+          trendCount: "29",
+          trendDelta: "↑ 4 wk/wk",
+          trendLabels: ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12"],
+          trendData: [21, 22, 20, 23, 24, 23, 25, 26, 25, 27, 28, 29],
+          chips: { all: "218", agent: "4", rising: "29", plans: "7" },
+        },
+        month: {
+          panelFoot: "+14 enrolled this month",
+          rising: "58",
+          risingFoot: '<span class="trend up">↑ 9</span> vs last month',
+          plans: "23",
+          plansFoot: "5 flagged urgent",
+          captured: "$58,400",
+          capturedFoot: '<span class="trend down">↑ 22%</span> vs last month',
+          risk: [11, 34, 86, 87],
+          trendSub: "Rising-risk patients · 6 months",
+          trendCount: "58",
+          trendDelta: "↑ 9 mo/mo",
+          trendLabels: ["Dec", "Jan", "Feb", "Mar", "Apr", "May"],
+          trendData: [38, 41, 44, 49, 53, 58],
+          chips: { all: "218", agent: "12", rising: "58", plans: "23" },
+        },
+      };
+      const FILTER_LABELS = {
+        all: "Patients needing attention",
+        agent: "Agent-flagged patients",
+        rising: "Rising-risk patients",
+        plans: "Plans pending review",
+      };
+      let curRange = "week";
+      let curFilter = "all";
+
+      const setText = (id, v) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = v;
+      };
+      const setHTML = (id, v) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = v;
+      };
+
+      function applyRange(key) {
+        const r = RANGE[key];
+        if (!r) return;
+        curRange = key;
+        setText("kf-panel", r.panelFoot);
+        setText("kv-rising", r.rising);
+        setHTML("kf-rising", r.risingFoot);
+        setText("kv-plans", r.plans);
+        setText("kf-plans", r.plansFoot);
+        setText("kv-captured", r.captured);
+        setHTML("kf-captured", r.capturedFoot);
+
+        const lg = ["lg-crit", "lg-high", "lg-mod", "lg-low"];
+        lg.forEach((id, i) => setText(id, r.risk[i]));
+        const rb = Chart.getChart("riskBar");
+        if (rb) {
+          r.risk.forEach((v, i) => (rb.data.datasets[i].data = [v]));
+          rb.update();
+        }
+
+        setText("ct-sub", r.trendSub);
+        setText("ct-count", r.trendCount);
+        setText("ct-delta", r.trendDelta);
+        const ct = Chart.getChart("cohortTrend");
+        if (ct) {
+          ct.data.labels = r.trendLabels;
+          ct.data.datasets[0].data = r.trendData;
+          ct.update();
+        }
+
+        setText("chip-all", r.chips.all);
+        setText("chip-agent", r.chips.agent);
+        setText("chip-rising", r.chips.rising);
+        setText("chip-plans", r.chips.plans);
+
+        applyFilter(curFilter); // refresh the "View all" total for the active filter
+      }
+
+      function applyFilter(f) {
+        curFilter = f;
+        document.querySelectorAll("#view-cohort tbody tr").forEach((tr) => {
+          const cats = (tr.dataset.cat || "").split(" ");
+          tr.style.display = f === "all" || cats.includes(f) ? "" : "none";
+        });
+        setText("attn-label", FILTER_LABELS[f] || FILTER_LABELS.all);
+        setText("attn-total", RANGE[curRange].chips[f]);
+      }
+
+      /* capture deep-link intent before showView() rewrites the hash */
+      const wantEpic =
+        location.hash === "#epic" ||
+        new URLSearchParams(location.search).get("shell") === "epic";
+
+      /* open the deep-linked view (or cohort) on load */
+      const startView = VIEWS.includes(location.hash.slice(1))
+        ? location.hash.slice(1)
+        : "cohort";
+      showView(startView);
+
+      /* deep link straight into the embedded-in-Epic shell (#epic) */
+      if (wantEpic) setMode("epic");
+    </script>
   </body>
 </html>
