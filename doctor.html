@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ScriptChain — Doctor Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #060d0c;
+        --teal: #16c8b4;
+        --teal-br: #34f5dc;
+        --text: #eafaf6;
+        --text-2: #a7c6bf;
+        --muted: #6e8e88;
+        --disp: "Bricolage Grotesque", sans-serif;
+        --sans: "Hanken Grotesk", sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.5rem 7rem;
+        position: relative;
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(40rem 40rem at 80% -10%, rgba(22,200,180,0.16), transparent 60%),
+          radial-gradient(34rem 34rem at 8% 20%, rgba(15,142,128,0.14), transparent 62%),
+          linear-gradient(180deg, #070f0e, #050b0a);
+      }
+      .stub {
+        position: relative;
+        z-index: 1;
+        max-width: 34rem;
+        text-align: center;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--teal-br);
+        background: rgba(52, 245, 220, 0.07);
+        border: 0.0625rem solid rgba(52, 245, 220, 0.22);
+        padding: 0.5rem 0.9rem;
+        border-radius: 6.25rem;
+        margin-bottom: 1.75rem;
+      }
+      .badge i {
+        width: 0.4rem; height: 0.4rem; border-radius: 50%;
+        background: var(--teal-br); box-shadow: 0 0 0.5rem var(--teal-br);
+      }
+      h1 {
+        font-family: var(--disp);
+        font-weight: 600;
+        font-size: clamp(2rem, 5vw, 3rem);
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+      }
+      h1 em { font-style: normal; color: var(--teal-br); }
+      p {
+        margin-top: 1.1rem;
+        font-size: 1.05rem;
+        color: var(--text-2);
+        line-height: 1.6;
+      }
+      .planned {
+        margin-top: 2rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+        text-align: left;
+      }
+      .planned div {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--text-2);
+        background: rgba(255, 255, 255, 0.03);
+        border: 0.0625rem solid rgba(160, 255, 240, 0.1);
+        border-radius: 0.75rem;
+        padding: 0.8rem 0.9rem;
+      }
+      .planned div b { color: var(--teal-br); font-weight: 600; }
+
+      /* ===== Floating site switcher ===== */
+      .site-switch {
+        position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%);
+        z-index: 200; display: flex; gap: 0.25rem; padding: 0.3125rem;
+        border-radius: 6.25rem; background: rgba(8, 19, 17, 0.82);
+        backdrop-filter: blur(0.875rem) saturate(140%);
+        -webkit-backdrop-filter: blur(0.875rem) saturate(140%);
+        border: 0.0625rem solid rgba(160, 255, 240, 0.16);
+        box-shadow: 0 1.25rem 2.5rem -1rem rgba(0, 0, 0, 0.6);
+      }
+      .ss-tab {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        font-family: var(--mono); font-size: 0.8125rem; font-weight: 600;
+        letter-spacing: 0.01em; color: #a7c6bf; padding: 0.5rem 0.95rem;
+        border-radius: 6.25rem; transition: color 0.2s, background 0.2s;
+      }
+      .ss-tab svg { width: 1rem; height: 1rem; }
+      .ss-tab:hover { color: #fff; }
+      .ss-tab.is-active { background: #34f5dc; color: #04110f; }
+      @media (max-width: 560px) {
+        .ss-tab span { display: none; }
+        .ss-tab { padding: 0.5rem 0.7rem; }
+        .planned { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stub">
+      <span class="badge"><i></i> Doctor console</span>
+      <h1>The <em>clinician</em> dashboard is up next.</h1>
+      <p>
+        A desktop console for physicians: cohort risk stratification, the
+        patient panel, plan review &amp; approval, and auto-generated CPT/HCPCS
+        billing — the other half of the ScriptChain loop.
+      </p>
+      <div class="planned">
+        <div><b>Cohort overview</b> — population risk &amp; flagged patients</div>
+        <div><b>Patient panel</b> — vitals, trends, adherence</div>
+        <div><b>Plan review</b> — approve AI food &amp; exercise scripts</div>
+        <div><b>Reimbursement</b> — auto-coded, billable actions</div>
+      </div>
+    </div>
+
+    <!-- FLOATING SITE SWITCHER -->
+    <nav class="site-switch" aria-label="Switch demo view">
+      <a href="index.html" class="ss-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" /></svg>
+        <span>Marketing</span>
+      </a>
+      <a href="patient.html" class="ss-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5" /><path d="M11 18h2" /></svg>
+        <span>Patient</span>
+      </a>
+      <a href="doctor.html" class="ss-tab is-active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v6a4 4 0 0 0 8 0V3" /><path d="M9 13v2a5 5 0 0 0 10 0v-2" /><circle cx="19" cy="11" r="2" /></svg>
+        <span>Doctor</span>
+      </a>
+    </nav>
+  </body>
+</html>

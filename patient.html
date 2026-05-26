@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ScriptChain — Patient App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* dark brand backdrop */
+        --bg: #060d0c;
+        --bg-2: #081311;
+        --teal-br: #34f5dc;
+        /* light app surface */
+        --app-bg: #f4f9f7;
+        --card: #ffffff;
+        --ink: #0f2e2b;
+        --ink-2: #3a514e;
+        --muted: #6b827e;
+        --faint: #9bb0ac;
+        --line: rgba(15, 46, 43, 0.09);
+        --line-2: rgba(15, 46, 43, 0.14);
+        --teal: #0e8e80;
+        --teal-2: #12b3a3;
+        --teal-deep: #0c5a54;
+        --mint: #e7f4f1;
+        --mint-2: #d7ece7;
+        --amber: #c9871a;
+        --amber-bg: #fbf0d8;
+        --coral: #d9554d;
+        --coral-bg: #fbe4e2;
+        --disp: "Bricolage Grotesque", sans-serif;
+        --sans: "Hanken Grotesk", sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        background: none;
+      }
+
+      /* ===== branded backdrop ===== */
+      .stage {
+        position: relative;
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem 7rem;
+        overflow: hidden;
+      }
+      .stage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(
+            40rem 40rem at 80% -10%,
+            rgba(22, 200, 180, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            34rem 34rem at 8% 20%,
+            rgba(15, 142, 128, 0.14),
+            transparent 62%
+          ),
+          linear-gradient(180deg, #070f0e, #050b0a);
+      }
+      .stage-label {
+        position: absolute;
+        top: 1.75rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #5e7d78;
+        text-align: center;
+      }
+      .stage-label b {
+        color: #9ff0e3;
+        font-weight: 600;
+      }
+
+      /* ===== phone ===== */
+      .phone {
+        position: relative;
+        z-index: 1;
+        width: min(24.375rem, 100%);
+        height: min(50rem, calc(100svh - 11rem));
+        background: var(--app-bg);
+        border-radius: 3.25rem;
+        border: 0.5rem solid #0c1614;
+        box-shadow: 0 3rem 6rem -2rem rgba(0, 0, 0, 0.8),
+          0 0 0 0.0625rem rgba(52, 245, 220, 0.12),
+          inset 0 0 0 0.0625rem rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      /* status bar */
+      .statusbar {
+        flex: 0 0 auto;
+        height: 3rem;
+        padding: 0 1.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--ink);
+        background: var(--app-bg);
+        position: relative;
+      }
+      .island {
+        position: absolute;
+        top: 0.55rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 5.5rem;
+        height: 1.4rem;
+        background: #0c1614;
+        border-radius: 1rem;
+      }
+      .sb-icons {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+      .sb-icons svg {
+        width: 1.05rem;
+        height: 1.05rem;
+      }
+
+      /* scroll area + screens */
+      .app-scroll {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .app-scroll::-webkit-scrollbar {
+        display: none;
+      }
+      .screen {
+        display: none;
+        padding: 0.5rem 1.15rem 2rem;
+        animation: fade 0.32s ease;
+      }
+      .screen.active {
+        display: block;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(0.5rem);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* shared bits */
+      .scr-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0 1.1rem;
+      }
+      .scr-head .ey {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--teal);
+        font-weight: 600;
+      }
+      .scr-head h1 {
+        font-family: var(--disp);
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        margin-top: 0.15rem;
+      }
+      .avatar {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background: var(--mint);
+        color: var(--teal-deep);
+        display: grid;
+        place-items: center;
+        font-family: var(--mono);
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex: 0 0 auto;
+        border: 0.0625rem solid var(--line-2);
+      }
+      .sec-title {
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: var(--ink-2);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin: 1.4rem 0 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .sec-title a {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: var(--teal);
+        text-transform: none;
+        letter-spacing: 0;
+        font-weight: 600;
+      }
+      .card {
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-radius: 1.15rem;
+        padding: 1.05rem 1.1rem;
+        box-shadow: 0 1.25rem 2rem -1.5rem rgba(12, 90, 84, 0.25);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        padding: 0.28rem 0.6rem;
+        border-radius: 6.25rem;
+      }
+      .pill.teal {
+        background: var(--mint);
+        color: var(--teal-deep);
+      }
+      .pill.amber {
+        background: var(--amber-bg);
+        color: var(--amber);
+      }
+      .pill.coral {
+        background: var(--coral-bg);
+        color: var(--coral);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.8rem 1.1rem;
+        border-radius: 0.9rem;
+        transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+      .btn-primary {
+        background: var(--teal);
+        color: #fff;
+        box-shadow: 0 0.75rem 1.25rem -0.6rem rgba(14, 142, 128, 0.7);
+      }
+      .btn-block {
+        width: 100%;
+      }
+      .btn-soft {
+        background: var(--mint);
+        color: var(--teal-deep);
+      }
+      .trend {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+      .trend.down {
+        color: var(--teal);
+      }
+      .trend.up {
+        color: var(--coral);
+      }
+
+      /* agent nudge card */
+      .nudge {
+        position: relative;
+        background: linear-gradient(150deg, #0e8e80, #0c5a54);
+        color: #eafaf6;
+        border-radius: 1.25rem;
+        padding: 1.05rem 1.1rem;
+        overflow: hidden;
+        box-shadow: 0 1.25rem 2rem -1rem rgba(12, 90, 84, 0.55);
+      }
+      .nudge::after {
+        content: "";
+        position: absolute;
+        width: 9rem;
+        height: 9rem;
+        right: -3rem;
+        top: -3.5rem;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(127, 222, 210, 0.45),
+          transparent 70%
+        );
+      }
+      .nudge .nh {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #bfeee6;
+        margin-bottom: 0.5rem;
+      }
+      .orb {
+        width: 1.4rem;
+        height: 1.4rem;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #d7fbf4, #34f5dc 70%);
+        flex: 0 0 auto;
+        box-shadow: 0 0 0.75rem -0.1rem #34f5dc;
+      }
+      .nudge p {
+        font-size: 0.95rem;
+        line-height: 1.45;
+        position: relative;
+        z-index: 1;
+      }
+      .nudge .nbtn {
+        margin-top: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.16);
+        color: #fff;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.45rem 0.8rem;
+        border-radius: 6.25rem;
+      }
+
+      /* vitals tiles */
+      .vit-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
+      }
+      .vit {
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-radius: 1rem;
+        padding: 0.8rem 0.7rem;
+        text-align: left;
+      }
+      .vit .vl {
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .vit .vv {
+        font-family: var(--disp);
+        font-size: 1.3rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin: 0.15rem 0;
+        line-height: 1;
+      }
+      .vit .vv small {
+        font-size: 0.7rem;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-weight: 500;
+      }
+
+      /* list rows */
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.85rem 0;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      .row:last-child {
+        border-bottom: none;
+      }
+      .row .ic {
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 0.75rem;
+        background: var(--mint);
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        color: var(--teal-deep);
+        font-size: 1.1rem;
+      }
+      .row .rt {
+        flex: 1;
+        min-width: 0;
+      }
+      .row .rt b {
+        display: block;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .row .rt span {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .row .rmeta {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-align: right;
+        flex: 0 0 auto;
+      }
+
+      /* progress bars */
+      .goal {
+        margin-bottom: 1rem;
+      }
+      .goal:last-child {
+        margin-bottom: 0;
+      }
+      .goal .gl {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+      }
+      .goal .gl b {
+        font-weight: 600;
+      }
+      .goal .gl span {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+      .bar {
+        height: 0.5rem;
+        border-radius: 6.25rem;
+        background: var(--mint-2);
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        border-radius: 6.25rem;
+        background: linear-gradient(90deg, var(--teal-2), var(--teal));
+      }
+
+      /* streak dots */
+      .streak {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .streak .dots {
+        display: flex;
+        gap: 0.3rem;
+      }
+      .streak .dots i {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 0.55rem;
+        background: var(--mint-2);
+        display: grid;
+        place-items: center;
+        font-family: var(--mono);
+        font-size: 0.55rem;
+        color: var(--faint);
+      }
+      .streak .dots i.on {
+        background: var(--teal);
+        color: #fff;
+      }
+      .flame {
+        font-family: var(--disp);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--teal-deep);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      /* meals */
+      .day-sel {
+        display: flex;
+        gap: 0.4rem;
+        margin-bottom: 1rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .day-sel::-webkit-scrollbar {
+        display: none;
+      }
+      .day-sel button {
+        flex: 0 0 auto;
+        width: 2.7rem;
+        padding: 0.5rem 0;
+        border-radius: 0.8rem;
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        text-align: center;
+        font-size: 0.7rem;
+        color: var(--muted);
+        font-family: var(--mono);
+      }
+      .day-sel button.on {
+        background: var(--ink);
+        color: #fff;
+        border-color: var(--ink);
+      }
+      .day-sel button b {
+        display: block;
+        font-size: 0.95rem;
+        color: inherit;
+      }
+      .meal {
+        display: flex;
+        gap: 0.85rem;
+        align-items: center;
+        padding: 0.7rem 0;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      .meal:last-child {
+        border-bottom: none;
+      }
+      .meal .mimg {
+        width: 3.4rem;
+        height: 3.4rem;
+        border-radius: 0.85rem;
+        flex: 0 0 auto;
+        display: grid;
+        place-items: center;
+        font-size: 1.5rem;
+      }
+      .meal .mt {
+        flex: 1;
+      }
+      .meal .mt .mk {
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--teal);
+      }
+      .meal .mt b {
+        display: block;
+        font-size: 0.92rem;
+        font-weight: 600;
+        margin: 0.05rem 0;
+      }
+      .meal .mt span {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: var(--muted);
+      }
+
+      /* instacart card */
+      .cart {
+        background: linear-gradient(150deg, #0f2e2b, #0c1f1d);
+        color: #eafaf6;
+        border-radius: 1.25rem;
+        padding: 1.1rem;
+        margin-top: 1.1rem;
+      }
+      .cart .ch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.85rem;
+      }
+      .cart .ch b {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .cart .ch .logo {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: #9ff0e3;
+      }
+      .cart .citem {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        padding: 0.3rem 0;
+        color: #bfded8;
+      }
+      .cart .citem span:last-child {
+        font-family: var(--mono);
+      }
+      .ic-btn {
+        margin-top: 0.9rem;
+        width: 100%;
+        background: #34f5dc;
+        color: #04110f;
+        font-weight: 700;
+        padding: 0.85rem;
+        border-radius: 0.85rem;
+        font-size: 0.92rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: 0.2s;
+      }
+      .ic-btn.added {
+        background: rgba(52, 245, 220, 0.18);
+        color: #9ff0e3;
+      }
+
+      /* charts */
+      .chart {
+        height: 8rem;
+        margin: 0.4rem 0 0.2rem;
+      }
+      .chart svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .seg {
+        display: flex;
+        gap: 0.35rem;
+        background: var(--mint);
+        padding: 0.25rem;
+        border-radius: 0.8rem;
+        margin-bottom: 1rem;
+      }
+      .seg button {
+        flex: 1;
+        padding: 0.5rem;
+        border-radius: 0.6rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--teal-deep);
+      }
+      .seg button.on {
+        background: var(--card);
+        box-shadow: 0 0.4rem 0.8rem -0.4rem rgba(12, 90, 84, 0.3);
+      }
+      .ring-wrap {
+        display: flex;
+        align-items: center;
+        gap: 1.1rem;
+      }
+      .ring {
+        width: 6.5rem;
+        height: 6.5rem;
+        border-radius: 50%;
+        flex: 0 0 auto;
+        background: conic-gradient(
+          var(--teal) 0 var(--p, 88%),
+          var(--mint-2) var(--p, 88%) 100%
+        );
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .ring::after {
+        content: "";
+        position: absolute;
+        inset: 0.7rem;
+        background: var(--card);
+        border-radius: 50%;
+      }
+      .ring b {
+        position: relative;
+        z-index: 1;
+        font-family: var(--disp);
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      .wins {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .win {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-radius: 6.25rem;
+        padding: 0.45rem 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+
+      /* coach */
+      #screen-coach {
+        display: none;
+        flex-direction: column;
+        height: 100%;
+        padding: 0;
+      }
+      #screen-coach.active {
+        display: flex;
+      }
+      .coach-head {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.9rem 1.15rem;
+        border-bottom: 0.0625rem solid var(--line);
+        background: var(--card);
+      }
+      .coach-head .ct b {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      .coach-head .ct span {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        color: var(--teal);
+      }
+      .chat {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 1.1rem 1.15rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        scrollbar-width: none;
+      }
+      .chat::-webkit-scrollbar {
+        display: none;
+      }
+      .msg {
+        max-width: 82%;
+        padding: 0.7rem 0.9rem;
+        border-radius: 1.15rem;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        animation: fade 0.3s ease;
+      }
+      .msg.bot {
+        align-self: flex-start;
+        background: var(--card);
+        border: 0.0625rem solid var(--line);
+        border-bottom-left-radius: 0.4rem;
+      }
+      .msg.me {
+        align-self: flex-end;
+        background: var(--teal);
+        color: #fff;
+        border-bottom-right-radius: 0.4rem;
+      }
+      .chips {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 0.4rem;
+        padding: 0.5rem 1.15rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .chips::-webkit-scrollbar {
+        display: none;
+      }
+      .chip {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        background: var(--mint);
+        color: var(--teal-deep);
+        border-radius: 6.25rem;
+        padding: 0.5rem 0.85rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+      .composer {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.75rem 1.15rem 0.9rem;
+        border-top: 0.0625rem solid var(--line);
+        background: var(--card);
+      }
+      .composer input {
+        flex: 1;
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 6.25rem;
+        padding: 0.7rem 1rem;
+        font-family: inherit;
+        font-size: 0.88rem;
+        background: var(--app-bg);
+        color: var(--ink);
+        outline: none;
+      }
+      .composer button {
+        width: 2.7rem;
+        height: 2.7rem;
+        border-radius: 50%;
+        background: var(--teal);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+      }
+
+      /* back header */
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        color: var(--teal);
+        font-weight: 600;
+        padding: 0.75rem 0 0.4rem;
+      }
+
+      /* connected devices */
+      .dev {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.75rem 0;
+        border-bottom: 0.0625rem solid var(--line);
+      }
+      .dev:last-child {
+        border-bottom: none;
+      }
+      .dev .dn {
+        flex: 1;
+        font-size: 0.88rem;
+        font-weight: 600;
+      }
+      .dev .dn span {
+        display: block;
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .toggle {
+        width: 2.6rem;
+        height: 1.5rem;
+        border-radius: 6.25rem;
+        background: var(--teal);
+        position: relative;
+        flex: 0 0 auto;
+      }
+      .toggle.off {
+        background: var(--line-2);
+      }
+      .toggle::after {
+        content: "";
+        position: absolute;
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 50%;
+        background: #fff;
+        top: 0.2rem;
+        right: 0.2rem;
+        transition: 0.2s;
+      }
+      .toggle.off::after {
+        right: 1.3rem;
+      }
+      .synced {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        color: var(--teal);
+        font-weight: 600;
+      }
+
+      /* ===== bottom tab bar ===== */
+      .tabbar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0.55rem 0.6rem 1.1rem;
+        background: var(--card);
+        border-top: 0.0625rem solid var(--line);
+      }
+      .tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        font-family: var(--mono);
+        font-size: 0.58rem;
+        letter-spacing: 0.03em;
+        color: var(--faint);
+        padding: 0.2rem 0.4rem;
+        flex: 1;
+      }
+      .tab svg {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
+      .tab.active {
+        color: var(--teal);
+      }
+      .tab-center {
+        margin-top: -1.6rem;
+      }
+      .tab-center .cc {
+        width: 3.2rem;
+        height: 3.2rem;
+        border-radius: 50%;
+        background: linear-gradient(150deg, #12b3a3, #0c5a54);
+        display: grid;
+        place-items: center;
+        box-shadow: 0 0.75rem 1.5rem -0.4rem rgba(14, 142, 128, 0.7);
+        border: 0.25rem solid var(--card);
+        margin-bottom: 0.15rem;
+      }
+      .tab-center .cc svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        color: #fff;
+      }
+      .tab-center.active {
+        color: var(--teal);
+      }
+
+      /* ===== Floating site switcher ===== */
+      .site-switch {
+        position: fixed;
+        left: 50%;
+        bottom: 1.5rem;
+        transform: translateX(-50%);
+        z-index: 200;
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.3125rem;
+        border-radius: 6.25rem;
+        background: rgba(8, 19, 17, 0.82);
+        backdrop-filter: blur(0.875rem) saturate(140%);
+        -webkit-backdrop-filter: blur(0.875rem) saturate(140%);
+        border: 0.0625rem solid rgba(160, 255, 240, 0.16);
+        box-shadow: 0 1.25rem 2.5rem -1rem rgba(0, 0, 0, 0.6);
+      }
+      .ss-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: #a7c6bf;
+        padding: 0.5rem 0.95rem;
+        border-radius: 6.25rem;
+        transition: color 0.2s, background 0.2s;
+      }
+      .ss-tab svg {
+        width: 1rem;
+        height: 1rem;
+      }
+      .ss-tab:hover {
+        color: #fff;
+      }
+      .ss-tab.is-active {
+        background: #34f5dc;
+        color: #04110f;
+      }
+
+      @media (max-width: 560px) {
+        .stage {
+          padding: 1rem 0.5rem 5.5rem;
+        }
+        .phone {
+          width: 100%;
+          height: calc(100svh - 8rem);
+          border-width: 0.4rem;
+          border-radius: 2.5rem;
+        }
+        .ss-tab span {
+          display: none;
+        }
+        .ss-tab {
+          padding: 0.5rem 0.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="stage-label">
+        ScriptChain <b>Patient App</b> · illustrative product UI
+      </div>
+
+      <div class="phone">
+        <!-- status bar -->
+        <div class="statusbar">
+          <span>9:41</span>
+          <div class="island"></div>
+          <div class="sb-icons">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 14h3v6H2zM7 10h3v10H7zM12 6h3v14h-3zM17 2h3v18h-3z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01" stroke-linecap="round"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="7" width="18" height="10" rx="2.5"/><rect x="4" y="9" width="12" height="6" rx="1" fill="currentColor"/><path d="M22 10v4" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+
+        <div class="app-scroll">
+          <!-- ============ TODAY ============ -->
+          <section class="screen active" id="screen-today">
+            <div class="scr-head">
+              <div>
+                <div class="ey">Wednesday · May 25</div>
+                <h1>Good morning,<br />Rosa</h1>
+              </div>
+              <div class="avatar">RM</div>
+            </div>
+
+            <div class="nudge">
+              <div class="nh"><span class="orb"></span> Coach · today</div>
+              <p>
+                Your blood pressure is trending down 5 days running — nice work.
+                Let's keep the Mediterranean lunch and add a 20-min walk.
+              </p>
+              <button class="nbtn" onclick="showScreen('coach', false)">
+                Ask the coach →
+              </button>
+            </div>
+
+            <div class="sec-title">
+              Vitals today <a onclick="showScreen('vitals', false)">Log →</a>
+            </div>
+            <div class="vit-row">
+              <button class="vit" onclick="showScreen('vitals', false)">
+                <div class="vl">Blood pressure</div>
+                <div class="vv">132/86</div>
+                <div class="trend down">↓ improving</div>
+              </button>
+              <button class="vit" onclick="showScreen('vitals', false)">
+                <div class="vl">Glucose</div>
+                <div class="vv">118<small> mg/dL</small></div>
+                <div class="trend down">↓ in range</div>
+              </button>
+              <button class="vit" onclick="showScreen('vitals', false)">
+                <div class="vl">Weight</div>
+                <div class="vv">198<small> lb</small></div>
+                <div class="trend down">↓ 1.4</div>
+              </button>
+            </div>
+
+            <div class="sec-title">Today's plan</div>
+            <div class="card" style="margin-bottom: 0.7rem">
+              <div
+                style="display:flex;align-items:center;justify-content:space-between"
+              >
+                <div style="display: flex; align-items: center; gap: 0.7rem">
+                  <div class="row" style="padding: 0; border: none">
+                    <div class="ic">🥗</div>
+                  </div>
+                  <div>
+                    <b style="font-size: 0.95rem">Meals · 3 planned</b>
+                    <div
+                      style="font-family: var(--mono); font-size: 0.72rem; color: var(--muted)"
+                    >
+                      ~1,850 kcal · low-sodium
+                    </div>
+                  </div>
+                </div>
+                <button class="pill teal" onclick="showScreen('meals', false)">
+                  View →
+                </button>
+              </div>
+            </div>
+            <div class="card">
+              <div
+                style="display:flex;align-items:center;justify-content:space-between"
+              >
+                <div style="display: flex; align-items: center; gap: 0.7rem">
+                  <div class="ic" style="
+                      width:2.4rem;height:2.4rem;border-radius:0.75rem;
+                      background:var(--mint);display:grid;place-items:center">
+                    🚶
+                  </div>
+                  <div>
+                    <b style="font-size: 0.95rem">20-min low-impact walk</b>
+                    <div
+                      style="font-family: var(--mono); font-size: 0.72rem; color: var(--muted)"
+                    >
+                      0 / 20 min today
+                    </div>
+                  </div>
+                </div>
+                <button class="pill teal" onclick="showScreen('move', false)">
+                  Start →
+                </button>
+              </div>
+            </div>
+
+            <div class="sec-title">Streak</div>
+            <div class="card streak">
+              <div class="flame">🔥 12</div>
+              <div class="dots">
+                <i class="on">M</i><i class="on">T</i><i class="on">W</i
+                ><i class="on">T</i><i class="on">F</i><i>S</i><i>S</i>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ PLAN ============ -->
+          <section class="screen" id="screen-plan">
+            <div class="scr-head">
+              <div>
+                <div class="ey">Your care plan</div>
+                <h1>My Plan</h1>
+              </div>
+            </div>
+
+            <span class="pill teal" style="margin-bottom: 0.9rem"
+              >✓ Approved by Dr. Alvarez · May 12</span
+            >
+
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.1rem">
+              <span class="pill coral">Type 2 risk</span>
+              <span class="pill amber">Hypertension</span>
+              <span class="pill teal">Weight mgmt</span>
+            </div>
+
+            <div class="card">
+              <div class="sec-title" style="margin-top: 0">
+                Nutrition <a onclick="showScreen('meals', false)">View meals →</a>
+              </div>
+              <p style="font-size: 0.9rem; color: var(--ink-2); line-height: 1.5">
+                Mediterranean, lower-sodium pattern tuned to your blood pressure
+                and glucose.
+              </p>
+              <div class="vit-row" style="margin-top: 0.9rem">
+                <div class="vit"><div class="vl">Calories</div><div class="vv" style="font-size:1.05rem">1,900</div></div>
+                <div class="vit"><div class="vl">Sodium</div><div class="vv" style="font-size:1.05rem">&lt;1.5g</div></div>
+                <div class="vit"><div class="vl">Carbs</div><div class="vv" style="font-size:1.05rem">130g</div></div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top: 0.8rem">
+              <div class="sec-title" style="margin-top: 0">
+                Movement <a onclick="showScreen('move', false)">View →</a>
+              </div>
+              <p style="font-size: 0.9rem; color: var(--ink-2); line-height: 1.5">
+                150 minutes / week of low-impact activity, built around your
+                knees and schedule.
+              </p>
+              <div class="goal" style="margin-top: 0.9rem">
+                <div class="gl"><b>This week</b><span>95 / 150 min</span></div>
+                <div class="bar"><i style="width: 63%"></i></div>
+              </div>
+            </div>
+
+            <div class="sec-title">Goals</div>
+            <div class="card">
+              <div class="goal">
+                <div class="gl"><b>A1c</b><span>8.4 → target &lt;7.0</span></div>
+                <div class="bar"><i style="width: 46%"></i></div>
+              </div>
+              <div class="goal">
+                <div class="gl"><b>Blood pressure</b><span>132/86 → &lt;130/80</span></div>
+                <div class="bar"><i style="width: 72%"></i></div>
+              </div>
+              <div class="goal">
+                <div class="gl"><b>Weight</b><span>-3.1 of -10 lb</span></div>
+                <div class="bar"><i style="width: 31%"></i></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ MEALS (sub) ============ -->
+          <section class="screen" id="screen-meals">
+            <button class="back" onclick="goBack()">‹ Back</button>
+            <div class="scr-head" style="padding-top: 0.2rem">
+              <div>
+                <div class="ey">Food as medicine</div>
+                <h1>Meals</h1>
+              </div>
+            </div>
+
+            <div class="day-sel">
+              <button><span>M</span><b>23</b></button>
+              <button><span>T</span><b>24</b></button>
+              <button class="on"><span>W</span><b>25</b></button>
+              <button><span>T</span><b>26</b></button>
+              <button><span>F</span><b>27</b></button>
+              <button><span>S</span><b>28</b></button>
+              <button><span>S</span><b>29</b></button>
+            </div>
+
+            <div class="card">
+              <div class="meal">
+                <div class="mimg" style="background: #fde8cf">🥣</div>
+                <div class="mt">
+                  <div class="mk">Breakfast</div>
+                  <b>Greek yogurt, berries & walnuts</b>
+                  <span>320 kcal · 90mg sodium</span>
+                </div>
+              </div>
+              <div class="meal">
+                <div class="mimg" style="background: #dff0e6">🥗</div>
+                <div class="mt">
+                  <div class="mk">Lunch</div>
+                  <b>Mediterranean quinoa bowl</b>
+                  <span>540 kcal · 380mg sodium</span>
+                </div>
+              </div>
+              <div class="meal">
+                <div class="mimg" style="background: #e3eefb">🐟</div>
+                <div class="mt">
+                  <div class="mk">Dinner</div>
+                  <b>Baked salmon & roasted greens</b>
+                  <span>610 kcal · 410mg sodium</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="cart">
+              <div class="ch">
+                <b>This week's ingredients</b>
+                <span class="logo">via Instacart</span>
+              </div>
+              <div class="citem"><span>Wild salmon (2)</span><span>$14.40</span></div>
+              <div class="citem"><span>Quinoa, greens, berries</span><span>$18.90</span></div>
+              <div class="citem"><span>Greek yogurt, walnuts, olive oil</span><span>$21.30</span></div>
+              <button class="ic-btn" id="icBtn" onclick="addCart()">
+                🛒 Add 14 items to Instacart · $54.60
+              </button>
+            </div>
+          </section>
+
+          <!-- ============ MOVE (sub) ============ -->
+          <section class="screen" id="screen-move">
+            <button class="back" onclick="goBack()">‹ Back</button>
+            <div class="scr-head" style="padding-top: 0.2rem">
+              <div>
+                <div class="ey">Exercise as medicine</div>
+                <h1>Movement</h1>
+              </div>
+            </div>
+
+            <div class="card" style="display: flex; gap: 1rem; align-items: center">
+              <div class="ring" style="--p: 63%; width: 5rem; height: 5rem">
+                <b style="font-size: 1.1rem">5/7</b>
+              </div>
+              <div>
+                <b style="font-size: 1rem">On track this week</b>
+                <p style="font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem">
+                  95 of 150 active minutes. Two sessions to go.
+                </p>
+              </div>
+            </div>
+
+            <div class="sec-title">Today · 20-min low-impact walk</div>
+            <div class="card">
+              <div class="row">
+                <div class="ic">①</div>
+                <div class="rt"><b>Warm-up stroll</b><span>5 min · easy pace</span></div>
+              </div>
+              <div class="row">
+                <div class="ic">②</div>
+                <div class="rt"><b>Brisk walk</b><span>12 min · moderate</span></div>
+              </div>
+              <div class="row">
+                <div class="ic">③</div>
+                <div class="rt"><b>Cool-down + stretch</b><span>3 min</span></div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block" style="margin-top: 1rem">
+              ▶ Start session
+            </button>
+
+            <div class="sec-title">Alternatives</div>
+            <div class="card">
+              <div class="row">
+                <div class="ic">🪑</div>
+                <div class="rt"><b>Seated chair routine</b><span>Low-impact · 15 min</span></div>
+                <div class="rmeta">›</div>
+              </div>
+              <div class="row">
+                <div class="ic">🧘</div>
+                <div class="rt"><b>Gentle mobility flow</b><span>10 min</span></div>
+                <div class="rmeta">›</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ PROGRESS ============ -->
+          <section class="screen" id="screen-progress">
+            <div class="scr-head">
+              <div>
+                <div class="ey">Last 90 days</div>
+                <h1>Progress</h1>
+              </div>
+            </div>
+
+            <div class="seg">
+              <button class="on">Weight</button>
+              <button>BP</button>
+              <button>A1c</button>
+            </div>
+
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: baseline">
+                <div>
+                  <div style="font-family: var(--mono); font-size: 0.68rem; color: var(--muted)">WEIGHT</div>
+                  <div style="font-family: var(--disp); font-size: 1.8rem; font-weight: 600">198 lb</div>
+                </div>
+                <span class="trend down">↓ 3.1 lb / 90d</span>
+              </div>
+              <div class="chart">
+                <svg viewBox="0 0 300 110" preserveAspectRatio="none">
+                  <polyline
+                    points="0,20 50,28 100,34 150,30 200,52 250,60 300,72"
+                    fill="none"
+                    stroke="#0e8e80"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <polyline
+                    points="0,20 50,28 100,34 150,30 200,52 250,60 300,72"
+                    fill="none"
+                    stroke="rgba(14,142,128,0.12)"
+                    stroke-width="9"
+                    stroke-linecap="round"
+                  />
+                  <circle cx="300" cy="72" r="4" fill="#0e8e80" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="sec-title">Adherence</div>
+            <div class="card ring-wrap">
+              <div class="ring" style="--p: 88%"><b>88%</b></div>
+              <div>
+                <b style="font-size: 1rem">Plan adherence</b>
+                <p style="font-size: 0.82rem; color: var(--muted); margin-top: 0.25rem">
+                  Meals 92% · Movement 81% · Logging 90% over 90 days.
+                </p>
+              </div>
+            </div>
+
+            <div class="sec-title">Wins</div>
+            <div class="wins">
+              <span class="win">🏆 First 14-day streak</span>
+              <span class="win">💙 BP in range 5 days</span>
+              <span class="win">📉 Glucose ↓ 22%</span>
+              <span class="win">🥗 30 healthy meals</span>
+            </div>
+          </section>
+
+          <!-- ============ COACH ============ -->
+          <section class="screen" id="screen-coach">
+            <div class="coach-head">
+              <span class="orb" style="width: 2.1rem; height: 2.1rem"></span>
+              <div class="ct">
+                <b>ScriptChain Coach</b>
+                <span>● online · sees your plan & data</span>
+              </div>
+            </div>
+            <div class="chat" id="chat">
+              <div class="msg bot">
+                Morning, Rosa! I saw your BP reading — 132/86, down again. 👏
+                That's 5 days trending toward your &lt;130/80 goal.
+              </div>
+              <div class="msg bot">
+                For lunch I'd suggest the Mediterranean quinoa bowl from your
+                plan — it's low-sodium and fits your carb target. Want me to add
+                the ingredients to Instacart?
+              </div>
+            </div>
+            <div class="chips" id="chips">
+              <button class="chip" onclick="ask(this)">Can I have pasta tonight?</button>
+              <button class="chip" onclick="ask(this)">Add lunch to Instacart</button>
+              <button class="chip" onclick="ask(this)">Why is my BP improving?</button>
+            </div>
+            <div class="composer">
+              <input
+                id="msgIn"
+                placeholder="Ask your coach…"
+                onkeydown="if(event.key==='Enter')sendMsg()"
+              />
+              <button onclick="sendMsg()" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- ============ VITALS ============ -->
+          <section class="screen" id="screen-vitals">
+            <div class="scr-head">
+              <div>
+                <div class="ey">Track & sync</div>
+                <h1>Vitals</h1>
+              </div>
+            </div>
+
+            <div class="vit-row">
+              <button class="vit"><div class="vl">Blood pressure</div><div class="vv" style="font-size:1.1rem">132/86</div><div class="trend" style="color:var(--teal)">+ Log</div></button>
+              <button class="vit"><div class="vl">Glucose</div><div class="vv" style="font-size:1.1rem">118</div><div class="trend" style="color:var(--teal)">+ Log</div></button>
+              <button class="vit"><div class="vl">Weight</div><div class="vv" style="font-size:1.1rem">198</div><div class="trend" style="color:var(--teal)">+ Log</div></button>
+            </div>
+
+            <button class="btn btn-primary btn-block" style="margin-top: 1rem">
+              + Log a reading
+            </button>
+
+            <div class="sec-title">Connected devices</div>
+            <div class="card">
+              <div class="dev">
+                <div class="ic" style="
+                    width:2.4rem;height:2.4rem;border-radius:0.75rem;
+                    background:var(--mint);display:grid;place-items:center">⌚</div>
+                <div class="dn">Apple Watch<span>Steps · heart rate</span></div>
+                <span class="synced">Synced</span>
+              </div>
+              <div class="dev">
+                <div class="ic" style="
+                    width:2.4rem;height:2.4rem;border-radius:0.75rem;
+                    background:var(--mint);display:grid;place-items:center">🩺</div>
+                <div class="dn">Omron BP cuff<span>Last reading 7:42 AM</span></div>
+                <span class="synced">Synced</span>
+              </div>
+              <div class="dev">
+                <div class="ic" style="
+                    width:2.4rem;height:2.4rem;border-radius:0.75rem;
+                    background:var(--mint-2);display:grid;place-items:center">📈</div>
+                <div class="dn">Dexcom CGM<span>Not connected</span></div>
+                <span class="pill teal">Connect</span>
+              </div>
+            </div>
+
+            <div class="sec-title">Reminders</div>
+            <div class="card">
+              <div class="dev">
+                <div class="dn">Morning BP<span>8:00 AM · daily</span></div>
+                <div class="toggle"></div>
+              </div>
+              <div class="dev">
+                <div class="dn">Log lunch<span>12:30 PM · daily</span></div>
+                <div class="toggle"></div>
+              </div>
+              <div class="dev">
+                <div class="dn">Evening walk<span>6:00 PM · daily</span></div>
+                <div class="toggle off"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- bottom nav -->
+        <nav class="tabbar">
+          <button class="tab active" data-screen="today" onclick="showScreen('today')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+            Today
+          </button>
+          <button class="tab" data-screen="plan" onclick="showScreen('plan')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h4"/></svg>
+            Plan
+          </button>
+          <button class="tab tab-center" data-screen="coach" onclick="showScreen('coach')">
+            <span class="cc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M6.5 6.5l11 11M17.5 6.5l-11 11" opacity="0"/><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8z"/></svg>
+            </span>
+            Coach
+          </button>
+          <button class="tab" data-screen="progress" onclick="showScreen('progress')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16M8 16l3.5-4 3 2.5L20 8"/></svg>
+            Progress
+          </button>
+          <button class="tab" data-screen="vitals" onclick="showScreen('vitals')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>
+            Vitals
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- FLOATING SITE SWITCHER -->
+    <nav class="site-switch" aria-label="Switch demo view">
+      <a href="index.html" class="ss-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" /></svg>
+        <span>Marketing</span>
+      </a>
+      <a href="patient.html" class="ss-tab is-active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5" /><path d="M11 18h2" /></svg>
+        <span>Patient</span>
+      </a>
+      <a href="doctor.html" class="ss-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v6a4 4 0 0 0 8 0V3" /><path d="M9 13v2a5 5 0 0 0 10 0v-2" /><circle cx="19" cy="11" r="2" /></svg>
+        <span>Doctor</span>
+      </a>
+    </nav>
+
+    <script>
+      let lastMain = "today";
+      const MAIN = ["today", "plan", "coach", "progress", "vitals"];
+
+      function showScreen(id, isMain = true) {
+        document.querySelectorAll(".screen").forEach((s) => {
+          s.classList.toggle("active", s.id === "screen-" + id);
+        });
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        if (isMain && MAIN.includes(id)) lastMain = id;
+        const hl = MAIN.includes(id) ? id : lastMain;
+        const tabEl = document.querySelector('.tab[data-screen="' + hl + '"]');
+        if (tabEl) tabEl.classList.add("active");
+        const sc = document.querySelector(".app-scroll");
+        if (sc) sc.scrollTop = 0;
+      }
+      function goBack() {
+        showScreen(lastMain, true);
+      }
+
+      /* Instacart */
+      function addCart() {
+        const b = document.getElementById("icBtn");
+        b.classList.add("added");
+        b.textContent = "✓ Added to Instacart · arriving today";
+      }
+
+      /* Coach chat */
+      const REPLIES = {
+        "Can I have pasta tonight?":
+          "You can! Try a half portion of whole-wheat pasta with olive oil, garlic and the roasted greens from tonight's plan — that keeps carbs near 130g and sodium low. Want me to swap it into your plan?",
+        "Add lunch to Instacart":
+          "Done — I've queued the quinoa bowl ingredients to your Instacart cart. You'll find them on the Meals tab to check out. 🛒",
+        "Why is my BP improving?":
+          "Three things are adding up: lower sodium meals (avg 880mg/day vs 2,400 before), your daily walks, and consistent logging so we caught it early. Keep it going and you're on track for <130/80.",
+      };
+      function pushMsg(text, who) {
+        const chat = document.getElementById("chat");
+        const d = document.createElement("div");
+        d.className = "msg " + who;
+        d.textContent = text;
+        chat.appendChild(d);
+        chat.scrollTop = chat.scrollHeight;
+      }
+      function botReply(q) {
+        const r =
+          REPLIES[q] ||
+          "Good question — based on your plan and recent readings, let's keep meals low-sodium and aim for your 20-minute walk today. I'll flag anything unusual to Dr. Alvarez.";
+        setTimeout(() => pushMsg(r, "bot"), 480);
+      }
+      function ask(chip) {
+        const q = chip.textContent;
+        pushMsg(q, "me");
+        botReply(q);
+      }
+      function sendMsg() {
+        const inp = document.getElementById("msgIn");
+        const q = inp.value.trim();
+        if (!q) return;
+        pushMsg(q, "me");
+        inp.value = "";
+        botReply(q);
+      }
+
+      /* toggles */
+      document.querySelectorAll(".toggle").forEach((t) =>
+        t.addEventListener("click", () => t.classList.toggle("off"))
+      );
+      /* day + segment selectors */
+      document.querySelectorAll(".day-sel").forEach((g) =>
+        g.addEventListener("click", (e) => {
+          const b = e.target.closest("button");
+          if (!b) return;
+          g.querySelectorAll("button").forEach((x) => x.classList.remove("on"));
+          b.classList.add("on");
+        })
+      );
+      document.querySelectorAll(".seg").forEach((g) =>
+        g.addEventListener("click", (e) => {
+          const b = e.target.closest("button");
+          if (!b) return;
+          g.querySelectorAll("button").forEach((x) => x.classList.remove("on"));
+          b.classList.add("on");
+        })
+      );
+    </script>
+  </body>
+</html>

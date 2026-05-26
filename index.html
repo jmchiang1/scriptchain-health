@@ -1686,6 +1686,57 @@
           transform: none;
         }
       }
+
+      /* ===== Floating site switcher (shared across all 3 views) ===== */
+      .site-switch {
+        position: fixed;
+        top: auto; /* cancel the global nav{top:0} so the pill isn't stretched */
+        left: 50%;
+        bottom: 1.5rem;
+        transform: translateX(-50%);
+        z-index: 200;
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.3125rem;
+        border-radius: 6.25rem;
+        background: rgba(8, 19, 17, 0.82);
+        backdrop-filter: blur(0.875rem) saturate(140%);
+        -webkit-backdrop-filter: blur(0.875rem) saturate(140%);
+        border: 0.0625rem solid rgba(160, 255, 240, 0.16);
+        box-shadow: 0 1.25rem 2.5rem -1rem rgba(0, 0, 0, 0.6);
+      }
+      .ss-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: #a7c6bf;
+        padding: 0.5rem 0.95rem;
+        border-radius: 6.25rem;
+        transition: color 0.2s, background 0.2s;
+      }
+      .ss-tab svg {
+        width: 1rem;
+        height: 1rem;
+      }
+      .ss-tab:hover {
+        color: #fff;
+      }
+      .ss-tab.is-active {
+        background: #34f5dc;
+        color: #04110f;
+      }
+      @media (max-width: 560px) {
+        .ss-tab span {
+          display: none;
+        }
+        .ss-tab {
+          padding: 0.5rem 0.65rem;
+        }
+      }
     </style>
   </head>
   <body>
@@ -2802,5 +2853,21 @@
         }
       }
     </script>
+
+    <!-- FLOATING SITE SWITCHER -->
+    <nav class="site-switch" aria-label="Switch demo view">
+      <a href="index.html" class="ss-tab is-active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" /></svg>
+        <span>Marketing</span>
+      </a>
+      <a href="patient.html" class="ss-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2.5" /><path d="M11 18h2" /></svg>
+        <span>Patient</span>
+      </a>
+      <a href="doctor.html" class="ss-tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v6a4 4 0 0 0 8 0V3" /><path d="M9 13v2a5 5 0 0 0 10 0v-2" /><circle cx="19" cy="11" r="2" /></svg>
+        <span>Doctor</span>
+      </a>
+    </nav>
   </body>
 </html>
