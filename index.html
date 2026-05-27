@@ -891,62 +891,108 @@
       }
 
       /* how it works — agentic loop */
+      /* how-it-works: circular loop */
       .loop-flow {
         position: relative;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.25rem;
-        margin-top: 1rem;
+        width: 100%;
+        max-width: 46rem;
+        aspect-ratio: 1 / 1;
+        margin: 2.5rem auto 0;
       }
-      .flow-conn {
-        position: absolute;
-        top: 2.375rem;
-        left: 11%;
-        right: 11%;
-        height: 0.125rem;
-        z-index: 0;
-        overflow: hidden;
-        border-radius: 0.125rem;
-        background: rgba(52, 245, 220, 0.1);
-      }
-      .flow-conn::after {
-        content: "";
+      .loop-ring {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--teal-br),
-          transparent
-        );
-        width: 40%;
-        animation: flow 3.4s linear infinite;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
       }
-      @keyframes flow {
-        0% {
-          transform: translateX(-120%);
-        }
-        100% {
-          transform: translateX(320%);
-        }
+      .lr-base {
+        fill: none;
+        stroke: rgba(52, 245, 220, 0.12);
+        stroke-width: 0.5;
+      }
+      .lr-live {
+        fill: none;
+        stroke: var(--teal-br);
+        stroke-width: 0.7;
+        stroke-linecap: round;
+        stroke-dasharray: 47 167;
+        filter: url(#loopGlow);
+      }
+      .lr-spin {
+        transform-origin: 50% 50%;
+      }
+      .loop-core {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        width: 13rem;
+        text-align: center;
+      }
+      .loop-core .lc-ic {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 0.7rem;
+        border: 0.0625rem solid rgba(52, 245, 220, 0.3);
+        background: rgba(52, 245, 220, 0.06);
+      }
+      .loop-core .lc-ic svg {
+        animation: spin 7s linear infinite;
+      }
+      .loop-core b {
+        display: block;
+        font-family: var(--disp);
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: -0.02em;
+      }
+      .loop-core .lc-sub {
+        display: block;
+        margin-top: 0.35rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.5;
       }
       .step {
-        position: relative;
-        z-index: 1;
-        background: linear-gradient(
-          165deg,
-          rgba(15, 34, 30, 0.7),
-          rgba(9, 21, 18, 0.7)
-        );
-        border: 0.0625rem solid var(--line);
+        --lit: 0;
+        position: absolute;
+        width: 13rem;
+        z-index: 2;
+        background: #0b1a17;
+        border: 0.0625rem solid
+          color-mix(in srgb, var(--line-2), var(--teal-br) calc(var(--lit) * 75%));
         border-radius: var(--r);
-        padding: 1.75rem 1.5rem;
-        transition: transform 0.28s, border-color 0.28s, box-shadow 0.28s;
+        padding: 1.35rem 1.3rem;
+        box-shadow: 0 0 calc(var(--lit) * 2.2rem) -0.5rem
+          rgba(52, 245, 220, calc(var(--lit) * 0.8));
+        transition: border-color 0.2s linear, box-shadow 0.2s linear;
       }
-      .step:hover {
-        transform: translateY(-0.4375rem);
-        border-color: rgba(52, 245, 220, 0.35);
-        box-shadow: var(--glow);
+      .step.s-top {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .step.s-right {
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+      }
+      .step.s-bottom {
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .step.s-left {
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
       }
       .step .sn {
         width: 2.875rem;
@@ -960,39 +1006,27 @@
         font-size: 0.9375rem;
         font-weight: 600;
         color: var(--teal-br);
-        margin-bottom: 1.25rem;
-        position: relative;
-      }
-      .step:hover .sn {
-        border-color: rgba(52, 245, 220, 0.5);
-        box-shadow: 0 0 1.125rem -0.25rem var(--teal-br);
+        margin-bottom: 1rem;
+        border-color: color-mix(
+          in srgb,
+          var(--line-2),
+          var(--teal-br) calc(var(--lit) * 60%)
+        );
+        box-shadow: 0 0 calc(var(--lit) * 1.1rem) -0.25rem
+          rgba(52, 245, 220, calc(var(--lit) * 0.9));
+        transition: border-color 0.2s linear, box-shadow 0.2s linear;
       }
       .step h3 {
         font-family: var(--disp);
-        font-size: 1.1875rem;
+        font-size: 1.1rem;
         font-weight: 600;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.55rem;
         letter-spacing: -0.02em;
       }
       .step p {
-        font-size: 0.875rem;
+        font-size: 0.82rem;
         color: var(--muted);
-        line-height: 1.58;
-      }
-      .loop-note {
-        text-align: center;
-        margin-top: 2rem;
-        font-family: var(--mono);
-        font-size: 0.78125rem;
-        color: var(--teal-br);
-        letter-spacing: 0.04em;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-      }
-      .loop-note svg {
-        animation: spin 6s linear infinite;
+        line-height: 1.5;
       }
       @keyframes spin {
         to {
@@ -1082,7 +1116,60 @@
         border-radius: 1.125rem;
         overflow: hidden;
         min-height: 20.625rem;
+        aspect-ratio: 16 / 10;
         box-shadow: 0 2.5rem 5.625rem -3.125rem rgba(0, 0, 0, 0.8);
+      }
+      .feat-shot {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+      }
+      .feat-shot.phone {
+        height: 100%;
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+        border-radius: 1.1rem;
+        box-shadow: 0 1.5rem 3rem -1rem rgba(0, 0, 0, 0.6),
+          0 0 0 0.0625rem rgba(255, 255, 255, 0.06);
+      }
+      /* patient phone shot: no card background; phone fits the standard card height */
+      .feat-media.is-phone {
+        background: none;
+        border: none;
+        box-shadow: none;
+        overflow: visible;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .shot-badge {
+        position: absolute;
+        left: 0.85rem;
+        bottom: 0.85rem;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        letter-spacing: 0.04em;
+        color: var(--text-2);
+        background: rgba(8, 19, 17, 0.82);
+        backdrop-filter: blur(0.5rem);
+        -webkit-backdrop-filter: blur(0.5rem);
+        border: 0.0625rem solid var(--line-2);
+        padding: 0.34rem 0.65rem;
+        border-radius: 100px;
+      }
+      .shot-badge i {
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background: var(--teal-br);
+        box-shadow: 0 0 0.4rem var(--teal-br);
       }
       .media-head {
         padding: 0.75rem 1rem;
@@ -1624,9 +1711,19 @@
           border-right: none;
         }
         .loop-flow {
-          grid-template-columns: repeat(2, 1fr);
+          aspect-ratio: auto;
+          max-width: 30rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
         }
-        .flow-conn {
+        .loop-flow .step {
+          position: static;
+          transform: none;
+          width: auto;
+        }
+        .loop-ring,
+        .loop-core {
           display: none;
         }
         .feat,
@@ -1992,9 +2089,34 @@
             clinicians.
           </p>
         </div>
-        <div class="loop-flow">
-          <div class="flow-conn"></div>
-          <div class="step reveal">
+        <div class="loop-flow reveal">
+          <svg
+            class="loop-ring"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+          >
+            <defs>
+              <filter id="loopGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="1.3" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <circle class="lr-base" cx="50" cy="50" r="34" />
+            <g class="lr-spin">
+              <circle class="lr-live" cx="50" cy="50" r="34" />
+            </g>
+          </svg>
+
+          <div class="loop-core">
+            <b>Continuous loop</b>
+            <span class="lc-sub">Every new data point re-scores the panel</span>
+          </div>
+
+          <div class="step s-top">
             <div class="sn">01</div>
             <h3>Ingest</h3>
             <p>
@@ -2002,7 +2124,7 @@
               vitals, meds, history.
             </p>
           </div>
-          <div class="step reveal">
+          <div class="step s-right">
             <div class="sn">02</div>
             <h3>Screen</h3>
             <p>
@@ -2010,7 +2132,7 @@
               patient's cardiovascular risk.
             </p>
           </div>
-          <div class="step reveal">
+          <div class="step s-bottom">
             <div class="sn">03</div>
             <h3>Prescribe</h3>
             <p>
@@ -2018,7 +2140,7 @@
               evidence — and can order ingredients via Instacart.
             </p>
           </div>
-          <div class="step reveal">
+          <div class="step s-left">
             <div class="sn">04</div>
             <h3>Reimburse</h3>
             <p>
@@ -2026,18 +2148,6 @@
               becomes a billable, revenue-positive service.
             </p>
           </div>
-        </div>
-        <div class="loop-note reveal">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M21 12a9 9 0 11-3-6.7M21 4v4h-4"
-              stroke="#34f5dc"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Continuous loop — every new data point re-scores the panel
         </div>
       </div>
     </section>
@@ -2109,36 +2219,14 @@
               </li>
             </ul>
           </div>
-          <div class="feat-media ph reveal">
-            <span class="ph-tag">Illustrative</span>
-            <div class="media-head">
-              <div class="dots">
-                <i style="background: #ff6f6f"></i
-                ><i style="background: #f5b53f"></i
-                ><i style="background: #34f5dc"></i>
-              </div>
-              <span class="mt">population_risk · last 90 days</span>
-            </div>
-            <div class="media-body">
-              <div class="barz">
-                <div class="bar" style="height: 38%"></div>
-                <div class="bar" style="height: 55%"></div>
-                <div class="bar" style="height: 47%"></div>
-                <div class="bar hi" style="height: 82%"></div>
-                <div class="bar" style="height: 60%"></div>
-                <div class="bar hi" style="height: 92%"></div>
-                <div class="bar" style="height: 50%"></div>
-              </div>
-              <div class="leg">
-                <span
-                  ><i style="background: rgba(110, 142, 136, 0.4)"></i>Stable
-                  cohort</span
-                ><span
-                  ><i style="background: #34f5dc"></i>Rising risk ·
-                  flagged</span
-                >
-              </div>
-            </div>
+          <div class="feat-media reveal">
+            <img
+              class="feat-shot"
+              src="assets/shot-standalone.png"
+              alt="ScriptChain standalone clinician console — cohort risk overview with agent-flagged patients"
+              loading="lazy"
+            />
+            <span class="shot-badge"><i></i> Standalone console</span>
           </div>
         </div>
 
@@ -2192,37 +2280,14 @@
               </li>
             </ul>
           </div>
-          <div class="feat-media ph reveal">
-            <span class="ph-tag">Illustrative</span>
-            <div class="media-head">
-              <div class="dots">
-                <i style="background: #ff6f6f"></i
-                ><i style="background: #f5b53f"></i
-                ><i style="background: #34f5dc"></i>
-              </div>
-              <span class="mt">plan_adherence · Rosa M.</span>
-            </div>
-            <div class="media-body">
-              <div class="donut-row">
-                <div class="donut" style="--p: 64%">
-                  <div class="ctr">
-                    <div><b>91%</b><small>adherence</small></div>
-                  </div>
-                </div>
-                <div class="dl">
-                  <div>
-                    <i style="background: #34f5dc"></i>Nutrition plan · on track
-                  </div>
-                  <div>
-                    <i style="background: #f5b53f"></i>Activity · 5/7 days
-                  </div>
-                  <div>
-                    <i style="background: rgba(255, 255, 255, 0.1)"></i
-                    >Remaining this week
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="feat-media reveal is-phone">
+            <img
+              class="feat-shot phone"
+              src="assets/mobile.png"
+              alt="ScriptChain patient app — today screen with personalized plan, coach, and vitals"
+              loading="lazy"
+            />
+            <span class="shot-badge"><i></i> Patient app</span>
           </div>
         </div>
 
@@ -2277,53 +2342,14 @@
               </li>
             </ul>
           </div>
-          <div class="feat-media ph reveal">
-            <span class="ph-tag">Illustrative</span>
-            <div class="media-head">
-              <div class="dots">
-                <i style="background: #ff6f6f"></i
-                ><i style="background: #f5b53f"></i
-                ><i style="background: #34f5dc"></i>
-              </div>
-              <span class="mt">auto_generated_claim.json</span>
-            </div>
-            <div class="media-body">
-              <div class="code-list">
-                <div class="code-item">
-                  <div class="cl">
-                    <span class="cc">99490</span
-                    ><span class="cd">Chronic care management</span>
-                  </div>
-                  <span class="amt">+ BILLABLE</span>
-                </div>
-                <div class="code-item">
-                  <div class="cl">
-                    <span class="cc">G0447</span
-                    ><span class="cd">Behavioral counseling, obesity</span>
-                  </div>
-                  <span class="amt">+ BILLABLE</span>
-                </div>
-                <div class="code-item">
-                  <div class="cl">
-                    <span class="cc">G0270</span
-                    ><span class="cd">Medical nutrition therapy</span>
-                  </div>
-                  <span class="amt">+ BILLABLE</span>
-                </div>
-                <div
-                  class="code-item"
-                  style="
-                    border-style: dashed;
-                    border-color: rgba(52, 245, 220, 0.3);
-                  "
-                >
-                  <div class="cl">
-                    <span class="auto-pill">Auto-coded by agent</span>
-                  </div>
-                  <span class="amt">3 codes captured</span>
-                </div>
-              </div>
-            </div>
+          <div class="feat-media reveal">
+            <img
+              class="feat-shot"
+              src="assets/shot-embedded.png"
+              alt="ScriptChain embedded in Epic — plan review with auto-generated billing write-back"
+              loading="lazy"
+            />
+            <span class="shot-badge"><i></i> Embedded in Epic</span>
           </div>
         </div>
       </div>
@@ -2758,6 +2784,53 @@
         { threshold: 0.5 }
       );
       document.querySelectorAll(".count").forEach((el) => co.observe(el));
+
+      /* ---- loop: drive the arc + light each step as the line passes ---- */
+      (function () {
+        const flow = document.querySelector(".loop-flow");
+        if (!flow) return;
+        const spin = flow.querySelector(".lr-spin");
+        // card centers, in degrees measured clockwise from 3 o'clock
+        const cards = [
+          [flow.querySelector(".step.s-right"), 0],
+          [flow.querySelector(".step.s-bottom"), 90],
+          [flow.querySelector(".step.s-left"), 180],
+          [flow.querySelector(".step.s-top"), 270],
+        ].filter((c) => c[0]);
+        const PERIOD = 7000; // ms per revolution
+        const ARC_MID = 39.6; // visible-arc midpoint at rotation 0
+        const HALF = 58; // angular half-width of the glow falloff
+        let running = false,
+          startT = 0;
+        const angDist = (a, b) => {
+          const d = (((a - b) % 360) + 360) % 360;
+          return d > 180 ? 360 - d : d;
+        };
+        function frame(now) {
+          if (!running) return;
+          const R = ((now - startT) / PERIOD) * 360;
+          if (spin) spin.style.transform = "rotate(" + (R % 360) + "deg)";
+          const mid = ARC_MID + R;
+          for (const [el, ang] of cards) {
+            const g = Math.max(0, 1 - angDist(mid, ang) / HALF);
+            el.style.setProperty("--lit", (g * g).toFixed(3));
+          }
+          requestAnimationFrame(frame);
+        }
+        new IntersectionObserver(
+          (es) =>
+            es.forEach((e) => {
+              if (e.isIntersecting && !running) {
+                running = true;
+                if (!startT) startT = performance.now();
+                requestAnimationFrame(frame);
+              } else if (!e.isIntersecting) {
+                running = false;
+              }
+            }),
+          { threshold: 0.1 }
+        ).observe(flow);
+      })();
     </script>
 
     <!-- HERO SHADER (Three.js via CDN ESM) — ported from shader-animation.tsx, recolored to ScriptChain brand -->

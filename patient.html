@@ -1393,6 +1393,100 @@
         animation: fade 0.4s ease;
       }
 
+      /* completed meal — checked off the Meals list */
+      .meal.done .rmeta {
+        display: none;
+      }
+      .meal .mdone {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 50%;
+        background: var(--teal);
+        color: #fff;
+        flex: 0 0 auto;
+      }
+      .meal .mdone .i {
+        width: 1rem;
+        height: 1rem;
+      }
+      .meal.done .mdone {
+        display: inline-flex;
+        animation: chkpop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .meal.done .mk {
+        color: var(--teal);
+      }
+      .meal.done b {
+        text-decoration: line-through;
+        text-decoration-color: var(--line-2);
+      }
+
+      /* completed movement session */
+      .move-complete {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--teal-deep);
+      }
+      .move-complete .i {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+      #moveStartBtn.is-done {
+        background: var(--mint);
+        color: var(--teal-deep);
+        pointer-events: none;
+      }
+
+      /* recent-readings history (vitals page) */
+      .vlog {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .vlog:last-child {
+        border-bottom: none;
+      }
+      .vlog-l {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+        min-width: 0;
+      }
+      .vlog-m {
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .vlog-t {
+        font-size: 0.68rem;
+        color: var(--muted);
+      }
+      .vlog-v {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--teal-deep);
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .vlog-v i {
+        font-style: normal;
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: var(--muted);
+        margin-left: 0.2rem;
+      }
+      .vlog.new {
+        animation: fade 0.35s ease;
+      }
+
       /* log-a-reading sheet + toast */
       .sheet-back {
         position: absolute;
@@ -1856,7 +1950,7 @@
             <button class="coach-brief" onclick="showScreen('coach', false)">
               <span class="orb"></span>
               <div>
-                <div class="cb-k">Coach</div>
+                <div class="cb-k">Sage · your coach</div>
                 <p>
                   BP down 5 days running — keep the Mediterranean lunch and a
                   20-min walk today.
@@ -2119,7 +2213,7 @@
             </div>
 
             <div class="card">
-              <button class="meal" onclick="openRecipe('breakfast')">
+              <button class="meal" data-meal="breakfast" onclick="openRecipe('breakfast')">
                 <span
                   class="ic"
                   style="background: var(--amber-bg); color: var(--amber)"
@@ -2144,7 +2238,7 @@
                 </div>
                 <span class="rmeta">›</span>
               </button>
-              <button class="meal" onclick="openRecipe('lunch')">
+              <button class="meal" data-meal="lunch" onclick="openRecipe('lunch')">
                 <span class="ic"
                   ><svg
                     class="i"
@@ -2167,7 +2261,7 @@
                 </div>
                 <span class="rmeta">›</span>
               </button>
-              <button class="meal" onclick="openRecipe('dinner')">
+              <button class="meal" data-meal="dinner" onclick="openRecipe('dinner')">
                 <span class="ic" style="background: #e3eefb; color: #2f6cba"
                   ><svg
                     class="i"
@@ -2259,11 +2353,12 @@
             >
               <div class="pring" style="width: 5rem; height: 5rem">
                 <canvas id="ringMove"></canvas
-                ><b style="font-size: 1rem">5/7</b>
+                ><b style="font-size: 1rem" id="moveRingCount">5/7</b>
               </div>
               <div>
                 <b style="font-size: 1rem">On track this week</b>
                 <p
+                  id="moveWeekSub"
                   style="
                     font-size: 0.82rem;
                     color: var(--muted);
@@ -2275,7 +2370,7 @@
               </div>
             </div>
 
-            <div class="sec-title">Today · 20-min low-impact walk</div>
+            <div class="sec-title" id="moveTodayTitle">Today · 20-min low-impact walk</div>
             <div class="card">
               <div class="row">
                 <span class="stepnum">1</span>
@@ -2298,6 +2393,7 @@
             </div>
             <button
               class="btn btn-primary btn-block"
+              id="moveStartBtn"
               style="margin-top: 1rem"
               onclick="openSession()"
             >
@@ -2504,14 +2600,14 @@
             <div class="coach-head">
               <span class="orb"></span>
               <div class="ct">
-                <b>ScriptChain Coach</b
-                ><span>online · sees your plan &amp; data</span>
+                <b>Sage</b
+                ><span>Your ScriptChain coach · sees your plan &amp; data</span>
               </div>
             </div>
             <div class="chat" id="chat">
               <div class="msg bot">
-                Morning, Rosa! I saw your BP reading — 132/86, down again.
-                That's 5 days trending toward your &lt;130/80 goal.
+                Morning, Rosa — Sage here. I saw your BP reading — 132/86, down
+                again. That's 5 days trending toward your &lt;130/80 goal.
               </div>
               <div class="msg bot">
                 For lunch I'd suggest the Mediterranean quinoa bowl from your
@@ -2529,11 +2625,17 @@
               <button class="qchip" onclick="ask(this)">
                 Why is my BP improving?
               </button>
+              <button class="qchip" onclick="ask(this)">
+                I'm craving something sweet
+              </button>
+              <button class="qchip" onclick="ask(this)">
+                I don't feel like walking today
+              </button>
             </div>
             <div class="composer">
               <input
                 id="msgIn"
-                placeholder="Ask your coach…"
+                placeholder="Ask Sage…"
                 onkeydown="if(event.key==='Enter')sendMsg()"
               />
               <button onclick="sendMsg()" aria-label="Send">
@@ -2599,6 +2701,26 @@
               </svg>
               Log a reading
             </button>
+
+            <div class="sec-title">Recent readings</div>
+            <div class="card" id="vHistory">
+              <div class="vlog">
+                <div class="vlog-l"><span class="vlog-m">Blood pressure</span><span class="vlog-t">Today · 7:42 AM</span></div>
+                <span class="vlog-v">132/86<i>mmHg</i></span>
+              </div>
+              <div class="vlog">
+                <div class="vlog-l"><span class="vlog-m">Glucose</span><span class="vlog-t">Today · 7:40 AM</span></div>
+                <span class="vlog-v">118<i>mg/dL</i></span>
+              </div>
+              <div class="vlog">
+                <div class="vlog-l"><span class="vlog-m">Weight</span><span class="vlog-t">Yesterday · 8:10 AM</span></div>
+                <span class="vlog-v">198<i>lb</i></span>
+              </div>
+              <div class="vlog">
+                <div class="vlog-l"><span class="vlog-m">Blood pressure</span><span class="vlog-t">Yesterday · 7:55 AM</span></div>
+                <span class="vlog-v">134/88<i>mmHg</i></span>
+              </div>
+            </div>
 
             <div class="sec-title">Connected devices</div>
             <div class="card">
@@ -3447,14 +3569,22 @@
         if (tabEl) tabEl.classList.add("active");
         const sc = document.querySelector(".app-scroll");
         if (sc) sc.scrollTop = 0;
-        // Chart.js canvases size to 0 while their screen is display:none — resize once shown
-        requestAnimationFrame(() =>
+        // Charts size to 0 while their screen is display:none. Resize them all,
+        // and replay the entrance (fill) animation for the charts on the screen
+        // we just opened — so progress rings animate by filling in, in place,
+        // instead of appearing pre-filled and sliding into the card.
+        requestAnimationFrame(() => {
+          const active = document.getElementById("screen-" + id);
           charts.forEach((c) => {
             try {
               c.resize();
+              if (active && c.canvas && active.contains(c.canvas)) {
+                c.reset();
+                c.update();
+              }
             } catch (e) {}
-          })
-        );
+          });
+        });
       }
       function goBack() {
         showScreen(lastMain, true);
@@ -3467,14 +3597,58 @@
         b.innerHTML =
           '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Added to Instacart · arriving today';
       }
-      const REPLIES = {
-        "Can I have pasta tonight?":
-          "You can! Try a half portion of whole-wheat pasta with olive oil, garlic and the roasted greens from tonight's plan — that keeps carbs near 130g and sodium low. Want me to swap it into your plan?",
-        "Add lunch to Instacart":
-          "Done — I've queued the quinoa bowl ingredients to your Instacart cart. You'll find them on the Meals tab to check out.",
-        "Why is my BP improving?":
-          "Three things are adding up: lower-sodium meals (avg 880mg/day vs 2,400 before), your daily walks, and consistent logging so we caught it early. Keep it going and you're on track for <130/80.",
-      };
+      /* Coach canned replies — keyword-matched. The FIRST intent whose any
+         keyword appears (as a substring) in the message wins, so specific /
+         action intents are listed before general ones. Tap a suggestion chip
+         or type any of the trigger words. Unmatched messages get COACH_FALLBACK. */
+      const COACH_INTENTS = [
+        { id: "instacart",
+          keys: ["instacart", "add to cart", "add lunch", "groceries", "order the", "add the ingredients", "send to cart"],
+          reply: "Done — I've queued this week's plan ingredients to your Instacart cart ($54.60 · 14 items · low-sodium). You'll find them on the Meals tab to check out." },
+        { id: "pasta",
+          keys: ["pasta", "pizza", "bread", "rice", "carbs", "noodle"],
+          reply: "You can — just keep the portion in check. Try a half serving of whole-wheat pasta with olive oil, garlic and the roasted greens from tonight's plan. That keeps you near your 130g carb target and stays low-sodium. Want me to swap it into your plan?" },
+        { id: "bp",
+          keys: ["bp", "blood pressure", "pressure"],
+          reply: "Your BP's trended down 5 days running — 132/86 this morning. Three things are driving it: lower-sodium meals (~880mg/day vs 2,400 before), your daily walks, and logging consistently so we catch changes early. Keep going and <130/80 is in reach." },
+        { id: "alcohol",
+          keys: ["alcohol", "wine", "beer", "drink", "cocktail", "margarita"],
+          reply: "A glass now and then is okay — I'd cap it at one, with food and water alongside. Alcohol can nudge your blood pressure and your sleep, so if you're having one tonight, let's keep tomorrow's sodium on the lighter side." },
+        { id: "coffee",
+          keys: ["coffee", "caffeine", "espresso", "latte"],
+          reply: "Coffee's fine — black or with a splash of milk keeps it sugar-free. Try to wrap up caffeine by early afternoon so it doesn't eat into your sleep, which matters for your glucose." },
+        { id: "sweet",
+          keys: ["sweet", "dessert", "sugar", "craving", "chocolate", "snack"],
+          reply: "Cravings are normal. Try Greek yogurt with berries and a few walnuts, or a square of 70%+ dark chocolate — both hit the sweet tooth without spiking your glucose. Want me to add it to today's plan?" },
+        { id: "exercise",
+          keys: ["walk", "exercise", "workout", "movement", "tired", "skip", "motivat", "lazy", "don't feel", "dont feel"],
+          reply: "Totally fair. Even a 10-minute easy walk counts today — momentum matters more than intensity. If your knee's acting up, do the seated mobility routine instead. I'll log whatever you manage." },
+        { id: "weight",
+          keys: ["weight", "scale", "plateau", "not losing", "stuck", "lose weight"],
+          reply: "You're down 3.1 lb over 90 days — steady beats fast. Weight bounces day to day with water and sodium, so trust the trend line, not one reading. Your BP and energy are moving the right way too." },
+        { id: "eatout",
+          keys: ["restaurant", "eat out", "eating out", "dining", "takeout", "fast food", "order out"],
+          reply: "Eating out is doable. Go for grilled or baked protein, double the veg, sauces and dressing on the side, and skip the bread basket — water over soda. Want a couple of menu-friendly picks?" },
+        { id: "meds",
+          keys: ["medication", "meds", "pill", "metformin", "medicine", "prescription"],
+          reply: "I can't make changes to your medications — for that, message Dr. Alvarez directly and I'll flag it to the care team. In the meantime, keep logging your readings so they have the full picture." },
+        { id: "progress",
+          keys: ["how am i doing", "my progress", "on track", "doing well", "results"],
+          reply: "You're doing great, Rosa. BP trending to goal, A1c down from 8.9 to 8.4, 88% adherence, and a 12-day logging streak — the most consistent in your panel. Keep the daily walk and low-sodium meals going." },
+        { id: "food",
+          keys: ["breakfast", "lunch", "dinner", "what should i eat", "what can i eat", "hungry"],
+          reply: "Tonight's plan is baked salmon with roasted greens — omega-3 rich and heart-healthy. Want something lighter? The Mediterranean quinoa bowl works too. Both are in your Meals tab." },
+        { id: "thanks",
+          keys: ["thanks", "thank you", "thank u", "thx", "ty", "appreciate"],
+          reply: "Anytime, Rosa — that's what I'm here for. You're putting in the work and it's showing. I'll keep an eye on your readings and nudge you if anything needs attention." },
+      ];
+      const COACH_FALLBACK =
+        "Good question — based on your plan and recent readings, let's keep meals low-sodium and aim for your 20-minute walk today. I'll flag anything that looks off to Dr. Alvarez.";
+      function coachReply(q) {
+        const s = (q || "").toLowerCase();
+        const hit = COACH_INTENTS.find((it) => it.keys.some((k) => s.includes(k)));
+        setTimeout(() => pushMsg(hit ? hit.reply : COACH_FALLBACK, "bot"), 480);
+      }
       function pushMsg(text, who) {
         const chat = document.getElementById("chat");
         const d = document.createElement("div");
@@ -3484,15 +3658,12 @@
         chat.scrollTop = chat.scrollHeight;
       }
       function botReply(q) {
-        const r =
-          REPLIES[q] ||
-          "Good question — based on your plan and recent readings, let's keep meals low-sodium and aim for your 20-minute walk today. I'll flag anything unusual to Dr. Alvarez.";
-        setTimeout(() => pushMsg(r, "bot"), 480);
+        coachReply(q);
       }
       function ask(chip) {
-        const q = chip.textContent;
+        const q = chip.textContent.trim();
         pushMsg(q, "me");
-        botReply(q);
+        coachReply(q);
       }
       function sendMsg() {
         const inp = document.getElementById("msgIn");
@@ -3559,11 +3730,16 @@
       function saveReading() {
         const v1 = document.getElementById("in1");
         if (!v1) return;
+        let valueText;
         if (sheetMetric === "bp") {
           const d = document.getElementById("in2");
+          valueText = v1.value + "/" + d.value;
           setVital("bp", v1.value + "<span>/" + d.value + "</span>");
-        } else if (sheetMetric === "glucose") setVital("glucose", v1.value);
-        else setVital("weight", v1.value);
+        } else {
+          valueText = v1.value;
+          setVital(sheetMetric, v1.value);
+        }
+        pushReadingHistory(sheetMetric, valueText);
         closeSheet();
         const name =
           sheetMetric === "bp"
@@ -3572,6 +3748,24 @@
             ? "Glucose"
             : "Weight";
         showToast(name + " logged");
+      }
+      function pushReadingHistory(metric, valueText) {
+        const list = document.getElementById("vHistory");
+        if (!list) return;
+        const names = { bp: "Blood pressure", glucose: "Glucose", weight: "Weight" };
+        const units = { bp: "mmHg", glucose: "mg/dL", weight: "lb" };
+        const row = document.createElement("div");
+        row.className = "vlog new";
+        row.innerHTML =
+          '<div class="vlog-l"><span class="vlog-m">' +
+          (names[metric] || "Reading") +
+          '</span><span class="vlog-t">Just now</span></div>' +
+          '<span class="vlog-v">' +
+          valueText +
+          "<i>" +
+          (units[metric] || "") +
+          "</i></span>";
+        list.insertBefore(row, list.firstChild);
       }
       function showToast(msg) {
         const t = document.getElementById("toast");
@@ -3717,15 +3911,18 @@
       }
 
       /* ---------- interactive step guide (recipe + session) ---------- */
-      function buildGuide(steps, doneMsg) {
+      function buildGuide(steps, doneMsg, preDone) {
+        const n = steps.length;
         let h =
-          '<div class="guide-prog"><div class="gpbar"><i style="width:0%"></i></div><span class="gpc">0/' +
-          steps.length +
+          '<div class="guide-prog"><div class="gpbar"><i style="width:' +
+          (preDone ? 100 : 0) +
+          '%"></i></div><span class="gpc">' +
+          (preDone ? n : 0) + "/" + n +
           "</span></div>";
         steps.forEach((s, idx) => {
           h +=
             '<button class="gstep' +
-            (idx === 0 ? " current" : "") +
+            (preDone ? " done" : idx === 0 ? " current" : "") +
             '" onclick="toggleStep(this)">' +
             '<span class="gnum">' +
             (idx + 1) +
@@ -3738,11 +3935,76 @@
             '<span class="gchk"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></button>';
         });
         h +=
-          '<div class="guide-done"><b style="font-size:1rem">' +
+          '<div class="guide-done' +
+          (preDone ? " show" : "") +
+          '"><b style="font-size:1rem">' +
           doneMsg +
           "</b></div>";
         return h;
       }
+
+      /* ---------- plan completion: meals + movement, live on their pages ---------- */
+      const MEAL_DONE = { breakfast: false, lunch: false, dinner: false };
+      let MOVE_DONE = false;
+
+      function setMealDone(key, done) {
+        if (!(key in MEAL_DONE)) return;
+        MEAL_DONE[key] = done;
+        const btn = document.querySelector('.meal[data-meal="' + key + '"]');
+        if (btn) btn.classList.toggle("done", done);
+        const n = Object.values(MEAL_DONE).filter(Boolean).length;
+        const pm = document.getElementById("progMeals");
+        if (pm) pm.style.width = Math.round((n / 3) * 100) + "%";
+        const ms = document.getElementById("mealsSub");
+        if (ms)
+          ms.textContent = n
+            ? n + " of 3 meals done"
+            : "~1,850 kcal · low-sodium";
+      }
+
+      function setMoveDone(done) {
+        MOVE_DONE = done;
+        const btn = document.getElementById("moveStartBtn");
+        if (btn) {
+          btn.classList.toggle("is-done", done);
+          btn.innerHTML = done
+            ? '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Completed · nice work'
+            : '<svg class="i" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l11-7z"/></svg> Start session';
+        }
+        const title = document.getElementById("moveTodayTitle");
+        if (title)
+          title.textContent = done
+            ? "Today · 20-min walk — done"
+            : "Today · 20-min low-impact walk";
+        const count = done ? 6 : 5;
+        const rc = document.getElementById("moveRingCount");
+        if (rc) rc.textContent = count + "/7";
+        const ws = document.getElementById("moveWeekSub");
+        if (ws)
+          ws.textContent = done
+            ? "115 of 150 active minutes. One session to go."
+            : "95 of 150 active minutes. Two sessions to go.";
+        if (window.Chart && Chart.getChart) {
+          const c = Chart.getChart("ringMove");
+          if (c) {
+            c.data.datasets[0].data = [count, 7 - count];
+            c.update();
+          }
+        }
+        const pw = document.getElementById("progWalk");
+        if (pw) pw.style.width = done ? "100%" : "4%";
+        const wsub = document.getElementById("walkSub");
+        if (wsub) wsub.textContent = done ? "20 / 20 min · done" : "0 / 20 min today";
+      }
+
+      // give each planned meal a check badge (revealed when .done)
+      document.querySelectorAll(".meal[data-meal]").forEach(function (m) {
+        const b = document.createElement("span");
+        b.className = "mdone";
+        b.innerHTML =
+          '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+        m.appendChild(b);
+      });
       function toggleStep(el) {
         el.classList.toggle("done");
         const g = el.closest(".guide");
@@ -3754,10 +4016,11 @@
         steps.forEach((s) => s.classList.remove("current"));
         const next = steps.find((s) => !s.classList.contains("done"));
         if (next) next.classList.add("current");
-        g.querySelector(".guide-done").classList.toggle(
-          "show",
-          done === steps.length
-        );
+        const allDone = done === steps.length;
+        g.querySelector(".guide-done").classList.toggle("show", allDone);
+        // mark the meal / session complete and check it off its list
+        if (g.dataset.kind === "meal") setMealDone(g.dataset.key, allDone);
+        else if (g.dataset.kind === "move") setMoveDone(allDone);
       }
 
       /* ---------- recipes ---------- */
@@ -3851,8 +4114,10 @@
           '<div class="sec-title">Ingredients</div><div class="card"><ul class="ing">' +
           ing +
           "</ul></div>" +
-          '<div class="sec-title">Cook it · tap each step</div><div class="guide">' +
-          buildGuide(r.steps, "Meal ready — enjoy!") +
+          '<div class="sec-title">Cook it · tap each step</div><div class="guide" data-kind="meal" data-key="' +
+          key +
+          '">' +
+          buildGuide(r.steps, "Meal ready — enjoy!", MEAL_DONE[key]) +
           "</div>";
         showScreen("recipe", false);
       }
@@ -3866,8 +4131,8 @@
         ];
         document.getElementById("sessionBody").innerHTML =
           '<div class="scr-head" style="padding-top:.2rem"><div><div class="ey">Guided · 20 min low-impact</div><h1>Your walk</h1></div></div>' +
-          '<div class="sec-title">Follow along · tap each step</div><div class="guide">' +
-          buildGuide(steps, "Session complete — nice work!") +
+          '<div class="sec-title">Follow along · tap each step</div><div class="guide" data-kind="move" data-key="walk">' +
+          buildGuide(steps, "Session complete — nice work!", MOVE_DONE) +
           "</div>";
         showScreen("session", false);
       }

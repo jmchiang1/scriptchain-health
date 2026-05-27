@@ -458,15 +458,28 @@
         margin-top: 0.35rem;
       }
       .sec-title {
-        font-size: 0.78rem;
+        position: relative;
+        padding-left: 0.85rem;
+        font-size: 0.82rem;
         font-weight: 700;
-        color: var(--ink-2);
+        color: var(--ink);
         text-transform: uppercase;
         letter-spacing: 0.07em;
         margin: 1.9rem 0 0.85rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
+      }
+      .sec-title::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.22rem;
+        height: 0.95rem;
+        border-radius: 6.25rem;
+        background: var(--teal);
       }
       .sec-title a {
         font-family: var(--mono);
@@ -860,6 +873,7 @@
         color: var(--teal);
         font-weight: 600;
         margin-top: 0.15rem;
+        padding-left: 0.5rem;
       }
       .agent-tag i {
         width: 0.45rem;
@@ -980,7 +994,8 @@
       .seg {
         display: flex;
         gap: 0.3rem;
-        background: var(--mint);
+        background: var(--mint-2);
+        border: 0.0625rem solid var(--line-2);
         padding: 0.25rem;
         border-radius: 0.7rem;
       }
@@ -1440,14 +1455,15 @@
         font-family: var(--mono);
         font-size: 0.72rem;
         font-weight: 600;
-        color: var(--ink-2);
+        color: var(--ink);
         background: var(--card);
-        border: 0.0625rem solid var(--line-2);
+        border: 0.0625rem solid rgba(15, 46, 43, 0.2);
         border-radius: 6.25rem;
         padding: 0.45rem 0.85rem;
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
+        box-shadow: 0 0.3rem 0.7rem -0.5rem rgba(12, 90, 84, 0.22);
         transition: background 0.15s, border-color 0.15s, color 0.15s;
       }
       .chip svg {
@@ -1472,6 +1488,91 @@
         display: flex;
         align-items: center;
         gap: 0.7rem;
+      }
+      .panel-chips {
+        display: flex;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.95rem;
+      }
+      .panel-sort {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .panel-sort select {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--ink);
+        background: var(--card);
+        border: 0.0625rem solid rgba(15, 46, 43, 0.2);
+        border-radius: 0.55rem;
+        padding: 0.4rem 0.55rem;
+        cursor: pointer;
+      }
+      .panel-filters {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+      }
+      .panel-count {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        color: var(--muted);
+      }
+      .panel-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 0.85rem;
+      }
+      .pager {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-left: auto;
+      }
+      .pager button {
+        min-width: 1.9rem;
+        height: 1.9rem;
+        padding: 0 0.55rem;
+        border-radius: 0.5rem;
+        border: 0.0625rem solid var(--line-2);
+        background: var(--card);
+        color: var(--ink-2);
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+      }
+      .pager button:hover:not(:disabled):not(.on) {
+        border-color: var(--teal);
+        color: var(--teal-deep);
+      }
+      .pager button.on {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #fff;
+      }
+      .pager button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      .panel-empty {
+        padding: 2.4rem 1.1rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.86rem;
       }
 
       /* ===== KPI grid + agent insight (stacked) ===== */
@@ -1873,6 +1974,12 @@
         border-radius: 0.45rem;
         padding: 0.9rem 1rem;
         margin-bottom: 1rem;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+      }
+      .ep-bpa.dismissed {
+        opacity: 0;
+        transform: translateY(-0.4rem);
+        pointer-events: none;
       }
       .ep-bpa .bpa-ic {
         width: 1.7rem;
@@ -2210,6 +2317,30 @@
         transition: border-color 0.15s;
       }
       .rc-panel textarea:focus { border-color: var(--teal); }
+      /* plain-language change composer */
+      .rc-panel .rc-note { min-height: 5.25rem; margin-top: 0.1rem; }
+      .rc-quick { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-top: 0.6rem; }
+      .rc-quick-l {
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--faint);
+        margin-right: 0.1rem;
+      }
+      .rc-quick-chip {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--ink-2);
+        background: var(--app-bg);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 6.25rem;
+        padding: 0.3rem 0.65rem;
+        transition: border-color 0.15s, color 0.15s, background 0.15s;
+      }
+      .rc-quick-chip:hover { border-color: var(--teal); color: var(--teal-deep); background: var(--mint); }
       .rc-acts { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.75rem; }
       .requested-state {
         display: none;
@@ -2227,6 +2358,147 @@
       .ep-sign.requested .note,
       .ep-sign.requested .rc-panel { display: none; }
       .ep-sign.requested .requested-state { display: flex; }
+      /* while the change composer is open, only Cancel / Send are available */
+      .ep-sign:has(.rc-panel.open) .acts,
+      .approve-bar:has(.rc-panel.open) .ab-actions { display: none; }
+
+      /* request-changes: structured controls (intensity dial + target steppers) */
+      .rc-field { margin-bottom: 0.85rem; }
+      .rc-field > label {
+        display: block;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.4rem;
+      }
+      .rc-intensity { width: 100%; }
+      .rc-intensity button { flex: 1; }
+      /* steer the agent: modality options (single-select) + constraint tags (multi) */
+      .rc-opts,
+      .rc-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .rc-opt,
+      .rc-tag {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--ink-2);
+        background: var(--app-bg);
+        border: 0.0625rem solid var(--line-2);
+        border-radius: 6.25rem;
+        padding: 0.36rem 0.72rem;
+        transition: border-color 0.15s, background 0.15s, color 0.15s;
+      }
+      .rc-opt:hover,
+      .rc-tag:hover {
+        border-color: var(--teal);
+        color: var(--teal-deep);
+      }
+      /* single-select modality: chosen option reads as a firm switch */
+      .rc-opt.on {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #fff;
+      }
+      /* multi-select constraints: read as additive flags */
+      .rc-tag.on {
+        background: var(--mint);
+        border-color: var(--teal);
+        color: var(--teal-deep);
+      }
+      .rc-hint {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.45;
+        margin: -0.1rem 0 0.85rem;
+      }
+      /* "agent owns this; you supervise" note on the plan body */
+      .managed-note {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: 0.78rem;
+        color: var(--ink-2);
+        line-height: 1.45;
+        background: var(--mint);
+        border: 0.0625rem solid var(--line);
+        border-left: 0.1875rem solid var(--teal);
+        border-radius: 0.3rem;
+        padding: 0.55rem 0.75rem;
+        margin-top: 0.9rem;
+      }
+      .managed-note .orb {
+        width: 0.85rem;
+        height: 0.85rem;
+        flex: 0 0 auto;
+        animation: none;
+        box-shadow: none;
+      }
+      .managed-note b { color: var(--ink); font-weight: 600; }
+
+      /* --- plan review: sign-off queue --- */
+      tbody tr.pq-urgent td:first-child {
+        box-shadow: inset 0.2rem 0 0 var(--coral);
+      }
+      .pd-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 0.9rem;
+      }
+      .pd-nav .back {
+        margin-bottom: 0;
+      }
+      .pd-cycle {
+        display: inline-flex;
+        gap: 0.4rem;
+      }
+      .pd-arrow {
+        width: 2.1rem;
+        height: 2.1rem;
+        display: grid;
+        place-items: center;
+        border-radius: 0.6rem;
+        border: 0.0625rem solid var(--line-2);
+        background: var(--card);
+        color: var(--teal-deep);
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .pd-arrow svg {
+        width: 1.05rem;
+        height: 1.05rem;
+      }
+      .pd-arrow:hover {
+        border-color: var(--teal);
+        background: var(--mint);
+      }
+      .queue-empty {
+        text-align: center;
+        padding: 3.5rem 1rem;
+        color: var(--muted);
+      }
+      .queue-empty svg {
+        width: 2.4rem;
+        height: 2.4rem;
+        color: var(--teal);
+        margin-bottom: 0.6rem;
+      }
+      .queue-empty b {
+        display: block;
+        font-family: var(--disp);
+        font-size: 1.15rem;
+        color: var(--ink);
+      }
+      .queue-empty p {
+        font-size: 0.88rem;
+        margin-top: 0.3rem;
+      }
 
       /* --- standalone / embedded mode switch --- */
       .mode-switch {
@@ -2267,6 +2539,122 @@
       @media (max-width: 640px) {
         .ms-tab span { display: none; }
       }
+
+      /* ===================== COMPACT CONSOLE THEME ===================== */
+      /* Bring the standalone console in line with the embedded-in-Epic view:
+         flat surfaces, tight rows, no hero numbers, no entrance animation,
+         teal kept strictly as the agent accent. Brand palette retained. */
+
+      /* page rhythm + drop the staggered rise-in */
+      .view { padding: 1.25rem 1.45rem 4rem; }
+      .stagger > * { animation: none !important; }
+      .view-head { margin-bottom: 1.1rem; align-items: center; }
+      .view-head h1 { font-size: 1.45rem; }
+      .view-head p { font-size: 0.84rem; margin-top: 0.25rem; }
+
+      /* section headers become Epic-style tinted bars */
+      .sec-title {
+        background: var(--mint);
+        border: 0.0625rem solid var(--line);
+        border-radius: 0.3rem;
+        padding: 0.4rem 0.7rem;
+        margin: 1.2rem 0 0.7rem;
+        font-family: var(--mono);
+        font-size: 0.64rem;
+        letter-spacing: 0.1em;
+        color: var(--teal-deep);
+      }
+      .sec-title a { font-size: 0.64rem; }
+
+      /* flat cards */
+      .card {
+        border-radius: 0.3rem;
+        padding: 0.9rem 1rem;
+        box-shadow: none;
+        border-color: var(--line-2);
+      }
+      .grid-2, .grid-2c { margin-top: 1.1rem; gap: 0.9rem; }
+
+      /* compact KPI cells — no hero numbers */
+      .kpi {
+        border-radius: 0.3rem;
+        padding: 0.7rem 0.8rem;
+        box-shadow: none;
+        border-color: var(--line-2);
+      }
+      .kpi .kv { font-size: 1.25rem; margin: 0.35rem 0 0.18rem; }
+      .kpi .kv small { font-size: 0.8rem; }
+      .kpi .kl .ki { width: 1.3rem; height: 1.3rem; border-radius: 0.3rem; }
+      .kpi .kl .ki svg { width: 0.78rem; height: 0.78rem; }
+      .kpi .kfoot { font-size: 0.64rem; }
+
+      /* flat tables, tighter rows */
+      .table-wrap { border-radius: 0.3rem; box-shadow: none; border-color: var(--line-2); }
+      table { font-size: 0.84rem; }
+      thead th { padding: 0.5rem 0.85rem; }
+      tbody td { padding: 0.5rem 0.85rem; }
+
+      /* compact vitals / projected-impact tiles */
+      .vit {
+        border-radius: 0.3rem;
+        padding: 0.65rem 0.75rem;
+        box-shadow: none;
+        border-color: var(--line-2);
+      }
+      .vit .vv { font-size: 1.08rem; margin: 0.2rem 0 0.18rem; }
+      .vit .vv small { font-size: 0.7rem; }
+
+      /* agent callouts (insight + rationale): flat tint + teal left rule, dark text */
+      .insight,
+      .rationale {
+        background: #d8efe8;
+        border: 0.0625rem solid rgba(14, 142, 128, 0.28);
+        border-left: 0.28rem solid var(--teal);
+        border-radius: 0.5rem;
+        color: var(--ink);
+        box-shadow: 0 0.75rem 1.6rem -1rem rgba(12, 90, 84, 0.3);
+        padding: 0.85rem 1rem;
+        gap: 0.9rem;
+      }
+      .insight::after,
+      .rationale::after { display: none; }
+      .insight .ih,
+      .rationale .rh { color: var(--teal-deep); margin-bottom: 0.35rem; }
+      .insight p { color: var(--ink-2); font-size: 0.84rem; }
+      .insight p b { color: var(--ink); }
+      .rationale h3 { color: var(--ink); font-size: 1.05rem; }
+      .rationale p { color: var(--ink-2); font-size: 0.84rem; }
+      .rationale p b { color: var(--ink); }
+      .rationale .ev .pill {
+        background: #fff;
+        color: var(--ink-2);
+        box-shadow: inset 0 0 0 0.0625rem var(--line-2);
+      }
+      .insight .orb,
+      .rationale .rh .orb {
+        width: 0.95rem !important;
+        height: 0.95rem !important;
+        animation: none;
+        box-shadow: none;
+      }
+      .insight .ibtn {
+        background: var(--teal);
+        color: #fff;
+        border-radius: 0.4rem;
+      }
+      .insight .ibtn:hover { background: var(--teal-deep); }
+
+      /* plan-card domain icon: smaller, squarer */
+      .plan-card .pc-head .pi { width: 2rem; height: 2rem; border-radius: 0.3rem; }
+
+      /* compact billing footer total */
+      .bill-foot { padding: 0.8rem 0.95rem; }
+      .bill-foot .bf-total b { font-family: var(--mono); font-size: 1.05rem; }
+      .code { border-radius: 0.3rem; }
+
+      /* flatten action buttons */
+      .btn { border-radius: 0.4rem; }
+      .btn-primary { box-shadow: none; }
     </style>
   </head>
   <body>
@@ -2312,15 +2700,15 @@
         <nav class="nav">
           <button class="nav-item active" data-view="cohort" onclick="showView('cohort')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-            <span>Cohort overview</span>
+            <span>Cohort Overview</span>
           </button>
-          <button class="nav-item" data-view="patient" onclick="showView('patient')">
+          <button class="nav-item" data-view="patient" onclick="openRoster()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M17 7.5a3 3 0 0 1 0 6M16.5 20a5.2 5.2 0 0 0-3-4.7"/></svg>
-            <span>Patient panel</span>
+            <span>Patient Panel</span>
           </button>
           <button class="nav-item" data-view="plan" onclick="showView('plan')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="m9 13 2 2 4-4"/></svg>
-            <span>Plan review</span>
+            <span>Plan Review</span>
             <span class="badge">7</span>
           </button>
           <button class="nav-item" data-view="billing" onclick="showView('billing')">
@@ -2472,8 +2860,7 @@
                 <a onclick="toast('Showing the highest-priority patients')">View all <span id="attn-total">218</span> →</a>
               </div>
               <div class="chip-row" style="display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.95rem">
-                <button class="chip on" data-filter="all">All <span class="ct-count" id="chip-all">218</span></button>
-                <button class="chip" data-filter="agent">Agent-flagged <span class="ct-count" id="chip-agent">4</span></button>
+                <button class="chip on" data-filter="agent">Agent-flagged <span class="ct-count" id="chip-agent">4</span></button>
                 <button class="chip" data-filter="rising">Rising risk <span class="ct-count" id="chip-rising">29</span></button>
                 <button class="chip" data-filter="plans">Plans pending <span class="ct-count" id="chip-plans">7</span></button>
               </div>
@@ -2490,7 +2877,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="showView('patient')">
+                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="openPatient('darnell')">
                       <td>
                         <div class="pt"><div class="pav">DB</div><div><b>Darnell Brooks</b><span>61 · M · MRN 0039-204</span><div class="agent-tag"><i></i> Agent flagged</div></div></div>
                       </td>
@@ -2500,7 +2887,7 @@
                       <td class="cond">A1c 9.1 <span class="trend up">↑</span></td>
                       <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Generate plan</button></td>
                     </tr>
-                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="showView('patient')">
+                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="openPatient('yuki')">
                       <td>
                         <div class="pt"><div class="pav">YT</div><div><b>Yuki Tanaka</b><span>54 · F · MRN 0041-882</span><div class="agent-tag"><i></i> Plan drafted</div></div></div>
                       </td>
@@ -2510,7 +2897,7 @@
                       <td class="cond">BP 151/96 <span class="trend up">↑</span></td>
                       <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Review plan</button></td>
                     </tr>
-                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="showView('patient')">
+                    <tr class="clickable flagged" data-cat="agent rising plans" onclick="openPatient('marcus')">
                       <td>
                         <div class="pt"><div class="pav">MW</div><div><b>Marcus Webb</b><span>47 · M · MRN 0038-117</span><div class="agent-tag"><i></i> Plan drafted</div></div></div>
                       </td>
@@ -2520,7 +2907,7 @@
                       <td class="cond">A1c 8.7 <span class="trend up">↑</span></td>
                       <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Review plan</button></td>
                     </tr>
-                    <tr class="clickable" onclick="showView('patient')">
+                    <tr class="clickable" onclick="openPatient('priya')">
                       <td>
                         <div class="pt"><div class="pav">PN</div><div><b>Priya Nair</b><span>63 · F · MRN 0040-553</span></div></div>
                       </td>
@@ -2530,7 +2917,7 @@
                       <td class="cond">eGFR 62 <span class="trend flat">→</span></td>
                       <td class="td-act"><span class="pill teal">On plan</span></td>
                     </tr>
-                    <tr class="clickable flagged" data-cat="agent plans" onclick="showView('patient')">
+                    <tr class="clickable flagged" data-cat="agent plans" onclick="openPatient('rosa')">
                       <td>
                         <div class="pt"><div class="pav">RM</div><div><b>Rosa Martinez</b><span>58 · F · MRN 0042-117</span><div class="agent-tag"><i></i> Update drafted</div></div></div>
                       </td>
@@ -2540,7 +2927,7 @@
                       <td class="cond">BP 132/86 <span class="trend down">↓</span></td>
                       <td class="td-act"><button class="linkbtn" onclick="event.stopPropagation();showView('plan')">Review update</button></td>
                     </tr>
-                    <tr class="clickable" onclick="showView('patient')">
+                    <tr class="clickable" onclick="openPatient('james')">
                       <td>
                         <div class="pt"><div class="pav">JO</div><div><b>James Okafor</b><span>52 · M · MRN 0037-901</span></div></div>
                       </td>
@@ -2550,7 +2937,7 @@
                       <td class="cond">BP 128/82 <span class="trend down">↓</span></td>
                       <td class="td-act"><span class="pill teal">On plan</span></td>
                     </tr>
-                    <tr class="clickable" onclick="showView('patient')">
+                    <tr class="clickable" onclick="openPatient('helen')">
                       <td>
                         <div class="pt"><div class="pav">HC</div><div><b>Helen Cho</b><span>67 · F · MRN 0036-440</span></div></div>
                       </td>
@@ -2569,14 +2956,103 @@
           <!-- ============ PATIENT PANEL ============ -->
           <section class="view" id="view-patient">
             <div class="stagger">
-              <button class="back" onclick="showView('cohort')">‹ Back to cohort</button>
+              <!-- ---------- ROSTER (shown first) ---------- -->
+              <div id="patient-roster">
+                <div class="view-head">
+                  <div>
+                    <div class="ey">Cardiometabolic panel · 218 patients</div>
+                    <h1>Patient panel</h1>
+                  </div>
+                  <span class="pill teal">● Synced with Epic · 6 min ago</span>
+                </div>
+
+                <div class="toolbar">
+                  <label class="search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+                    <input id="panelSearch" type="search" placeholder="Search by name, MRN, or condition…" autocomplete="off" />
+                  </label>
+                  <div class="panel-filters">
+                    <label class="panel-sort">Age
+                      <select id="panelAge">
+                        <option value="">Any</option>
+                        <option value="u50">Under 50</option>
+                        <option value="50-64">50–64</option>
+                        <option value="65+">65+</option>
+                      </select>
+                    </label>
+                    <label class="panel-sort">Sex
+                      <select id="panelSex">
+                        <option value="">Any</option>
+                        <option value="F">Female</option>
+                        <option value="M">Male</option>
+                      </select>
+                    </label>
+                    <label class="panel-sort">Condition
+                      <select id="panelCond">
+                        <option value="">Any</option>
+                        <option value="t2d">Type 2 diabetes</option>
+                        <option value="prediabetes">Pre-diabetes</option>
+                        <option value="hypertension">Hypertension</option>
+                        <option value="obesity">Obesity</option>
+                        <option value="metabolic">Metabolic syndrome</option>
+                        <option value="ckd">CKD</option>
+                        <option value="nafld">NAFLD</option>
+                        <option value="chf">Heart failure</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="tb-right">
+                    <label class="panel-sort">Sort
+                      <select id="panelSort">
+                        <option value="risk">Risk · high → low</option>
+                        <option value="name">Name · A → Z</option>
+                        <option value="flagged">Recently flagged</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="panel-chips" id="panelChips">
+                  <button class="chip on" data-filter="all">All <span class="ct-count">218</span></button>
+                  <button class="chip" data-filter="agent">Agent-flagged <span class="ct-count">4</span></button>
+                  <button class="chip" data-filter="rising">Rising risk <span class="ct-count">29</span></button>
+                  <button class="chip" data-filter="plans">Plans pending <span class="ct-count">7</span></button>
+                  <button class="chip" data-filter="onplan">On plan <span class="ct-count">63</span></button>
+                  <button class="chip" data-filter="stable">Stable <span class="ct-count">119</span></button>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Patient</th>
+                        <th>Conditions</th>
+                        <th>Risk</th>
+                        <th>30-day signal</th>
+                        <th>Latest</th>
+                        <th class="td-act">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="panelBody"></tbody>
+                  </table>
+                  <div id="panelEmpty" class="panel-empty" hidden>No patients match your search.</div>
+                </div>
+                <div class="panel-foot">
+                  <div class="panel-count" id="panelCount"></div>
+                  <div class="pager" id="panelPager"></div>
+                </div>
+              </div>
+
+              <!-- ---------- DETAIL (opens when a patient is selected) ---------- -->
+              <div id="patient-detail" style="display: none">
+              <button class="back" onclick="openRoster()">‹ All patients</button>
 
               <div class="card phead">
-                <div class="pbig">RM</div>
+                <div class="pbig" id="pd-init">RM</div>
                 <div>
-                  <h2>Rosa Martinez</h2>
-                  <div class="pmeta">58 · Female · MRN 0042-117 · Last visit May 12 · Next May 30</div>
-                  <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem">
+                  <h2 id="pd-name">Rosa Martinez</h2>
+                  <div class="pmeta" id="pd-meta">58 · Female · MRN 0042-117 · Last visit May 12 · Next May 30</div>
+                  <div id="pd-pills" style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem">
                     <span class="pill coral">Type 2 risk</span>
                     <span class="pill amber">Hypertension</span>
                     <span class="pill teal">Weight mgmt</span>
@@ -2630,7 +3106,7 @@
                   <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem">
                     <div>
                       <div style="font-family: var(--mono); font-size: 0.66rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em">90-day trend</div>
-                      <div id="trendTitle" style="font-family: var(--disp); font-size: 1.7rem; font-weight: 600; margin-top: 0.2rem">Weight · 198 lb</div>
+                      <div id="trendTitle" style="font-family: var(--disp); font-size: 1.15rem; font-weight: 600; margin-top: 0.2rem">Weight · 198 lb</div>
                     </div>
                     <div class="seg" id="trendSeg">
                       <button class="on" data-series="weight">Weight</button>
@@ -2681,23 +3157,91 @@
                   </div>
                 </div>
               </div>
+              </div>
+              <!-- /#patient-detail -->
             </div>
           </section>
 
           <!-- ============ PLAN REVIEW ============ -->
           <section class="view" id="view-plan">
             <div class="stagger">
-              <button class="back" onclick="showView('cohort')">‹ Back to cohort</button>
-
-              <div class="view-head">
-                <div>
-                  <div class="ey">Awaiting your approval · 1 of 7</div>
-                  <h1>Proposed plan update</h1>
-                  <p>Rosa Martinez · 58F · generated by ScriptChain Agent today at 7:48 AM</p>
+              <!-- ===== sign-off queue (default landing — no patient needed) ===== -->
+              <div id="planQueue">
+                <div class="view-head">
+                  <div>
+                    <div class="ey">Sign-off queue · cardiometabolic panel</div>
+                    <h1>Plan review</h1>
+                    <p>Agent-drafted care plans waiting for your approval — pick one to open.</p>
+                  </div>
+                  <span class="pill amber">4 ready · 3 drafting</span>
                 </div>
-                <span class="pill amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:0.85rem;height:0.85rem"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg> Pending sign-off</span>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr><th>Patient</th><th>Proposed change</th><th>Est. reimbursement</th><th>Waiting</th><th class="td-act">Action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr class="clickable pq-urgent" onclick="openPlanReview('darnell')">
+                        <td><div class="pt"><div class="pav">DB</div><div><b>Darnell Brooks</b><span>61 · M · risk 88</span></div></div></td>
+                        <td class="cond"><span class="pill coral" style="margin-right: 0.4rem">Urgent</span>New plan — A1c 9.1, no active plan</td>
+                        <td class="cond">$88.46 · 99490 + G0447</td>
+                        <td class="cond">30m</td>
+                        <td class="td-act"><button class="linkbtn">Generate →</button></td>
+                      </tr>
+                      <tr class="clickable pq-urgent" onclick="openPlanReview('yuki')">
+                        <td><div class="pt"><div class="pav">YT</div><div><b>Yuki Tanaka</b><span>54 · F · risk 81</span></div></div></td>
+                        <td class="cond"><span class="pill coral" style="margin-right: 0.4rem">Urgent</span>Tighten targets — BP 151/96 rising</td>
+                        <td class="cond">$43.02 · 99454</td>
+                        <td class="cond">1h</td>
+                        <td class="td-act"><button class="linkbtn">Review →</button></td>
+                      </tr>
+                      <tr class="clickable" onclick="openPlanReview('marcus')">
+                        <td><div class="pt"><div class="pav">MW</div><div><b>Marcus Webb</b><span>47 · M · risk 76</span></div></div></td>
+                        <td class="cond">Add medical nutrition therapy — A1c 8.7, NAFLD</td>
+                        <td class="cond">$38.74 · 97802</td>
+                        <td class="cond">18h</td>
+                        <td class="td-act"><button class="linkbtn">Review →</button></td>
+                      </tr>
+                      <tr class="clickable" onclick="openPlanReview('rosa')">
+                        <td><div class="pt"><div class="pav">RM</div><div><b>Rosa Martinez</b><span>58 · F · risk 41</span></div></div></td>
+                        <td class="cond">Add gentle movement — BP improving, keep nutrition</td>
+                        <td class="cond">$110.27 · 99490 + 99457</td>
+                        <td class="cond">2h</td>
+                        <td class="td-act"><button class="linkbtn">Review update →</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="bill-foot">
+                    <div class="bf-total">4 ready · 3 still drafting<b>$280.49 reimbursement in queue</b></div>
+                  </div>
+                </div>
+                <div class="queue-empty" hidden>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+                  <b>You're all caught up</b>
+                  <p>New agent-drafted plans appear here as the agent flags patients.</p>
+                </div>
               </div>
 
+              <!-- ===== focused plan review (opened from the queue or a patient) ===== -->
+              <div id="planDetail" hidden>
+                <div class="pd-nav">
+                  <button class="back" onclick="backToQueue()">‹ Back to queue</button>
+                  <div class="pd-cycle">
+                    <button class="pd-arrow" onclick="prevPlan()" aria-label="Previous plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+                    <button class="pd-arrow" onclick="nextPlan()" aria-label="Next plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                  </div>
+                </div>
+
+                <div class="view-head">
+                  <div>
+                    <div class="ey" id="pd-ey">Awaiting your approval · 1 of 7</div>
+                    <h1 id="pd-title">Proposed plan update</h1>
+                    <p id="pd-sub">Rosa Martinez · 58F · drafted by ScriptChain Agent today at 7:48 AM</p>
+                  </div>
+                  <span class="pill amber" id="pd-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:0.85rem;height:0.85rem"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg> Pending sign-off</span>
+                </div>
+
+                <div id="planDetailBody">
               <div class="rationale">
                 <div class="rh"><span class="orb"></span> Why the agent proposes this</div>
                 <h3>Rosa's BP is improving — time to add gentle movement.</h3>
@@ -2744,39 +3288,45 @@
                 <div class="vit"><div class="vl">Est. weight</div><div class="vv">194 <small>lb</small></div><div class="trend down">↓ ~4 lb</div></div>
                 <div class="vit"><div class="vl">Readmission risk</div><div class="vv">41 → 36</div><div class="trend down">↓ 5 pts</div></div>
               </div>
+                </div>
+                <!-- /#planDetailBody -->
 
               <div class="approve-bar" id="approveBar">
                 <div class="ab-note">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1rem;height:1rem;color:var(--teal)"><path d="M12 2v20M17 6.5c-1-1.5-3-2-5-2s-4 .8-4 3 2.5 2.6 4 3 4 1 4 3-2 2.8-4 2.8-4-.5-5-2" stroke-linecap="round"/></svg>
-                  On approval, auto-bills <b>99490</b> + <b>99457</b> · est. <b>$110.27</b>
+                  <span id="pd-bill">On approval, auto-bills <b>99490</b> + <b>99457</b> · est. <b>$110.27</b></span>
                 </div>
                 <div class="ab-actions">
                   <button class="btn btn-ghost" onclick="openRC('plan')">Request changes</button>
-                  <button class="btn btn-primary" onclick="approvePlan()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:1.05rem;height:1.05rem"><path d="M20 6 9 17l-5-5"/></svg> Approve &amp; send to patient</button>
+                  <button class="btn btn-primary" onclick="approvePlan()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:1.05rem;height:1.05rem"><path d="M20 6 9 17l-5-5"/></svg> Approve &amp; enroll in program</button>
                 </div>
                 <div class="rc-panel" id="rc-plan">
-                  <h5>What should the agent revise?</h5>
-                  <div class="rc-chips">
-                    <button class="rc-chip" type="button" onclick="rcChip('plan','Lower the weekly movement target.')">Adjust targets</button>
-                    <button class="rc-chip" type="button" onclick="rcChip('plan','Push the start date out 2 weeks.')">Different timeline</button>
-                    <button class="rc-chip" type="button" onclick="rcChip('plan','Keep it seated — accommodate her knee.')">Patient constraint</button>
-                    <button class="rc-chip" type="button" onclick="rcChip('plan','Swap the omega-3 dinners for something else.')">Change a swap</button>
+                  <h5>Request changes — tell ScriptChain what to revise</h5>
+                  <p class="rc-hint">In plain language. ScriptChain owns the specific targets &amp; daily monitoring; it re-drafts to your direction and resubmits for your approval.</p>
+                  <textarea id="rc-plan-note" class="rc-note" placeholder="e.g. Ease the activity ramp — her knee is acting up. Hold the sodium change until I see her at the next visit."></textarea>
+                  <div class="rc-quick">
+                    <span class="rc-quick-l">Quick add</span>
+                    <button type="button" class="rc-quick-chip" onclick="rcQuick('plan','Too aggressive for now — ease it back.')">Too aggressive</button>
+                    <button type="button" class="rc-quick-chip" onclick="rcQuick('plan','Work around a patient constraint: ')">Patient constraint</button>
+                    <button type="button" class="rc-quick-chip" onclick="rcQuick('plan','Defer until I see them at the next visit.')">Defer to my visit</button>
+                    <button type="button" class="rc-quick-chip" onclick="rcQuick('plan','Wrong clinical priority — focus on ')">Wrong priority</button>
                   </div>
-                  <textarea id="rc-plan-note" placeholder="Add a note for the agent…"></textarea>
                   <div class="rc-acts">
                     <button class="btn btn-ghost" type="button" onclick="cancelRC('plan')">Cancel</button>
-                    <button class="btn btn-primary" type="button" onclick="sendRC('plan','approveBar')">Send to agent</button>
+                    <button class="btn btn-primary" type="button" onclick="sendRC('plan','approveBar')">Send to ScriptChain</button>
                   </div>
                 </div>
                 <div class="approved-state">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
-                  Approved — sent to Rosa &amp; logged to billing. 6 plans left in your queue.
+                  Enrolled — ScriptChain now manages the daily plan &amp; monitoring under your supervision. Referral &amp; coordination billing filed. 6 plans left in your queue.
                 </div>
                 <div class="requested-state">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>
-                  Changes requested — the agent will revise &amp; resubmit for your approval.
+                  <span id="rc-plan-summary">Changes requested — the agent will revise &amp; resubmit for your approval.</span>
                 </div>
               </div>
+              </div>
+              <!-- /#planDetail -->
             </div>
           </section>
 
@@ -2815,10 +3365,10 @@
                 </div>
               </div>
 
-              <div class="insight" style="margin-top: 1.3rem; background: linear-gradient(135deg, #0f2e2b, #0c1f1d)">
-                <span class="orb" style="width: 2.2rem; height: 2.2rem"></span>
+              <div class="insight" style="margin-top: 1.1rem">
+                <span class="orb"></span>
                 <div class="it">
-                  <div class="ih" style="color: #9ff0e3">Auto-coding</div>
+                  <div class="ih">Auto-coding</div>
                   <p>Each plan approval, RPM reading, and counseling session is matched to the correct <b>CPT &amp; HCPCS</b> code with documentation attached — ready for a one-click submit.</p>
                 </div>
                 <button class="ibtn" onclick="submitClaims()">Submit 7 claims →</button>
@@ -3025,14 +3575,14 @@
 
           <div class="ep-workspace">
             <!-- BestPractice Advisory fired by ScriptChain CDS -->
-            <div class="ep-bpa">
+            <div class="ep-bpa" id="epBpa">
               <div class="bpa-ic">!</div>
               <div style="flex: 1">
                 <h4>BestPractice Advisory <span class="src">ScriptChain CDS</span></h4>
-                <p><b>Rosa Martinez</b> is trending toward her metabolic-syndrome control goals. A personalized food &amp; exercise plan update has been drafted and is ready for review — no chart digging required.</p>
+                <p><b>Rosa Martinez</b> is trending toward her metabolic-syndrome control goals. A personalized food &amp; exercise plan update has been drafted and is ready for review.</p>
                 <div class="ep-bpa-acts">
-                  <button class="ep-bpa-btn go" onclick="document.getElementById('epEmbed').scrollIntoView({ behavior: 'smooth', block: 'start' })">Open ScriptChain plan</button>
-                  <button class="ep-bpa-btn sec" onclick="toast('Advisory acknowledged')">Acknowledge</button>
+                  <!-- <button class="ep-bpa-btn go" onclick="document.getElementById('epEmbed').scrollIntoView({ behavior: 'smooth', block: 'start' })">Open ScriptChain plan</button> -->
+                  <button class="ep-bpa-btn sec" onclick="ackBpa()">Acknowledge</button>
                 </div>
               </div>
             </div>
@@ -3091,20 +3641,22 @@
                 </div>
 
                 <div class="ep-sign" id="epSign">
-                  <div class="note">On <b>Sign</b>, ScriptChain files the orders, plan note &amp; charges straight into Rosa's Epic chart — no double entry.</div>
+                  <div class="note">On <b>Sign</b>, you authorize ScriptChain to manage Rosa's daily plan under your supervision — the referral, plan note &amp; coordination charges file straight into her Epic chart. No double entry.</div>
                   <div class="acts">
                     <button class="btn btn-ghost" onclick="openRC('ep')">Request changes</button>
                     <button class="btn btn-primary" onclick="epicSign()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:1.05rem;height:1.05rem"><path d="M20 6 9 17l-5-5"/></svg> Sign &amp; file to chart</button>
                   </div>
                   <div class="rc-panel" id="rc-ep">
-                    <h5>What should ScriptChain revise before you sign?</h5>
-                    <div class="rc-chips">
-                      <button class="rc-chip" type="button" onclick="rcChip('ep','Lower the weekly movement target.')">Adjust targets</button>
-                      <button class="rc-chip" type="button" onclick="rcChip('ep','Push the start date out 2 weeks.')">Different timeline</button>
-                      <button class="rc-chip" type="button" onclick="rcChip('ep','Keep it seated — accommodate her knee.')">Patient constraint</button>
-                      <button class="rc-chip" type="button" onclick="rcChip('ep','Hold the dietitian referral for now.')">Drop an order</button>
+                    <h5>Request changes — tell ScriptChain what to revise</h5>
+                    <p class="rc-hint">In plain language. ScriptChain owns the specific targets &amp; daily monitoring; it re-drafts to your direction and resubmits before you sign.</p>
+                    <textarea id="rc-ep-note" class="rc-note" placeholder="e.g. Ease the activity ramp — her knee is acting up. Hold the sodium change until I see her at the next visit."></textarea>
+                    <div class="rc-quick">
+                      <span class="rc-quick-l">Quick add</span>
+                      <button type="button" class="rc-quick-chip" onclick="rcQuick('ep','Too aggressive for now — ease it back.')">Too aggressive</button>
+                      <button type="button" class="rc-quick-chip" onclick="rcQuick('ep','Work around a patient constraint: ')">Patient constraint</button>
+                      <button type="button" class="rc-quick-chip" onclick="rcQuick('ep','Defer until I see them at the next visit.')">Defer to my visit</button>
+                      <button type="button" class="rc-quick-chip" onclick="rcQuick('ep','Wrong clinical priority — focus on ')">Wrong priority</button>
                     </div>
-                    <textarea id="rc-ep-note" placeholder="Add a note for the agent…"></textarea>
                     <div class="rc-acts">
                       <button class="btn btn-ghost" type="button" onclick="cancelRC('ep')">Cancel</button>
                       <button class="btn btn-primary" type="button" onclick="sendRC('ep','epSign')">Send to ScriptChain</button>
@@ -3112,11 +3664,11 @@
                   </div>
                   <div class="ep-signed">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.3rem; height: 1.3rem"><circle cx="12" cy="12" r="9" /><path d="m8 12 2.5 2.5L16 9" /></svg>
-                    Signed — plan, orders &amp; charges filed to Rosa's Epic chart.
+                    Authorized — ScriptChain now manages Rosa's daily plan; referral &amp; coordination charges filed to her Epic chart.
                   </div>
                   <div class="requested-state">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5" /><path d="M4 9h11a5 5 0 0 1 0 10h-3" /></svg>
-                    Changes requested — ScriptChain will revise &amp; resubmit for your sign-off.
+                    <span id="rc-ep-summary">Changes requested — ScriptChain will revise &amp; resubmit for your sign-off.</span>
                   </div>
                 </div>
               </div>
@@ -3174,6 +3726,7 @@
         );
         document.querySelector(".scroll").scrollTop = 0;
         if (VIEWS.includes(id)) history.replaceState(null, "", "#" + id);
+        if (id === "plan") backToQueue(); // tab always lands on the queue
         requestAnimationFrame(() => ensureView(id));
       }
 
@@ -3190,31 +3743,193 @@
           );
       }
 
-      /* request-changes composer (plan approve-bar + embedded sign-off) */
+      /* ===================== PLAN REVIEW: QUEUE + FOCUSED DETAIL ===================== */
+      const PLANS = {
+        rosa: {
+          idx: 1, name: "Rosa Martinez", demo: "58F", when: "today at 7:48 AM",
+          kind: "Proposed plan update", urgent: false,
+          codes: "99490 + 99457", reimb: "$110.27",
+          title: "Rosa's BP is improving — time to add gentle movement.",
+          why: "Blood pressure has trended down for 5 consecutive days (132/86, approaching the &lt;130/80 goal) and A1c fell from 8.9 to 8.4. Adherence is strong at 88%. Adding low-impact activity now compounds the cardiometabolic gains while staying within her knee and schedule constraints. Nutrition is working, so it's kept unchanged.",
+          evidence: ["Within ADA &amp; AHA guidance", "No medication interactions", "Knee-safe / low-impact"],
+          cards: [
+            { icon: "leaf", t: "Nutrition", sub: "Food as medicine · unchanged", rows: [
+              ["keep", "Mediterranean, lower-sodium pattern", "· 1,900 kcal · &lt;1.5g sodium · 130g carbs"],
+              ["keep", "3 planned meals / day", "· auto-synced to Instacart"],
+              ["adj", "Swap 2 dinners → omega-3 rich", "· salmon &amp; sardines for lipid support"] ] },
+            { icon: "activity", t: "Movement", sub: "Exercise as medicine · expanded", rows: [
+              ["add", "20-min daily low-impact walk", "· warm-up, brisk, cool-down"],
+              ["add", "Weekly target → 150 min", "· up from 95 min/week"],
+              ["keep", "Seated &amp; mobility alternatives", "· available on low-energy days"] ] } ],
+          impact: [["Est. BP", "128/82 ↓", "reaches goal range"], ["Est. weight", "194 lb", "↓ ~4 lb"], ["Readmission risk", "41 → 36", "↓ 5 pts"]],
+        },
+        darnell: {
+          idx: 2, name: "Darnell Brooks", demo: "61M", when: "today at 6:20 AM",
+          kind: "New care plan", urgent: true,
+          codes: "99490 + G0447", reimb: "$88.46",
+          title: "Darnell's A1c hit 9.1 with no active plan — start now.",
+          why: "A1c rose to 9.1 (from 8.3) and he has no active care plan. He is pre-diabetic with hypertension and obesity (BMI 34). Starting a structured nutrition + movement plan now, paired with remote monitoring, is the highest-yield intervention to bend the curve before he progresses to type 2 diabetes.",
+          evidence: ["Within ADA guidance", "No medication interactions", "New-start: RD referral included"],
+          cards: [
+            { icon: "leaf", t: "Nutrition", sub: "Food as medicine · new", rows: [
+              ["add", "Lower-carb Mediterranean pattern", "· 1,800 kcal · &lt;2g sodium · 120g carbs"],
+              ["add", "3 planned meals + Instacart", "· auto-built weekly cart"] ] },
+            { icon: "activity", t: "Movement", sub: "Exercise as medicine · new", rows: [
+              ["add", "Start 10-min daily walk", "· build to 30 min over 4 weeks"],
+              ["add", "Weekly target → 90 min", "· from sedentary baseline"] ] } ],
+          impact: [["Est. A1c", "9.1 → 8.3", "over 90 days"], ["Est. weight", "↓ 6 lb", "first 90 days"], ["Risk score", "88 → 74", "↓ 14 pts"]],
+        },
+        yuki: {
+          idx: 3, name: "Yuki Tanaka", demo: "54F", when: "today at 7:05 AM",
+          kind: "Plan adjustment", urgent: true,
+          codes: "99454", reimb: "$43.02",
+          title: "Yuki's BP is climbing — tighten the plan.",
+          why: "BP rose to 151/96 over the past week despite good adherence (84%). Metabolic syndrome. Recommend tightening sodium, adding a second daily walk block, and escalating the RPM cadence so further rises are caught early.",
+          evidence: ["Within AHA guidance", "No medication interactions", "RPM cadence ↑"],
+          cards: [
+            { icon: "leaf", t: "Nutrition", sub: "Food as medicine · adjusted", rows: [
+              ["adj", "Tighten sodium → &lt;1.5g", "· from &lt;2g"],
+              ["keep", "DASH-style pattern", "· 1,800 kcal"] ] },
+            { icon: "activity", t: "Movement", sub: "Exercise as medicine · expanded", rows: [
+              ["add", "Add 2nd 15-min walk block", "· morning + evening"],
+              ["adj", "Weekly target → 180 min", "· up from 150"] ] } ],
+          impact: [["Est. BP", "151/96 → 138/88", "2-week recheck"], ["Adherence", "84% → 90%", "with reminders"], ["Risk score", "81 → 73", "↓ 8 pts"]],
+        },
+        marcus: {
+          idx: 4, name: "Marcus Webb", demo: "47M", when: "yesterday at 4:30 PM",
+          kind: "Plan adjustment", urgent: false,
+          codes: "97802", reimb: "$38.74",
+          title: "Marcus's A1c is creeping up — add medical nutrition therapy.",
+          why: "A1c 8.7 (up from 8.4) with NAFLD. Recommend formal medical nutrition therapy with a dietitian plus a lower-carb, lower-sugar pattern to address hepatic fat, and a strength-focused movement block to improve insulin sensitivity.",
+          evidence: ["Within ADA guidance", "No medication interactions", "RD referral included"],
+          cards: [
+            { icon: "leaf", t: "Nutrition", sub: "Food as medicine · expanded", rows: [
+              ["add", "Refer → medical nutrition therapy", "· dietitian, initial 60-min"],
+              ["adj", "Lower-carb, lower-sugar pattern", "· hepatic-fat focus"] ] },
+            { icon: "activity", t: "Movement", sub: "Exercise as medicine · expanded", rows: [
+              ["add", "2× weekly light strength", "· insulin sensitivity"],
+              ["keep", "150 min/week aerobic", "· maintained"] ] } ],
+          impact: [["Est. A1c", "8.7 → 8.1", "over 90 days"], ["Liver (ALT)", "↓", "with weight loss"], ["Risk score", "76 → 68", "↓ 8 pts"]],
+        },
+      };
+      const MK = { keep: "=", adj: "~", add: "+" };
+      function planIcon(name) {
+        const p = name === "activity"
+          ? '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'
+          : '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/>';
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:1.4rem;height:1.4rem;color:var(--teal-deep)">${p}</svg>`;
+      }
+      function renderPlanBody(P) {
+        const ev = P.evidence.map((e) =>
+          `<span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:0.8rem;height:0.8rem"><path d="M20 6 9 17l-5-5"/></svg> ${e}</span>`).join("");
+        const cards = P.cards.map((c) =>
+          `<div class="card plan-card"><div class="pc-head"><div class="pi">${planIcon(c.icon)}</div><div><b>${c.t}</b><span>${c.sub}</span></div></div>` +
+          c.rows.map((r) => `<div class="change ${r[0]}"><div class="mk">${MK[r[0]]}</div><div class="ct"><b>${r[1]}</b> <span>${r[2]}</span></div></div>`).join("") +
+          `</div>`).join("");
+        const impact = P.impact.map((m) =>
+          `<div class="vit"><div class="vl">${m[0]}</div><div class="vv">${m[1]}</div><div class="trend down">${m[2]}</div></div>`).join("");
+        return (
+          `<div class="rationale"><div class="rh"><span class="orb"></span> Why the agent proposes this</div><h3>${P.title}</h3><p>${P.why}</p><div class="ev">${ev}</div></div>` +
+          `<div class="grid-2c" style="margin-top: 1.1rem">${cards}</div>` +
+          `<div class="managed-note"><span class="orb"></span><span><b>ScriptChain's care program</b> owns these daily targets &amp; monitors adherence — you're supervising and authorizing, not managing day to day.</span></div>` +
+          `<div class="sec-title">Projected impact · next 30 days</div>` +
+          `<div class="vit-row" style="grid-template-columns: repeat(3, 1fr)">${impact}</div>`
+        );
+      }
+      const PLAN_ORDER = ["darnell", "yuki", "marcus", "rosa"];
+      let currentPlanId = null;
+      function nextPlan() {
+        const i = PLAN_ORDER.indexOf(currentPlanId);
+        renderPlanDetail(PLAN_ORDER[(i + 1) % PLAN_ORDER.length]);
+      }
+      function prevPlan() {
+        const i = PLAN_ORDER.indexOf(currentPlanId);
+        renderPlanDetail(PLAN_ORDER[(i - 1 + PLAN_ORDER.length) % PLAN_ORDER.length]);
+      }
+      function renderPlanDetail(id) {
+        const P = PLANS[id];
+        if (!P) return;
+        currentPlanId = id;
+        setText("pd-ey", `Awaiting your approval · ${P.idx} of 7`);
+        setText("pd-title", P.kind);
+        setText("pd-sub", `${P.name} · ${P.demo} · drafted by ScriptChain Agent ${P.when}`);
+        const pill = document.getElementById("pd-pill");
+        if (pill) {
+          pill.className = "pill " + (P.urgent ? "coral" : "amber");
+          pill.innerHTML = P.urgent
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:0.85rem;height:0.85rem"><path d="m12 3 9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg> Urgent · sign-off'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:0.85rem;height:0.85rem"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg> Pending sign-off';
+        }
+        document.getElementById("planDetailBody").innerHTML = renderPlanBody(P);
+        const codes = P.codes.split(" + ").map((c) => `<b>${c}</b>`).join(" + ");
+        setHTML("pd-bill", `ScriptChain manages the daily plan · enrolling captures ${codes} · est. <b>${P.reimb}</b>`);
+        resetRC("plan");
+        const bar = document.getElementById("approveBar");
+        if (bar) bar.classList.remove("done", "requested");
+        document.getElementById("planQueue").hidden = true;
+        document.getElementById("planDetail").hidden = false;
+        document.querySelector(".scroll").scrollTop = 0;
+      }
+      function openPlanReview(id) {
+        showView("plan");
+        renderPlanDetail(id);
+      }
+      function backToQueue() {
+        const q = document.getElementById("planQueue");
+        const d = document.getElementById("planDetail");
+        if (q) q.hidden = false;
+        if (d) d.hidden = true;
+        document.querySelector(".scroll").scrollTop = 0;
+      }
+      function resetRC(key) {
+        const p = document.getElementById("rc-" + key);
+        if (!p) return;
+        p.classList.remove("open");
+        p.querySelectorAll(".rc-intensity button").forEach((b) =>
+          b.classList.toggle("on", b.dataset.intensity === "as"));
+        p.querySelectorAll(".rc-opts").forEach((g) =>
+          g.querySelectorAll(".rc-opt").forEach((o) =>
+            o.classList.toggle("on", o.textContent.trim() === g.dataset.default)));
+        p.querySelectorAll(".rc-tag").forEach((t) => t.classList.remove("on"));
+        const ta = document.getElementById("rc-" + key + "-note");
+        if (ta) ta.value = "";
+      }
+
+      /* request-changes composer: intensity dial + target steppers (plan + embedded) */
       function openRC(key) {
         const p = document.getElementById("rc-" + key);
-        if (p) {
-          p.classList.add("open");
-          const ta = p.querySelector("textarea");
-          if (ta) ta.focus();
-        }
+        if (!p) return;
+        p.classList.add("open");
+        p.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
       function cancelRC(key) {
         const p = document.getElementById("rc-" + key);
         if (p) p.classList.remove("open");
       }
-      function rcChip(key, text) {
+      /* append a quick-add phrase into the change note */
+      function rcQuick(key, text) {
         const ta = document.getElementById("rc-" + key + "-note");
         if (!ta) return;
-        ta.value = ta.value.trim() ? ta.value.trim() + " " + text : text;
+        const v = ta.value.trim();
+        ta.value = v ? v + "\n" + text : text;
         ta.focus();
       }
       function sendRC(key, barId) {
         const p = document.getElementById("rc-" + key);
-        if (p) p.classList.remove("open");
+        let note = "";
+        if (p) {
+          const ta = document.getElementById("rc-" + key + "-note");
+          note = ta ? ta.value.trim() : "";
+          p.classList.remove("open");
+        }
         const bar = document.getElementById(barId);
         if (bar) bar.classList.add("requested");
-        toast("Sent back to ScriptChain with your notes · the agent will revise");
+        const summary = document.getElementById("rc-" + key + "-summary");
+        if (summary)
+          summary.textContent = note
+            ? "Changes requested — ScriptChain is revising: “" + note.replace(/\s+/g, " ") + "”"
+            : "Changes requested — ScriptChain will revise & resubmit.";
+        toast("Sent to ScriptChain — the agent is revising");
       }
 
       /* sign the embedded plan -> writes back to the Epic chart */
@@ -3266,6 +3981,22 @@
         })
       );
 
+      /* request-changes: single-select modality (exercise / nutrition) */
+      document.querySelectorAll(".rc-opts").forEach((g) =>
+        g.addEventListener("click", (e) => {
+          const b = e.target.closest(".rc-opt");
+          if (!b) return;
+          g.querySelectorAll(".rc-opt").forEach((x) => x.classList.remove("on"));
+          b.classList.add("on");
+        })
+      );
+      /* request-changes: multi-select constraint tags */
+      document
+        .querySelectorAll(".rc-tag")
+        .forEach((t) =>
+          t.addEventListener("click", () => t.classList.toggle("on"))
+        );
+
       /* toast helper */
       let toastTimer;
       function toast(msg) {
@@ -3274,6 +4005,16 @@
         t.classList.add("show");
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
+      }
+
+      /* dismiss the BestPractice Advisory on acknowledge */
+      function ackBpa() {
+        const bpa = document.getElementById("epBpa");
+        if (bpa) {
+          bpa.classList.add("dismissed");
+          setTimeout(() => (bpa.style.display = "none"), 240);
+        }
+        toast("Advisory acknowledged");
       }
 
       /* ⌘K focuses search */
@@ -3593,15 +4334,16 @@
           return;
         }
         viewBuilt[id] = true;
-        initSparklines(root);
+        if (id === "patient") {
+          /* only the visible roster sparklines; the detail charts build
+             lazily in openPatient() so they aren't sized while hidden */
+          ensureRosterCharts();
+        } else {
+          initSparklines(root);
+        }
         if (id === "cohort") {
           buildRiskBar();
           buildCohortTrend();
-        }
-        if (id === "patient") {
-          buildPatientTrend();
-          buildAdherenceRing();
-          buildAdherenceBars();
         }
       }
 
@@ -3663,7 +4405,7 @@
         plans: "Plans pending review",
       };
       let curRange = "week";
-      let curFilter = "all";
+      let curFilter = "agent";
 
       const setText = (id, v) => {
         const el = document.getElementById(id);
@@ -3721,6 +4463,290 @@
         setText("attn-label", FILTER_LABELS[f] || FILTER_LABELS.all);
         setText("attn-total", RANGE[curRange].chips[f]);
       }
+      applyFilter(curFilter); // no "All" chip — apply the default filter on load
+
+      /* ===================== PATIENT PANEL ROSTER ===================== */
+      /* status -> derived category tags, agent label, and row action */
+      const PSTATUS = {
+        flagged: { cat: "agent rising plans", tag: "Agent flagged", act: { kind: "link", label: "Generate plan" } },
+        drafted: { cat: "agent rising plans", tag: "Plan drafted", act: { kind: "link", label: "Review plan" } },
+        update:  { cat: "agent plans",        tag: "Update drafted", act: { kind: "link", label: "Review update" } },
+        review:  { cat: "plans",              tag: "",              act: { kind: "link", label: "Review plan" } },
+        rising:  { cat: "rising",             tag: "",              act: { kind: "link", label: "Review trend" } },
+        onplan:  { cat: "onplan",             tag: "",              act: { kind: "pill", pill: "teal",  label: "On plan" } },
+        stable:  { cat: "stable",             tag: "",              act: { kind: "pill", pill: "ghost", label: "Stable" } },
+      };
+
+      const PANEL = [
+        { id: "darnell",   name: "Darnell Brooks",   init: "DB", age: 61, sex: "M", mrn: "0039-204", cond: "Pre-diabetes · HTN · Obesity",       risk: 88, trend: "up",   latest: "A1c 9.1",   spark: "6,8,12,14,21,26",  status: "flagged" },
+        { id: "yuki",      name: "Yuki Tanaka",      init: "YT", age: 54, sex: "F", mrn: "0041-882", cond: "Metabolic syndrome",                 risk: 81, trend: "up",   latest: "BP 151/96", spark: "8,10,9,15,18,22",  status: "drafted" },
+        { id: "marcus",    name: "Marcus Webb",      init: "MW", age: 47, sex: "M", mrn: "0038-117", cond: "Type 2 diabetes · NAFLD",            risk: 76, trend: "up",   latest: "A1c 8.7",   spark: "12,10,14,13,17,19", status: "drafted" },
+        { id: "rosa",      name: "Rosa Martinez",    init: "RM", age: 58, sex: "F", mrn: "0042-117", cond: "Type 2 risk · Hypertension",         risk: 41, trend: "down", latest: "BP 132/86", spark: "22,19,16,14,10,6",  status: "update" },
+        { id: "priya",     name: "Priya Nair",       init: "PN", age: 63, sex: "F", mrn: "0040-553", cond: "Type 2 diabetes · CKD stage 2",      risk: 69, trend: "flat", latest: "eGFR 62",   spark: "14,13,15,14,15,14", status: "onplan" },
+        { id: "james",     name: "James Okafor",     init: "JO", age: 52, sex: "M", mrn: "0037-901", cond: "Hypertension",                       risk: 38, trend: "down", latest: "BP 128/82", spark: "20,18,15,13,11,8",  status: "onplan" },
+        { id: "helen",     name: "Helen Cho",        init: "HC", age: 67, sex: "F", mrn: "0036-440", cond: "Pre-diabetes",                       risk: 33, trend: "flat", latest: "A1c 5.9",   spark: "15,14,15,15,14,15", status: "stable" },
+        { id: "aisha",     name: "Aisha Rahman",     init: "AR", age: 49, sex: "F", mrn: "0043-771", cond: "Type 2 diabetes",                    risk: 72, trend: "up",   latest: "A1c 8.2",   spark: "11,12,14,15,17,18", status: "review" },
+        { id: "carlos",    name: "Carlos Mendez",    init: "CM", age: 57, sex: "M", mrn: "0044-209", cond: "HTN · Hyperlipidemia",               risk: 64, trend: "flat", latest: "LDL 142",   spark: "16,15,16,15,16,15", status: "onplan" },
+        { id: "grace",     name: "Grace Liu",        init: "GL", age: 44, sex: "F", mrn: "0045-118", cond: "PCOS · Insulin resistance",          risk: 58, trend: "down", latest: "A1c 6.4",   spark: "18,16,15,13,12,11", status: "onplan" },
+        { id: "ben",       name: "Benjamin Foster",  init: "BF", age: 66, sex: "M", mrn: "0046-552", cond: "Type 2 diabetes · CHF",              risk: 84, trend: "up",   latest: "BNP 410",   spark: "9,11,13,16,19,23",  status: "review" },
+        { id: "nadia",     name: "Nadia Petrova",    init: "NP", age: 51, sex: "F", mrn: "0047-883", cond: "Metabolic syndrome",                 risk: 60, trend: "flat", latest: "BP 138/88", spark: "15,16,14,15,15,14", status: "onplan" },
+        { id: "omar",      name: "Omar Haddad",      init: "OH", age: 59, sex: "M", mrn: "0048-330", cond: "Pre-diabetes · Obesity",             risk: 55, trend: "down", latest: "Wt 232 lb", spark: "19,18,16,15,13,12", status: "onplan" },
+        { id: "sofia",     name: "Sofia Romano",     init: "SR", age: 39, sex: "F", mrn: "0049-771", cond: "Gestational diabetes hx",            risk: 36, trend: "flat", latest: "A1c 5.7",   spark: "14,15,14,15,14,15", status: "stable" },
+        { id: "dwayne",    name: "Dwayne Carter",    init: "DC", age: 62, sex: "M", mrn: "0050-204", cond: "Type 2 diabetes · Neuropathy",       risk: 79, trend: "up",   latest: "A1c 8.9",   spark: "10,12,13,15,18,20", status: "review" },
+        { id: "meiling",   name: "Mei-Ling Hsu",     init: "MH", age: 48, sex: "F", mrn: "0051-118", cond: "Pre-diabetes",                       risk: 35, trend: "flat", latest: "A1c 5.8",   spark: "15,14,15,14,15,14", status: "stable" },
+        { id: "victor",    name: "Victor Alvarez",   init: "VA", age: 70, sex: "M", mrn: "0052-552", cond: "HTN · CKD stage 3",                  risk: 74, trend: "up",   latest: "eGFR 41",   spark: "12,13,14,16,18,19", status: "rising" },
+        { id: "tanya",     name: "Tanya Brooks",     init: "TB", age: 45, sex: "F", mrn: "0053-883", cond: "Obesity · Pre-diabetes",             risk: 52, trend: "down", latest: "Wt 205 lb", spark: "18,17,15,14,13,12", status: "onplan" },
+        { id: "raj",       name: "Raj Patel",        init: "RP", age: 56, sex: "M", mrn: "0054-330", cond: "Type 2 diabetes",                    risk: 66, trend: "flat", latest: "A1c 7.4",   spark: "15,15,16,15,15,16", status: "onplan" },
+        { id: "elena",     name: "Elena Castro",     init: "EC", age: 61, sex: "F", mrn: "0055-771", cond: "Hypertension · Hyperlipidemia",      risk: 48, trend: "down", latest: "BP 134/84", spark: "17,16,14,13,12,11", status: "onplan" },
+        { id: "frank",     name: "Frank Nguyen",     init: "FN", age: 64, sex: "M", mrn: "0056-204", cond: "Type 2 diabetes · NAFLD",            risk: 71, trend: "up",   latest: "A1c 8.0",   spark: "11,13,14,15,16,18", status: "onplan" },
+        { id: "lucia",     name: "Lucia Santos",     init: "LS", age: 42, sex: "F", mrn: "0057-118", cond: "Insulin resistance",                 risk: 44, trend: "flat", latest: "A1c 6.1",   spark: "14,15,14,14,15,14", status: "stable" },
+        { id: "kwame",     name: "Kwame Mensah",     init: "KM", age: 53, sex: "M", mrn: "0058-552", cond: "Hypertension",                       risk: 39, trend: "down", latest: "BP 126/80", spark: "19,17,15,14,12,10", status: "onplan" },
+        { id: "hana",      name: "Hana Kim",         init: "HK", age: 47, sex: "F", mrn: "0059-883", cond: "Pre-diabetes",                       risk: 34, trend: "flat", latest: "A1c 5.9",   spark: "15,14,14,15,14,15", status: "stable" },
+        { id: "marco",     name: "Marco Bianchi",    init: "MB", age: 60, sex: "M", mrn: "0060-330", cond: "Type 2 diabetes · HTN",              risk: 68, trend: "flat", latest: "A1c 7.6",   spark: "15,16,15,16,15,15", status: "onplan" },
+        { id: "deborah",   name: "Deborah Klein",    init: "DK", age: 69, sex: "F", mrn: "0061-771", cond: "CHF · Type 2 diabetes",              risk: 83, trend: "up",   latest: "BNP 388",   spark: "10,12,14,15,18,21", status: "rising" },
+        { id: "andre",     name: "André Dubois",     init: "AD", age: 50, sex: "M", mrn: "0062-204", cond: "Metabolic syndrome",                 risk: 56, trend: "down", latest: "Wt 218 lb", spark: "18,16,15,14,13,12", status: "onplan" },
+        { id: "priscilla", name: "Priscilla Owens",  init: "PO", age: 58, sex: "F", mrn: "0063-118", cond: "Pre-diabetes · HTN",                 risk: 46, trend: "flat", latest: "BP 136/86", spark: "16,15,15,14,15,15", status: "stable" },
+      ];
+
+      const riskDot = (r) =>
+        r >= 85 ? "var(--coral)" : r >= 70 ? "#e0a23c" : r >= 50 ? "var(--teal-2)" : r >= 38 ? "var(--teal)" : "#9fd9cf";
+      const sparkColor = (p) =>
+        p.trend === "up" ? (p.risk >= 85 ? "#d9554d" : "#e0a23c")
+        : p.trend === "down" ? "#0e8e80"
+        : p.risk >= 50 ? "#12b3a3" : "#9fd9cf";
+      const trendMark = (t) =>
+        t === "up" ? '<span class="trend up">↑</span>'
+        : t === "down" ? '<span class="trend down">↓</span>'
+        : '<span class="trend flat">→</span>';
+
+      function condKeys(cond) {
+        const c = cond.toLowerCase();
+        const k = [];
+        if (c.includes("type 2 diabetes")) k.push("t2d");
+        if (c.includes("pre-diabetes")) k.push("prediabetes");
+        if (c.includes("htn") || c.includes("hypertension")) k.push("hypertension");
+        if (c.includes("obesity")) k.push("obesity");
+        if (c.includes("metabolic syndrome")) k.push("metabolic");
+        if (c.includes("ckd")) k.push("ckd");
+        if (c.includes("nafld")) k.push("nafld");
+        if (c.includes("chf")) k.push("chf");
+        return k.join(" ");
+      }
+      function panelRow(p) {
+        const S = PSTATUS[p.status];
+        const flagged = S.cat.indexOf("agent") === 0 ? " flagged" : "";
+        const tag = S.tag ? `<div class="agent-tag"><i></i> ${S.tag}</div>` : "";
+        const act =
+          S.act.kind === "pill"
+            ? `<span class="pill ${S.act.pill}">${S.act.label}</span>`
+            : `<button class="linkbtn" onclick="event.stopPropagation();showView('plan')">${S.act.label}</button>`;
+        return `<tr class="clickable${flagged}" data-cat="${S.cat}" data-name="${p.name.toLowerCase()}" data-mrn="${p.mrn.toLowerCase()}" data-cond="${p.cond.toLowerCase()}" data-risk="${p.risk}" data-age="${p.age}" data-sex="${p.sex}" data-conds="${condKeys(p.cond)}" onclick="openPatient('${p.id}')">
+          <td><div class="pt"><div class="pav">${p.init}</div><div><b>${p.name}</b><span>${p.age} · ${p.sex} · MRN ${p.mrn}</span>${tag}</div></div></td>
+          <td class="cond">${p.cond}</td>
+          <td><span class="riskscore"><i style="background: ${riskDot(p.risk)}"></i>${p.risk}</span></td>
+          <td><div class="spark"><canvas data-spark="${p.spark}" data-color="${sparkColor(p)}"></canvas></div></td>
+          <td class="cond">${p.latest} ${trendMark(p.trend)}</td>
+          <td class="td-act">${act}</td>
+        </tr>`;
+      }
+
+      let panelFilter = "all";
+      let panelAge = "";
+      let panelSex = "";
+      let panelCond = "";
+      const PANEL_PER_PAGE = 24;
+      let panelPage = 1;
+      function sortPanel() {
+        const body = document.getElementById("panelBody");
+        const mode = document.getElementById("panelSort").value;
+        const rows = [...body.children];
+        rows.sort((a, b) => {
+          if (mode === "name") return a.dataset.name.localeCompare(b.dataset.name);
+          if (mode === "flagged") {
+            const af = a.classList.contains("flagged") ? 1 : 0;
+            const bf = b.classList.contains("flagged") ? 1 : 0;
+            if (af !== bf) return bf - af;
+          }
+          return b.dataset.risk - a.dataset.risk;
+        });
+        rows.forEach((r) => body.appendChild(r));
+      }
+      function renderPanel() {
+        const body = document.getElementById("panelBody");
+        const q = (document.getElementById("panelSearch").value || "").trim().toLowerCase();
+        const rows = [...body.children];
+        const matches = rows.filter((tr) => {
+          const cats = (tr.dataset.cat || "").split(" ");
+          const passFilter = panelFilter === "all" || cats.includes(panelFilter);
+          const passQuery =
+            !q ||
+            tr.dataset.name.includes(q) ||
+            tr.dataset.mrn.includes(q) ||
+            tr.dataset.cond.includes(q);
+          const age = +tr.dataset.age;
+          const passAge =
+            !panelAge ||
+            (panelAge === "u50" && age < 50) ||
+            (panelAge === "50-64" && age >= 50 && age <= 64) ||
+            (panelAge === "65+" && age >= 65);
+          const passSex = !panelSex || tr.dataset.sex === panelSex;
+          const passCond =
+            !panelCond || (tr.dataset.conds || "").split(" ").includes(panelCond);
+          return passFilter && passQuery && passAge && passSex && passCond;
+        });
+        const total = matches.length;
+        const pages = Math.max(1, Math.ceil(total / PANEL_PER_PAGE));
+        panelPage = Math.min(Math.max(1, panelPage), pages);
+        const start = (panelPage - 1) * PANEL_PER_PAGE;
+        const end = Math.min(start + PANEL_PER_PAGE, total);
+        rows.forEach((tr) => (tr.style.display = "none"));
+        matches.slice(start, end).forEach((tr) => (tr.style.display = ""));
+        const empty = document.getElementById("panelEmpty");
+        if (empty) empty.hidden = total > 0;
+        setText(
+          "panelCount",
+          total ? `Showing ${start + 1}–${end} of ${total} patients` : "No patients match"
+        );
+        renderPager(pages);
+      }
+      function renderPager(pages) {
+        const el = document.getElementById("panelPager");
+        if (!el) return;
+        if (pages <= 1) {
+          el.innerHTML = "";
+          return;
+        }
+        let h = `<button class="pg-btn" data-pg="prev"${panelPage === 1 ? " disabled" : ""} aria-label="Previous page">‹</button>`;
+        for (let i = 1; i <= pages; i++)
+          h += `<button class="pg-num${i === panelPage ? " on" : ""}" data-pg="${i}">${i}</button>`;
+        h += `<button class="pg-btn" data-pg="next"${panelPage === pages ? " disabled" : ""} aria-label="Next page">›</button>`;
+        el.innerHTML = h;
+      }
+      function buildPanel() {
+        const body = document.getElementById("panelBody");
+        if (!body) return;
+        body.innerHTML = PANEL.map(panelRow).join("");
+        const chips = document.getElementById("panelChips");
+        chips.addEventListener("click", (e) => {
+          const b = e.target.closest(".chip");
+          if (!b) return;
+          chips.querySelectorAll(".chip").forEach((c) => c.classList.remove("on"));
+          b.classList.add("on");
+          panelFilter = b.dataset.filter;
+          panelPage = 1;
+          renderPanel();
+        });
+        let t;
+        document.getElementById("panelSearch").addEventListener("input", () => {
+          clearTimeout(t);
+          t = setTimeout(() => {
+            panelPage = 1;
+            renderPanel();
+          }, 120);
+        });
+        document.getElementById("panelSort").addEventListener("change", () => {
+          panelPage = 1;
+          sortPanel();
+          renderPanel();
+        });
+        ["panelAge", "panelSex", "panelCond"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el)
+            el.addEventListener("change", () => {
+              panelAge = document.getElementById("panelAge").value;
+              panelSex = document.getElementById("panelSex").value;
+              panelCond = document.getElementById("panelCond").value;
+              panelPage = 1;
+              renderPanel();
+            });
+        });
+        document.getElementById("panelPager").addEventListener("click", (e) => {
+          const b = e.target.closest("button[data-pg]");
+          if (!b || b.disabled) return;
+          const v = b.dataset.pg;
+          if (v === "prev") panelPage--;
+          else if (v === "next") panelPage++;
+          else panelPage = parseInt(v, 10);
+          renderPanel();
+          const sc = document.querySelector(".scroll");
+          if (sc) sc.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        sortPanel();
+        renderPanel();
+      }
+
+      /* roster <-> single-patient detail */
+      function showPatientSub(which) {
+        const r = document.getElementById("patient-roster");
+        const d = document.getElementById("patient-detail");
+        if (r) r.style.display = which === "roster" ? "" : "none";
+        if (d) d.style.display = which === "detail" ? "" : "none";
+      }
+      /* build/resize roster sparklines once the roster is actually visible */
+      function ensureRosterCharts() {
+        if (!window.Chart) return;
+        const r = document.getElementById("patient-roster");
+        if (!r) return;
+        initSparklines(r);
+        requestAnimationFrame(() =>
+          r.querySelectorAll("canvas").forEach((cv) => {
+            const c = Chart.getChart(cv);
+            if (c) c.resize();
+          })
+        );
+      }
+      function openRoster() {
+        showView("patient");
+        showPatientSub("roster");
+        ensureRosterCharts();
+        const sc = document.querySelector(".scroll");
+        if (sc) sc.scrollTop = 0;
+      }
+      let detailBuilt = false;
+      function ensurePatientDetailCharts() {
+        if (!window.Chart) return;
+        const root = document.getElementById("patient-detail");
+        if (!detailBuilt) {
+          detailBuilt = true;
+          initSparklines(root);
+          buildPatientTrend();
+          buildAdherenceRing();
+          buildAdherenceBars();
+        }
+        requestAnimationFrame(() =>
+          root.querySelectorAll("canvas").forEach((cv) => {
+            const c = Chart.getChart(cv);
+            if (c) c.resize();
+          })
+        );
+      }
+      function populateDetail(id) {
+        const p = PANEL.find((x) => x.id === id);
+        if (!p) return;
+        setText("pd-init", p.init);
+        setText("pd-name", p.name);
+        setText(
+          "pd-meta",
+          `${p.age} · ${p.sex === "M" ? "Male" : "Female"} · MRN ${p.mrn} · Last visit May 12 · Next May 30`
+        );
+        const conds = p.cond.split(" · ");
+        const pillCls = ["coral", "amber", "teal"];
+        const dir = p.trend === "up" ? "↑ rising" : p.trend === "down" ? "↓ improving" : "→ stable";
+        const pills =
+          conds.map((c, i) => `<span class="pill ${pillCls[i] || "ghost"}">${c}</span>`).join("") +
+          `<span class="pill ghost">Risk ${p.risk} ${dir}</span>`;
+        setHTML("pd-pills", pills);
+      }
+      function openPatient(id) {
+        showView("patient");
+        populateDetail(id);
+        showPatientSub("detail");
+        ensurePatientDetailCharts();
+        const sc = document.querySelector(".scroll");
+        if (sc) sc.scrollTop = 0;
+      }
+
+      buildPanel();
 
       /* capture deep-link intent before showView() rewrites the hash */
       const wantEpic =
